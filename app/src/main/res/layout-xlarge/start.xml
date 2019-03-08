@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <include layout="@layout/toolbar_actionbar" /> <!-- placeholder, empty except on L -->
+
+    <ImageView
+        android:id="@+id/welcome_view"
+        android:layout_width="@dimen/openthos_icon_size"
+        android:layout_height="@dimen/openthos_icon_size"
+        android:layout_marginTop="@dimen/tv_title_margin_top"
+        android:layout_marginLeft="@dimen/footer_margin_left"
+        android:gravity="center_horizontal"
+        android:src="@drawable/openthos_logan_icon" />
+
+    <!--<TextView-->
+    <!--android:id="@+id/welcome_view"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/tv_title_margin_top"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:textSize="@dimen/tv_title_txt_size"-->
+    <!--android:textColor="@color/fancy_orange"-->
+    <!--android:text="@string/welcome_to_seafile" />-->
+
+    <!--<TextView-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/tv_subtitle_margin_top"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:textSize="@dimen/tv_subtitle_txt_size"-->
+    <!--android:textColor="@color/fancy_gray"-->
+    <!--android:text="@string/select_account"-->
+    <!--android:visibility="gone"/>-->
+
+    <ListView
+        android:id="@+id/account_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/footer_margin_left"
+        android:layout_marginRight="@dimen/footer_margin_left"
+        android:background="@color/fancy_gray_color"
+        android:divider="@null" />
+</LinearLayout>

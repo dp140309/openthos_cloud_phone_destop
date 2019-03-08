@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:gravity="center_horizontal"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="128dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="@dimen/openthos_about_size"
+        android:src="@drawable/openthos_about_icon" />
+
+    <TextView
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/openthos_about_size"
+        android:text="@string/openthos_about_text" />
+
+    <Button
+        android:id="@+id/openthos_about_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/openthos_about_size"
+        android:layout_marginBottom="@dimen/openthos_about_size"
+        android:text="@string/openthos_about_button" />
+</LinearLayout>

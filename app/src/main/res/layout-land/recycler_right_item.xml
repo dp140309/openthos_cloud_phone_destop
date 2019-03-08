@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_list_right"
+    android:layout_width="150dp"
+    android:layout_height="150dp">
+
+    <ImageView
+        android:id="@+id/recycler_image_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/openthos_title_new_folder" />
+
+    <TextView
+        android:id="@+id/right_text_item"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recycler_image_item"
+        android:layout_centerHorizontal="true"
+        android:text="sdd"
+        android:textSize="18sp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>
