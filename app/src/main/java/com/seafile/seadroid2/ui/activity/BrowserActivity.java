@@ -266,14 +266,31 @@ public class BrowserActivity extends BaseActivity
 
             @Override
             public void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v) {
+                AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this, R.style.dialogNoBg);
+                View view = LayoutInflater.from(BrowserActivity.this).inflate(R.layout.recycle_item_right_menu, null);
+                SeafRepo repo = (SeafRepo) position;
+                TextView reanmeRepo = (TextView) view.findViewById(R.id.rename_repo);
+                TextView deleteRepo = (TextView) view.findViewById(R.id.delete_repo);
+                reanmeRepo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        renameRepo(repo.getID(), repo.getName());
+                    }
+                });
+                deleteRepo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteRepo(repo.getID());
+                    }
+                });
 
-
-
+                mRecycleDialog.setView(view);
+                mRecycleDialog.create();
+                mRecycleDialog.show();
             }
         });
 
         requestReadExternalStoragePermission();
-
         //        mRightMenu.setOnLongClickListener(new View.OnLongClickListener() {
 //            @Override
 //            public boolean onLongClick(View v) {
@@ -378,12 +395,13 @@ public class BrowserActivity extends BaseActivity
         mLeftViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
             @Override
             public void onTunchListener(int x, int y, SeafItem position, MotionEvent event, View v) {
+
                 requestLeftClickListener(x, y, position, event, v);
             }
 
             @Override
             public void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v) {
-                AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this,R.style.dialogNoBg);
+                AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this, R.style.dialogNoBg);
                 View view = LayoutInflater.from(BrowserActivity.this).inflate(R.layout.recycle_item_right_menu, null);
                 SeafRepo repo = (SeafRepo) position;
                 TextView reanmeRepo = (TextView) view.findViewById(R.id.rename_repo);
@@ -391,7 +409,7 @@ public class BrowserActivity extends BaseActivity
                 reanmeRepo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        renameRepo(repo.getID(),  repo.getName());
+                        renameRepo(repo.getID(), repo.getName());
                     }
                 });
                 deleteRepo.setOnClickListener(new View.OnClickListener() {
@@ -817,7 +835,7 @@ public class BrowserActivity extends BaseActivity
         if (position instanceof SeafDirent) {
             SeafDirent dirent = (SeafDirent) position;
 
-            if (mCurrentDirectory.getText() != null) mCurrentDirectory.append( " > " + dirent.name);
+            if (mCurrentDirectory.getText() != null) mCurrentDirectory.append(" > " + dirent.name);
 //            mCurrentDirectory.setText(position.getTitle());
 
             if (dirent.isDir()) {
@@ -2203,7 +2221,7 @@ public class BrowserActivity extends BaseActivity
                 showShortToast(BrowserActivity.this, R.string.rename_successful);
 //                ReposFragment reposFragment = getReposFragment();
 //                if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
-                if (currentPosition == INDEX_LIBRARY_TAB ) {
+                if (currentPosition == INDEX_LIBRARY_TAB) {
 
                     refreshView(true, true);
                 }
@@ -2749,7 +2767,7 @@ public class BrowserActivity extends BaseActivity
         if (!Utils.isNetworkOn() || !forceRefresh) {
 
             List<SeafRepo> repos = getDataManager().getReposFromCache();
-            Log.i("refer-------", "repos" + repos.size());
+//            Log.i("refer-------", "repos" + repos.size());
             if (repos != null) {
 //                if (mRefreshType == REFRESH_ON_PULL) {
 //                    refreshLayout.setRefreshing(false);

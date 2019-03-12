@@ -22,6 +22,8 @@
         android:textSize="18sp" />
 
     <CheckBox
+        android:id="@+id/right_view_checkbox"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
