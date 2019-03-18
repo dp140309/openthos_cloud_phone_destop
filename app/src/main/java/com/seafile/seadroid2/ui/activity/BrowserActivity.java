@@ -1,6 +1,7 @@
 package com.seafile.seadroid2.ui.activity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -80,6 +81,7 @@ import com.seafile.seadroid2.transfer.TransferService;
 import com.seafile.seadroid2.transfer.TransferService.TransferBinder;
 import com.seafile.seadroid2.transfer.UploadTaskInfo;
 import com.seafile.seadroid2.transfer.UploadTaskManager;
+import com.seafile.seadroid2.ui.ClickListener.OnMenuClick;
 import com.seafile.seadroid2.ui.CopyMoveContext;
 import com.seafile.seadroid2.ui.NavContext;
 import com.seafile.seadroid2.ui.WidgetUtils;
@@ -96,6 +98,7 @@ import com.seafile.seadroid2.ui.dialog.NewDirDialog;
 import com.seafile.seadroid2.ui.dialog.NewFileDialog;
 import com.seafile.seadroid2.ui.dialog.NewRepoDialog;
 import com.seafile.seadroid2.ui.dialog.PasswordDialog;
+import com.seafile.seadroid2.ui.dialog.RecycleMenuDialog;
 import com.seafile.seadroid2.ui.dialog.RenameFileDialog;
 import com.seafile.seadroid2.ui.dialog.RenameRepoDialog;
 import com.seafile.seadroid2.ui.dialog.SortFilesDialogFragment;
@@ -153,6 +156,9 @@ public class BrowserActivity extends BaseActivity
     public static final int INDEX_LIBRARY_TAB = 0;
     public static final int INDEX_ACTIVITIES_TAB = 2;
 
+    /**
+     * right click menu for left(1) or right(2)
+     */
     public static final int TYPE_LEFT = 1;
     public static final int TYPE_RIGHT = 2;
 
@@ -187,6 +193,7 @@ public class BrowserActivity extends BaseActivity
     private CopyMoveContext copyMoveContext;
     private Menu overFlowMenu;
     private MenuItem menuSearch;
+    private RecycleMenuDialog mMenuDialog;
 
     private DataManager dataManager = null;
     private TransferService txService = null;
@@ -387,6 +394,8 @@ public class BrowserActivity extends BaseActivity
     protected void onCreateLandView(Bundle savedInstanceState) {
         mLeftMenu = (RecyclerView) findViewById(R.id.left_list);
         mCurrentDirectory = findViewById(R.id.current_directory);
+        mMenuDialog = RecycleMenuDialog.getInstance(this);
+        mMenuDialog.setOnMenuClick(mOnMenuClick);
         mLeftViewAdapter = new RecycleViewAdapter(this, TYPE_LEFT);
         refreshView(true);
         requestServerInfo();
@@ -401,27 +410,7 @@ public class BrowserActivity extends BaseActivity
 
             @Override
             public void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v) {
-                AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this, R.style.dialogNoBg);
-                View view = LayoutInflater.from(BrowserActivity.this).inflate(R.layout.recycle_item_right_menu, null);
-                SeafRepo repo = (SeafRepo) position;
-                TextView reanmeRepo = (TextView) view.findViewById(R.id.rename_repo);
-                TextView deleteRepo = (TextView) view.findViewById(R.id.delete_repo);
-                reanmeRepo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        renameRepo(repo.getID(), repo.getName());
-                    }
-                });
-                deleteRepo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        deleteRepo(repo.getID());
-                    }
-                });
-
-                mRecycleDialog.setView(view);
-                mRecycleDialog.create();
-                mRecycleDialog.show();
+                RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_LEFT, x, y, position);
             }
         });
 
@@ -445,6 +434,21 @@ public class BrowserActivity extends BaseActivity
         accountView.setOnClickListener(this);
 
     }
+
+    private OnMenuClick mOnMenuClick = new OnMenuClick() {
+        @Override
+        public void menuClick(View view, Dialog dialog, SeafItem position, String menu) {
+            SeafRepo repo = (SeafRepo) position;
+            if (menu.equals(getString(R.string.repo_action_rename))) {
+                renameRepo(repo.getID(), repo.getName());
+            } else if (menu.equals(getString(R.string.repo_action_delete))) {
+                deleteRepo(repo.getID());
+            } else if (menu.equals(getString(R.string.file_action_download))) {
+            } else if (menu.equals(getString(R.string.oenthos_collection))) {
+            }
+            dialog.dismiss();
+        }
+    };
 
     protected void onCreatePortView(Bundle savedInstanceState) {
         mLayout = findViewById(R.id.main_layout);
@@ -2237,10 +2241,11 @@ public class BrowserActivity extends BaseActivity
             @Override
             public void onTaskSuccess() {
                 showShortToast(BrowserActivity.this, R.string.delete_successful);
-                ReposFragment reposFragment = getReposFragment();
-                if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
-                    reposFragment.refreshView(true, true);
-                }
+//                ReposFragment reposFragment = getReposFragment();
+//                if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
+//                    reposFragment.
+                refreshView(true, true);
+//                }
             }
         });
         dialog.show(getSupportFragmentManager(), TAG_DELETE_REPO_DIALOG_FRAGMENT);

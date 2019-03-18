@@ -138,18 +138,37 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-    class RightHolder extends RecyclerView.ViewHolder {
+    class RightHolder extends RecyclerView.ViewHolder  {
         TextView mTextView;
         TextView mTextViewSize;
         ImageView mViewIcon;
         RelativeLayout mRelativeLayout;
         CheckBox mCheckBox;
+
         public RightHolder(View itemView) {
             super(itemView);
             if (isLeftRecycle(viewType)) {
                 mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_list_left);
                 mTextView = (TextView) itemView.findViewById(R.id.left_text_item);
                 mTextViewSize = (TextView) itemView.findViewById(R.id.recycler_text_size);
+                mRelativeLayout.setOnHoverListener(new View.OnHoverListener() {
+                    @Override
+                    public boolean onHover(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_HOVER_ENTER:
+                                mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
+                                mTextView.setTextColor(mContext
+                                        .getResources().getColor(R.color.fancy_purple));
+                                break;
+                            case MotionEvent.ACTION_HOVER_EXIT:
+                                mRelativeLayout.setBackgroundResource(0);
+                                mTextView.setTextColor(mContext
+                                        .getResources().getColor(R.color.fancy_left_gray));
+                                break;
+                        }
+                        return false;
+                    }
+                });
             } else {
                 mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_list_right);
                 mTextView = (TextView) itemView.findViewById(R.id.right_text_item);

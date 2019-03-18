@@ -4,16 +4,21 @@
     android:background="#ffffff"
     android:layout_height="200dp">
 
-    <TextView
-        android:id="@+id/rename_repo"
+    <ListView
+        android:id="@+id/left_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/repo_action_rename" />
+        android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/delete_repo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/repo_action_delete" />
+    <!--<TextView-->
+        <!--android:id="@+id/rename_repo"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/repo_action_rename" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/delete_repo"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/repo_action_delete" />-->
 
 </LinearLayout>

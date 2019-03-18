@@ -540,5 +540,8 @@
   <string name="oenthos_upload">上传</string>
   <string name="oenthos_add_new_folder">新建文件夹</string>
   <string name="oenthos_transfer_list">传输列表</string>
+  <string name="oenthos_collection">加入收藏</string>
+
+
 
 </resources>

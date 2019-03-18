@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="left_item_menu">
+        <item>@string/repo_action_rename</item>
+        <item>@string/repo_action_delete</item>
+    </string-array>
+
+    <string-array name="right_item_menu">
+        <item>@string/download_file</item>
+        <item>@string/oenthos_collection</item>
+    </string-array>
+</resources>
