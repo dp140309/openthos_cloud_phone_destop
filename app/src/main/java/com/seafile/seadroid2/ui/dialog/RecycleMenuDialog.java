@@ -91,7 +91,6 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
     }
 
     public void show(int type, int x, int y, SeafItem postion) {
-        Log.i("menudialog", "menu dialog is runing---------------1");
         mSeafItem = postion;
         Window dialogWindow = getWindow();
         dialogWindow.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
@@ -116,12 +115,10 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
         switch (type) {
             case 1:
                 sArr = getContext().getResources().getStringArray(R.array.left_item_menu);
-                Log.i("menudialog", "menu dialog is runing---------------3");
                 break;
 
             case 2:
                 sArr = getContext().getResources().getStringArray(R.array.right_item_menu);
-                Log.i("menudialog", "menu dialog is runing---------------4");
                 break;
         }
 
