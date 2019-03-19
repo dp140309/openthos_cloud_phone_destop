@@ -1,0 +1,93 @@
+From 69c5cd60fe619379e4af67cd8fe6f9b01f5cf4cd Mon Sep 17 00:00:00 2001
+From: dongpeng <dongpeng@openthos.org>
+Date: Tue, 19 Mar 2019 15:53:17 +0800
+Subject: [PATCH] Add right click menu to the list on the right side of the
+ file
+
+Signed-off-by: dongpeng <dongpeng@openthos.org>
+---
+ .../java/com/seafile/seadroid2/ui/activity/BrowserActivity.java   | 4 ++++
+ .../java/com/seafile/seadroid2/ui/dialog/RecycleMenuDialog.java   | 3 +--
+ app/src/main/res/layout-land/recycle_item_right_menu.xml          | 4 ++--
+ app/src/main/res/layout-land/recycle_left_menu_item.xml           | 8 ++++----
+ 4 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/app/src/main/java/com/seafile/seadroid2/ui/activity/BrowserActivity.java b/app/src/main/java/com/seafile/seadroid2/ui/activity/BrowserActivity.java
+index 68771bb..798484f 100644
+--- a/app/src/main/java/com/seafile/seadroid2/ui/activity/BrowserActivity.java
++++ b/app/src/main/java/com/seafile/seadroid2/ui/activity/BrowserActivity.java
+@@ -273,6 +273,10 @@ public class BrowserActivity extends BaseActivity
+ 
+             @Override
+             public void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v) {
++
++
++                RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_RIGHT, x, y, position);
++
+                 AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this, R.style.dialogNoBg);
+                 View view = LayoutInflater.from(BrowserActivity.this).inflate(R.layout.recycle_item_right_menu, null);
+                 SeafRepo repo = (SeafRepo) position;
+diff --git a/app/src/main/java/com/seafile/seadroid2/ui/dialog/RecycleMenuDialog.java b/app/src/main/java/com/seafile/seadroid2/ui/dialog/RecycleMenuDialog.java
+index 0eb7f3d..adc3b6d 100644
+--- a/app/src/main/java/com/seafile/seadroid2/ui/dialog/RecycleMenuDialog.java
++++ b/app/src/main/java/com/seafile/seadroid2/ui/dialog/RecycleMenuDialog.java
+@@ -110,19 +110,18 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
+     }
+ 
+     private void prepareData(int type) {
++        if (mDatas != null) mDatas.clear();
+ //        mDatas.clear();
+         String[] sArr = null;
+         switch (type) {
+             case 1:
+                 sArr = getContext().getResources().getStringArray(R.array.left_item_menu);
+                 break;
+-
+             case 2:
+                 sArr = getContext().getResources().getStringArray(R.array.right_item_menu);
+                 break;
+         }
+ 
+-
+         mDatas.addAll(Arrays.asList(sArr));
+         mAdapter.notifyDataSetChanged();
+         mWidth = 0;
+diff --git a/app/src/main/res/layout-land/recycle_item_right_menu.xml b/app/src/main/res/layout-land/recycle_item_right_menu.xml
+index 1330d72..d548aa9 100644
+--- a/app/src/main/res/layout-land/recycle_item_right_menu.xml
++++ b/app/src/main/res/layout-land/recycle_item_right_menu.xml
+@@ -1,8 +1,8 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+-    android:orientation="vertical" android:layout_width="1000dp"
++    android:orientation="vertical" android:layout_width="@dimen/openthos_icon_size"
+     android:background="#ffffff"
+-    android:layout_height="200dp">
++    android:layout_height="@dimen/item_repo_name">
+ 
+     <ListView
+         android:id="@+id/left_view"
+diff --git a/app/src/main/res/layout-land/recycle_left_menu_item.xml b/app/src/main/res/layout-land/recycle_left_menu_item.xml
+index 43024c2..9cd48af 100644
+--- a/app/src/main/res/layout-land/recycle_left_menu_item.xml
++++ b/app/src/main/res/layout-land/recycle_left_menu_item.xml
+@@ -1,12 +1,12 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+-    android:orientation="vertical" android:layout_width="100dp"
+-    android:layout_height="200dp">
++    android:orientation="vertical" android:layout_width="match_parent"
++    android:layout_height="match_parent">
+ 
+     <TextView
+         android:id="@+id/left_text_item"
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
+         android:layout_alignParentStart="true"
+         android:textColor="@color/fancy_left_gray"
+         android:textSize="18sp"
+-- 
+2.15.1.windows.2
+
