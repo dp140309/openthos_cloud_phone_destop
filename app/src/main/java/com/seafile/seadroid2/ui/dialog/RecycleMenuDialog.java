@@ -110,18 +110,17 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
     }
 
     private void prepareData(int type) {
+        if (mDatas != null) mDatas.clear();
 //        mDatas.clear();
         String[] sArr = null;
         switch (type) {
             case 1:
                 sArr = getContext().getResources().getStringArray(R.array.left_item_menu);
                 break;
-
             case 2:
                 sArr = getContext().getResources().getStringArray(R.array.right_item_menu);
                 break;
         }
-
 
         mDatas.addAll(Arrays.asList(sArr));
         mAdapter.notifyDataSetChanged();

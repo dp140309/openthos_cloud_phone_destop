@@ -273,6 +273,10 @@ public class BrowserActivity extends BaseActivity
 
             @Override
             public void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v) {
+
+
+                RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_RIGHT, x, y, position);
+
                 AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this, R.style.dialogNoBg);
                 View view = LayoutInflater.from(BrowserActivity.this).inflate(R.layout.recycle_item_right_menu, null);
                 SeafRepo repo = (SeafRepo) position;
