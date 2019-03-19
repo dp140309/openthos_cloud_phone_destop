@@ -277,27 +277,27 @@ public class BrowserActivity extends BaseActivity
 
                 RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_RIGHT, x, y, position);
 
-                AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this, R.style.dialogNoBg);
-                View view = LayoutInflater.from(BrowserActivity.this).inflate(R.layout.recycle_item_right_menu, null);
-                SeafRepo repo = (SeafRepo) position;
-                TextView reanmeRepo = (TextView) view.findViewById(R.id.rename_repo);
-                TextView deleteRepo = (TextView) view.findViewById(R.id.delete_repo);
-                reanmeRepo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        renameRepo(repo.getID(), repo.getName());
-                    }
-                });
-                deleteRepo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        deleteRepo(repo.getID());
-                    }
-                });
-
-                mRecycleDialog.setView(view);
-                mRecycleDialog.create();
-                mRecycleDialog.show();
+//                AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this, R.style.dialogNoBg);
+//                View view = LayoutInflater.from(BrowserActivity.this).inflate(R.layout.recycle_item_right_menu, null);
+//                SeafRepo repo = (SeafRepo) position;
+//                TextView reanmeRepo = (TextView) view.findViewById(R.id.rename_repo);
+//                TextView deleteRepo = (TextView) view.findViewById(R.id.delete_repo);
+//                reanmeRepo.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        renameRepo(repo.getID(), repo.getName());
+//                    }
+//                });
+//                deleteRepo.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        deleteRepo(repo.getID());
+//                    }
+//                });
+//
+//                mRecycleDialog.setView(view);
+//                mRecycleDialog.create();
+//                mRecycleDialog.show();
             }
         });
 
