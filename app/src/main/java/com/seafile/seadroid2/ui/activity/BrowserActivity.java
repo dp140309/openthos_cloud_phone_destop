@@ -273,31 +273,7 @@ public class BrowserActivity extends BaseActivity
 
             @Override
             public void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v) {
-
-
                 RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_RIGHT, x, y, position);
-
-//                AlertDialog.Builder mRecycleDialog = new AlertDialog.Builder(BrowserActivity.this, R.style.dialogNoBg);
-//                View view = LayoutInflater.from(BrowserActivity.this).inflate(R.layout.recycle_item_right_menu, null);
-//                SeafRepo repo = (SeafRepo) position;
-//                TextView reanmeRepo = (TextView) view.findViewById(R.id.rename_repo);
-//                TextView deleteRepo = (TextView) view.findViewById(R.id.delete_repo);
-//                reanmeRepo.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        renameRepo(repo.getID(), repo.getName());
-//                    }
-//                });
-//                deleteRepo.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        deleteRepo(repo.getID());
-//                    }
-//                });
-//
-//                mRecycleDialog.setView(view);
-//                mRecycleDialog.create();
-//                mRecycleDialog.show();
             }
         });
 
@@ -441,14 +417,27 @@ public class BrowserActivity extends BaseActivity
 
     private OnMenuClick mOnMenuClick = new OnMenuClick() {
         @Override
-        public void menuClick(View view, Dialog dialog, SeafItem position, String menu) {
-            SeafRepo repo = (SeafRepo) position;
-            if (menu.equals(getString(R.string.repo_action_rename))) {
-                renameRepo(repo.getID(), repo.getName());
-            } else if (menu.equals(getString(R.string.repo_action_delete))) {
-                deleteRepo(repo.getID());
-            } else if (menu.equals(getString(R.string.file_action_download))) {
-            } else if (menu.equals(getString(R.string.oenthos_collection))) {
+        public void menuClick(View view, Dialog dialog, SeafItem position, String menu, int type) {
+            switch (type) {
+                case 1:
+                    SeafRepo repo = (SeafRepo) position;
+                    if (menu.equals(getString(R.string.repo_action_rename))) {
+                        renameRepo(repo.getID(), repo.getName());
+                    } else if (menu.equals(getString(R.string.repo_action_delete))) {
+                        deleteRepo(repo.getID());
+                    }
+                    break;
+                case 2:
+                    SeafDirent drent = (SeafDirent) position;
+                    if (menu.equals(getString(R.string.file_action_download))) {
+                        List<SeafDirent> dirents = dataManager.getCachedDirents(
+                                getNavContext().getRepoID(), getNavContext().getDirPath());
+                        downloadFiles(getNavContext().getRepoID(), getNavContext().getRepoName(), getNavContext().getDirPath(), dirents);
+                    } else if (menu.equals(getString(R.string.oenthos_collection))) {
+
+                    }
+
+                    break;
             }
             dialog.dismiss();
         }

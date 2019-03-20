@@ -38,6 +38,7 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
     private List<String> mDatas;
     private int mWidth;
     private int mHeight;
+    private int viewType;
 
     private ListView mLeftView;
     private MenuDialogAdapter mAdapter;
@@ -92,6 +93,7 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
 
     public void show(int type, int x, int y, SeafItem postion) {
         mSeafItem = postion;
+        viewType = type;
         Window dialogWindow = getWindow();
         dialogWindow.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         dialogWindow.setGravity(Gravity.LEFT | Gravity.TOP);
@@ -213,7 +215,7 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
         @Override
         public void onClick(View v) {
             if (mOnMenuClick != null) {
-                mOnMenuClick.menuClick(v, mRecycleMenuDialog, mSeafItem, ((TextView) v).getText().toString());
+                mOnMenuClick.menuClick(v, mRecycleMenuDialog, mSeafItem, ((TextView) v).getText().toString(),viewType);
                 Log.i("menudialog", "menu dialog is runing---------------2");
             }
 

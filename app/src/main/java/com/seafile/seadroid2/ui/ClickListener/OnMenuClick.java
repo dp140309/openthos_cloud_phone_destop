@@ -7,6 +7,6 @@ import com.seafile.seadroid2.data.SeafItem;
 
 public interface OnMenuClick {
 
-    void menuClick(View view, Dialog dialog, SeafItem postion, String menu);
+    void menuClick(View view, Dialog dialog, SeafItem postion, String menu,int type);
 
 }
