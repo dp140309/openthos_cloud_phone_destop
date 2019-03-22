@@ -222,7 +222,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             }
         }
 //        v.setBackgroundResource(R.drawable.recycle_item_backgroud);
-        if (MotionEvent.ACTION_DOWN == event.getAction()) {
+//        if (MotionEvent.ACTION_DOWN == event.getAction()) {
 //            int postion = v.getLayoutDirection();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -242,7 +242,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                     onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
                     break;
             }
-        }
+//        }
         return false;
     }
 

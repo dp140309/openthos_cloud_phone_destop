@@ -429,14 +429,17 @@ public class BrowserActivity extends BaseActivity
                     break;
                 case 2:
                     SeafDirent drent = (SeafDirent) position;
-                    if (menu.equals(getString(R.string.file_action_download))) {
-                        List<SeafDirent> dirents = dataManager.getCachedDirents(
-                                getNavContext().getRepoID(), getNavContext().getDirPath());
-                        downloadFiles(getNavContext().getRepoID(), getNavContext().getRepoName(), getNavContext().getDirPath(), dirents);
-                    } else if (menu.equals(getString(R.string.oenthos_collection))) {
-
+                    if (drent.isDir()){
+                        if (menu.equals(getString(R.string.file_action_download))) {
+                            List<SeafDirent> dirents = dataManager.getCachedDirents(
+                                    navContext.getRepoID(), navContext.getDirPath());
+                            downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
+                        }
+                    }else {
+                        if (menu.equals(getString(R.string.oenthos_collection))) {
+                            starFile(navContext.getRepoID(), navContext.getDirPath(), drent.name);
+                        }
                     }
-
                     break;
             }
             dialog.dismiss();
@@ -2599,7 +2602,7 @@ public class BrowserActivity extends BaseActivity
 
         @Override
         protected void onPreExecute() {
-            getReposFragment().showLoading(true);
+//            getReposFragment().showLoading(true);
         }
 
         @Override
@@ -2655,7 +2658,7 @@ public class BrowserActivity extends BaseActivity
         @Override
         protected void onPostExecute(Void aVoid) {
             // update ui
-            getReposFragment().showLoading(false);
+//            getReposFragment().showLoading(false);
 
             if (err != null) {
                 showShortToast(BrowserActivity.this, R.string.transfer_list_network_error);
