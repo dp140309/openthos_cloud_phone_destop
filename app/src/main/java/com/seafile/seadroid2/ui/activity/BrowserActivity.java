@@ -2105,12 +2105,12 @@ public class BrowserActivity extends BaseActivity
                             .getDirPath());
                     navContext.setDir(parentPath, null);
                     if (parentPath.equals(ACTIONBAR_PARENT_PATH)) {
-                        getActionBarToolbar().setTitle(navContext.getRepoName());
+//                        getActionBarToolbar().setTitle(navContext.getRepoName());
                     } else {
-                        getActionBarToolbar().setTitle(parentPath.substring(parentPath.lastIndexOf(ACTIONBAR_PARENT_PATH) + 1));
+//                        getActionBarToolbar().setTitle(parentPath.substring(parentPath.lastIndexOf(ACTIONBAR_PARENT_PATH) + 1));
                     }
                 }
-                getReposFragment().refreshView(true);
+//                getReposFragment().refreshView(true);
 
             } else
                 super.onBackPressed();
