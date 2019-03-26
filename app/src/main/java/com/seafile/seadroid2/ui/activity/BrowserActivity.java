@@ -1009,11 +1009,11 @@ public class BrowserActivity extends BaseActivity
                         reposFragment = new ReposFragment();
                     }
                     return reposFragment;
-//                case 1:
-//                    if (starredFragment == null) {
-//                        starredFragment = new StarredFragment();
-//                    }
-//                    return starredFragment;
+                case 1:
+                    if (starredFragment == null) {
+                        starredFragment = new StarredFragment();
+                    }
+                    return starredFragment;
 //                case 2:
 //                    if (activitieFragment == null) {
 //                        activitieFragment = new ActivitiesFragment();

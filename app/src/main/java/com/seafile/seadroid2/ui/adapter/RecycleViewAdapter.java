@@ -1,6 +1,7 @@
 package com.seafile.seadroid2.ui.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.seafile.seadroid2.ui.activity.BrowserActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.LogRecord;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.RightHolder> implements View.OnTouchListener {
 
@@ -37,6 +39,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     private List<DownloadTaskInfo> mDownloadTaskInfos;
     private BrowserActivity mActivity;
     private int groupSize = 1;
+
 
     /**
      * item isfouse
@@ -78,7 +81,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         items.add(entry);
     }
 
-    public void clear(){
+    public void clear() {
         items.clear();
     }
 
@@ -88,7 +91,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     }
 
 
-//    mGestureDetector = new GestureDetector(new RecycleItemOnTuch());
+    //    mGestureDetector = new GestureDetector(new RecycleItemOnTuch());
     @NonNull
     @Override
     public RightHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -118,7 +121,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 //                holder.mRelativeLayout.setBackgroundResource(0);
 //            }
 
-            if (onRecyclerViewItemClickListener !=null){
+            if (onRecyclerViewItemClickListener != null) {
                 holder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -138,7 +141,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-    class RightHolder extends RecyclerView.ViewHolder  {
+    class RightHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
         TextView mTextViewSize;
         ImageView mViewIcon;
@@ -173,7 +176,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_list_right);
                 mTextView = (TextView) itemView.findViewById(R.id.right_text_item);
                 mViewIcon = (ImageView) itemView.findViewById(R.id.recycler_image_item);
-                mCheckBox = (CheckBox)itemView.findViewById(R.id.right_view_checkbox);
+                mCheckBox = (CheckBox) itemView.findViewById(R.id.right_view_checkbox);
             }
         }
     }
@@ -203,11 +206,13 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         return newList.equals(oldList);
     }
 
-//    GestureDetector mGestureDetector;
+    //    GestureDetector mGestureDetector;
     private OnItemClickListener onRecyclerViewItemClickListener;
+
     public interface OnItemClickListener {
-//        void onClick(View v,SeafItem position);
+        //        void onClick(View v,SeafItem position);
         void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v);
+
         void onTunchListener(int x, int y, SeafItem position, MotionEvent event, View v);
     }
 
@@ -215,33 +220,79 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         this.onRecyclerViewItemClickListener = (OnItemClickListener) onItemClickListener;
     }
 
+
+    /* 点击的次数 */
+    private int mClickcount;
+
+    private int mDownX;
+    private int mDownY;
+    private int mMoveX;
+    private int mMoveY;
+    private int mUpX;
+    private int mUpY;
+
+    private long mLastDownTime;
+    private long mLastUpTime;
+
+    private long mFirstClick;
+    private long mSecondClick;
+
+    private boolean isDoubleClick = false;
+
+    private int MAX_LONG_PRESS_TIME = 1000;
+    private int MAX_MOVE_FOR_CLICK = 50;
+
     public boolean onTouch(View v, MotionEvent event) {
         if (isFocus != null && isFocus.size() > 0) {
             for (int i = 0; i < isFocus.size(); i++) {
                 isFocus.set(i, false);
             }
         }
-//        v.setBackgroundResource(R.drawable.recycle_item_backgroud);
-//        if (MotionEvent.ACTION_DOWN == event.getAction()) {
-//            int postion = v.getLayoutDirection();
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mLastDownTime = System.currentTimeMillis();
+                mDownX = (int) event.getX();
+                mDownY = (int) event.getY();
+                mClickcount++;
+
+                if (mClickcount == 1) {
+                    mFirstClick = System.currentTimeMillis();
+                } else if (mClickcount == 2) {
+                    mSecondClick = System.currentTimeMillis();
+                    if (mSecondClick - mFirstClick <= MAX_LONG_PRESS_TIME) {
+                        onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
+                        mClickcount = 0;
+                    } else {
+                        mClickcount = 0;
+                    }
+                }
 //                    onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-                    onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    Toast.makeText(mContext,"up event",Toast.LENGTH_LONG).show();
-                    break;
-            }
-            switch (event.getButtonState()){
+                break;
+            case MotionEvent.ACTION_UP:
+
+                mLastUpTime = System.currentTimeMillis();
+                mUpX = (int) event.getX();
+                mUpY = (int) event.getY();
+
+                int mx = Math.abs(mUpX - mDownX);
+                int my = Math.abs(mUpY - mDownY);
+                if (mx <= MAX_MOVE_FOR_CLICK && my <= MAX_MOVE_FOR_CLICK) {
+
+                } else { // 移动
+                    mClickcount = 0;
+                }
+                break;
+        }
+        switch (event.getButtonState()) {
 //                case MotionEvent.BUTTON_PRIMARY:
 //                    onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
 //                    break;
-                case MotionEvent.BUTTON_SECONDARY:
+            case MotionEvent.BUTTON_SECONDARY:
 //                    new RecycleMenuDialog();
-                    onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-                    break;
-            }
+                onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
+                break;
+        }
 //        }
         return false;
     }
