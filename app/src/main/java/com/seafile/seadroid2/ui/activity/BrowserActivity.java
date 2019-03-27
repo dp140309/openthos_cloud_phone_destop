@@ -899,9 +899,12 @@ public class BrowserActivity extends BaseActivity
             case R.id.delete_view:
 //                break;
             case R.id.transfer_list_view:
-//                break;
-            case R.id.settings_view:
                 Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.settings_view:
+                Intent settingsIntent = new Intent(BrowserActivity.this, SettingsActivity.class);
+                settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(settingsIntent);
                 break;
             case R.id.account_manager_view:
                 break;
