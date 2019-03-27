@@ -255,26 +255,21 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 mDownX = (int) event.getX();
                 mDownY = (int) event.getY();
                 mClickcount++;
-
                 if (mClickcount == 1) {
                     mFirstClick = System.currentTimeMillis();
                 } else if (mClickcount == 2) {
                     mSecondClick = System.currentTimeMillis();
                     if (mSecondClick - mFirstClick <= MAX_LONG_PRESS_TIME) {
                         onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-                        mClickcount = 0;
-                    } else {
-                        mClickcount = 0;
                     }
+                    mClickcount = 0;
                 }
 //                    onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
                 break;
             case MotionEvent.ACTION_UP:
-
                 mLastUpTime = System.currentTimeMillis();
                 mUpX = (int) event.getX();
                 mUpY = (int) event.getY();
-
                 int mx = Math.abs(mUpX - mDownX);
                 int my = Math.abs(mUpY - mDownY);
                 if (mx <= MAX_MOVE_FOR_CLICK && my <= MAX_MOVE_FOR_CLICK) {

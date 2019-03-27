@@ -429,15 +429,18 @@ public class BrowserActivity extends BaseActivity
                     break;
                 case 2:
                     SeafDirent drent = (SeafDirent) position;
-                    if (drent.isDir()){
-                        if (menu.equals(getString(R.string.file_action_download))) {
-                            List<SeafDirent> dirents = dataManager.getCachedDirents(
-                                    navContext.getRepoID(), navContext.getDirPath());
+                    if (menu.equals(getString(R.string.file_action_download))) {
+                        List<SeafDirent> dirents = dataManager.getCachedDirents(
+                                navContext.getRepoID(), navContext.getDirPath());
+                        if (drent.isDir()) {
+                            downloadDir(navContext.getRepoID(), drent.name, true);
+                        } else {
                             downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
                         }
-                    }else {
+                    } else {
                         if (menu.equals(getString(R.string.oenthos_collection))) {
-                            starFile(navContext.getRepoID(), navContext.getDirPath(), drent.name);
+                            Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
+//                            starFile(navContext.getRepoID(), navContext.getDirPath(), drent.name);
                         }
                     }
                     break;
