@@ -163,6 +163,7 @@
     <style name="TitleTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#000000</item>
     </style>

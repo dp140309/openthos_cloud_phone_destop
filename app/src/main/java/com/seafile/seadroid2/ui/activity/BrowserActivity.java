@@ -401,8 +401,9 @@ public class BrowserActivity extends BaseActivity
         TextView uploadView = (TextView) findViewById(R.id.upload_view);
         TextView deleteView = (TextView) findViewById(R.id.delete_view);
         TextView transferView = (TextView) findViewById(R.id.transfer_list_view);
-        TextView settingView = (TextView) findViewById(R.id.settings_view);
+        ImageView settingView = (ImageView) findViewById(R.id.settings_view);
         TextView accountView = (TextView) findViewById(R.id.account_manager_view);
+        if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
 
         back.setOnClickListener(this);
         forward.setOnClickListener(this);
@@ -900,9 +901,9 @@ public class BrowserActivity extends BaseActivity
             case R.id.transfer_list_view:
 //                break;
             case R.id.settings_view:
-//                break;
-            case R.id.account_manager_view:
                 Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.account_manager_view:
                 break;
 
         }

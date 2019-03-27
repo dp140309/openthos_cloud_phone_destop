@@ -8,14 +8,15 @@
         android:id="@+id/back_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
         android:src="@drawable/openthos_title_back" />
 
     <ImageView
         android:id="@+id/forward_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/back_view"
         android:src="@drawable/openthos_title_further" />
 
@@ -57,20 +58,28 @@
         android:layout_toStartOf="@+id/settings_view"
         android:text="@string/oenthos_transfer_list" />
 
-    <TextView
+    <ImageView
         android:id="@+id/settings_view"
-        style="@style/TitleTextStyle"
-        android:text="@string/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/openthos_about_size"
+        android:layout_marginRight="@dimen/openthos_about_size"
         android:layout_toStartOf="@+id/account_manager_view"
-        android:src="@drawable/ic_am_move" />
+        android:src="@drawable/openthos_title_setting" />
 
     <TextView
         android:id="@+id/account_manager_view"
         style="@style/TitleTextStyle"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/openthos_about_size"
-        android:drawableLeft="@drawable/ic_am_del"
+        android:layout_toStartOf="@+id/account_icon"
         android:text="account" />
+
+    <ImageView
+        android:id="@+id/account_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/default_avatar" />
 
 </RelativeLayout>
