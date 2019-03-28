@@ -269,6 +269,9 @@ public class BrowserActivity extends BaseActivity
             @Override
             public void onTunchListener(int x, int y, SeafItem position, MotionEvent event, View v) {
                 requestRightClickListener(x, y, position, event, v);
+                for (View view : mView){
+                    view.setEnabled(true);
+                }
             }
 
             @Override
@@ -371,9 +374,11 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
+    List<View> mView;
+
     protected void onCreateLandView(Bundle savedInstanceState) {
         mLeftMenu = (RecyclerView) findViewById(R.id.left_list);
-        mCurrentDirectory = findViewById(R.id.current_directory);
+        mCurrentDirectory = (TextView) findViewById(R.id.current_directory);
         mMenuDialog = RecycleMenuDialog.getInstance(this);
         mMenuDialog.setOnMenuClick(mOnMenuClick);
         mLeftViewAdapter = new RecycleViewAdapter(this, TYPE_LEFT);
@@ -404,6 +409,14 @@ public class BrowserActivity extends BaseActivity
         ImageView settingView = (ImageView) findViewById(R.id.settings_view);
         TextView accountView = (TextView) findViewById(R.id.account_manager_view);
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
+
+        mView = new ArrayList<>();
+        mView.add(back);
+        mView.add(forward);
+        mView.add(downloadView);
+        mView.add(uploadView);
+
+        for (View v : mView) v.setEnabled(false);
 
         back.setOnClickListener(this);
         forward.setOnClickListener(this);
@@ -839,7 +852,6 @@ public class BrowserActivity extends BaseActivity
         if (position instanceof SeafDirent) {
             SeafDirent dirent = (SeafDirent) position;
 
-            if (mCurrentDirectory.getText() != null) mCurrentDirectory.append(" > " + dirent.name);
 //            mCurrentDirectory.setText(position.getTitle());
 
             if (dirent.isDir()) {
@@ -850,6 +862,7 @@ public class BrowserActivity extends BaseActivity
                 getNavContext().setDirPermission(dirent.permission);
 //                saveDirentScrollPosition(repo.getID(), currentPath);
 //                refreshView();
+                if (mCurrentDirectory.getText() != null) mCurrentDirectory.append(" > " + dirent.name);
                 refreshView(true);
 //                mActivity.setUpButtonTitle(dirent.name);
             } else {
