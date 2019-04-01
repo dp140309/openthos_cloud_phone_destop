@@ -46,6 +46,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +89,7 @@ import com.seafile.seadroid2.ui.WidgetUtils;
 import com.seafile.seadroid2.ui.adapter.RecycleViewAdapter;
 
 import com.seafile.seadroid2.ui.adapter.SeafItemAdapter;
+import com.seafile.seadroid2.ui.adapter.TransmissionAdapter;
 import com.seafile.seadroid2.ui.dialog.AppChoiceDialog;
 import com.seafile.seadroid2.ui.dialog.AppChoiceDialog.CustomAction;
 import com.seafile.seadroid2.ui.dialog.CopyMoveDialog;
@@ -177,6 +179,9 @@ public class BrowserActivity extends BaseActivity
     private RecyclerView mLeftMenu;
     private RecycleViewAdapter mRightViewAdapter;
     private RecycleViewAdapter mLeftViewAdapter;
+    private LinearLayout mTransferLayoutView;
+    private ListView mTransmissionListView;
+    private TransmissionAdapter mTransAdapter;
 
     private TextView mCurrentDirectory;
 
@@ -408,6 +413,8 @@ public class BrowserActivity extends BaseActivity
         TextView transferView = (TextView) findViewById(R.id.transfer_list_view);
         ImageView settingView = (ImageView) findViewById(R.id.settings_view);
         TextView accountView = (TextView) findViewById(R.id.account_manager_view);
+        mTransferLayoutView = (LinearLayout) findViewById(R.id.transfer_layout);
+        mTransmissionListView = (ListView) findViewById(R.id.transmission_list_view);
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
 
         mView = new ArrayList<>();
@@ -418,6 +425,7 @@ public class BrowserActivity extends BaseActivity
 
         for (View v : mView) v.setEnabled(false);
 
+        mTransferLayoutView.setVisibility(View.GONE);
         back.setOnClickListener(this);
         forward.setOnClickListener(this);
         downloadView.setOnClickListener(this);
@@ -450,6 +458,10 @@ public class BrowserActivity extends BaseActivity
                             downloadDir(navContext.getRepoID(), drent.name, true);
                         } else {
                             downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
+                            mTransferLayoutView.setVisibility(View.VISIBLE);
+                            mTransAdapter = new TransmissionAdapter(dirents, BrowserActivity.this);
+                            mTransmissionListView.setAdapter(mTransAdapter);
+
                         }
                     } else {
                         if (menu.equals(getString(R.string.oenthos_collection))) {
@@ -910,9 +922,11 @@ public class BrowserActivity extends BaseActivity
             case R.id.upload_view:
 //                break;
             case R.id.delete_view:
-//                break;
-            case R.id.transfer_list_view:
                 Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
+
+                break;
+            case R.id.transfer_list_view:
+                mTransferLayoutView.setVisibility(View.VISIBLE);
                 break;
             case R.id.settings_view:
                 Intent settingsIntent = new Intent(BrowserActivity.this, SettingsActivity.class);

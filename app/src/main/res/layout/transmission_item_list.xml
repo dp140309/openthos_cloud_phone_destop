@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/transmission_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/default_avatar" />
+
+    <RelativeLayout
+        android:layout_width="323dp"
+        android:layout_height="71dp"
+        android:layout_toRightOf="@+id/transmission_icon">
+
+        <TextView
+            android:id="@+id/transmission_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/transmission_time"
+            android:text="@string/rename_dir" />
+
+        <TextView
+            android:id="@+id/transmission_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/rename_dir" />
+
+        <ProgressBar
+            android:id="@+id/transmission_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layerType="software" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/transmission_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/transmission_delete"
+        android:src="@drawable/default_avatar" />
+
+    <ImageView
+        android:id="@+id/transmission_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/transmission_file"
+        android:src="@drawable/default_avatar" />
+
+    <ImageView
+        android:id="@+id/transmission_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/default_avatar" />
+
+
+</RelativeLayout>
