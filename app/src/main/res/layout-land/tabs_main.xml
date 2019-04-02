@@ -75,40 +75,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="@color/fancy_right_title_color"
+                android:background="@color/trans_list_background_color"
                 android:layout_weight="2">
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:layout_marginLeft="@dimen/openthos_about_size">
                     <Button
                         android:id="@+id/button_all_start"
-                        android:layout_width="@dimen/openthos_left_button_size"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/openthos_icon_size"
+                        android:layout_height="@dimen/margin_larger"
                         android:layout_marginLeft="@dimen/margin_normal"
                         android:layout_alignParentLeft="true"
-                        android:text="全部开始"
-                        android:textSize="12sp"/>
+                        android:text="@string/trans_start_button"
+                        android:textSize="12sp"
+                        android:textColor="@color/trans_start_button_text_color"
+                        android:background="@color/trans_start_button_background_color"/>
 
                     <Button
-                        android:layout_width="@dimen/openthos_left_button_size"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/openthos_icon_size"
+                        android:layout_height="@dimen/margin_larger"
                         android:layout_marginLeft="@dimen/openthos_about_size"
                         android:layout_toRightOf="@+id/button_all_start"
-                        android:text="全部取消"
-                        android:textSize="12sp" />
+                        android:text="@string/trans_cancel_button"
+                        android:textSize="12sp"
+                        android:textColor="@color/trans_start_button_text_color"
+                        android:background="@color/trans_start_button_background_color" />
 
                     <ImageButton
                         android:id="@+id/trans_close"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:src="@drawable/trans_delete_icon" />
+                        android:src="@drawable/trans_delete_icon"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:layout_marginLeft="@dimen/openthos_about_size"/>
 
                 </RelativeLayout>
                 <ListView
                     android:id="@+id/transmission_list_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:dividerHeight="@dimen/openthos_about_size" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

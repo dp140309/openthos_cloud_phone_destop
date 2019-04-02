@@ -201,4 +201,6 @@
     <dimen name="openthos_about_size">20dp</dimen>
     <dimen name="title_search_width_size">350dp</dimen>
     <dimen name="openthos_text_size">24sp</dimen>
+    <dimen name="openthos_view_size_12">12dp</dimen>
+    <dimen name="openthos_view_size_2">2dp</dimen>
 </resources>

@@ -39,4 +39,9 @@
     <color name="fancy_right_title_color">#f1f1f1</color>
     <color name="fancy_search_text_color">#b8b8b8</color>
     <color name="fancy_gray_color">#00000000</color>
+    <color name="trans_list_background_color">#fafafa</color>
+    <color name="account_button_background_color">#ebebeb</color>
+    <color name="trans_start_button_text_color">#a8a8a8</color>
+    <color name="trans_start_button_background_color">#f2f2f2</color>
+
 </resources>

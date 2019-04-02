@@ -2,28 +2,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fancy_right_title_color"
-    android:gravity="center_vertical">
+    android:background="@color/trans_list_background_color">
 
     <ImageView
         android:id="@+id/transmission_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/openthos_left_button_size"
+        android:layout_height="@dimen/openthos_left_button_size"
+        android:layout_marginLeft="@dimen/openthos_about_size"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:src="@drawable/default_avatar" />
 
     <RelativeLayout
-        android:layout_width="323dp"
-        android:layout_height="71dp"
-        android:layout_toRightOf="@+id/transmission_icon">
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/openthos_left_button_size"
+        android:layout_toRightOf="@+id/transmission_icon"
+        android:layout_toLeftOf="@+id/transmission_cancel"
+        android:layout_marginLeft="@dimen/openthos_about_size"
+        android:layout_marginRight="@dimen/openthos_about_size">
 
         <TextView
             android:id="@+id/transmission_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignTop="@+id/transmission_time"
+            android:layout_marginTop="@dimen/openthos_view_size_2"
             android:text="@string/rename_dir" />
 
         <TextView
@@ -31,38 +34,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/openthos_view_size_2"
             android:text="@string/rename_dir" />
 
         <ProgressBar
             android:id="@+id/transmission_progress"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="@dimen/openthos_view_size_12"
+            android:layout_marginBottom="@dimen/openthos_view_size_2"
             android:layout_alignParentBottom="true"
-            android:layerType="software" />
+            style="?android:attr/progressBarStyleHorizontal" />
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/transmission_pause"
+        android:id="@+id/transmission_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/transmission_delete"
-        android:src="@drawable/trans_pause_icon" />
+        android:src="@drawable/trans_pause_icon"
+        android:layout_marginRight="@dimen/openthos_left_button_size"/>
 
     <ImageView
         android:id="@+id/transmission_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/transmission_file"
-        android:src="@drawable/trans_delete_icon" />
+        android:src="@drawable/trans_delete_icon"
+        android:layout_marginRight="@dimen/openthos_left_button_size" />
 
     <ImageView
         android:id="@+id/transmission_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:src="@drawable/trans_file_icon" />
+        android:layout_centerVertical="true"
+        android:src="@drawable/trans_file_icon"
+        android:layout_marginRight="@dimen/openthos_left_button_size"/>
 
 
 </RelativeLayout>

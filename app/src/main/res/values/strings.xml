@@ -570,4 +570,6 @@
   <string name="oenthos_add_new_folder">New Folder</string>
   <string name="oenthos_transfer_list">Transfer List</string>
   <string name="oenthos_collection">Join the collection</string>
+  <string name="trans_start_button">Start All</string>
+  <string name="trans_cancel_button">Cancel All</string>
 </resources>

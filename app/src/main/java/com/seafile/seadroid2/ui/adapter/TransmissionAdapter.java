@@ -69,7 +69,7 @@ public class TransmissionAdapter extends BaseAdapter {
         public ViewHolder(View view) {
             mTransIcon = (ImageView) view.findViewById(R.id.transmission_icon);
             mTransDelete = (ImageView) view.findViewById(R.id.transmission_delete);
-            mTransPause = (ImageView) view.findViewById(R.id.transmission_pause);
+            mTransPause = (ImageView) view.findViewById(R.id.transmission_cancel);
             mTransFile = (ImageView) view.findViewById(R.id.transmission_file);
             mTransName = (TextView) view.findViewById(R.id.transmission_name);
             mTransime = (TextView) view.findViewById(R.id.transmission_time);
