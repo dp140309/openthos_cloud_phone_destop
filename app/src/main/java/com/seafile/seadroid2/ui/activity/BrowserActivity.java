@@ -44,6 +44,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -182,6 +183,7 @@ public class BrowserActivity extends BaseActivity
     private LinearLayout mTransferLayoutView;
     private ListView mTransmissionListView;
     private TransmissionAdapter mTransAdapter;
+    private ImageButton mTransClose;
 
     private TextView mCurrentDirectory;
 
@@ -415,6 +417,8 @@ public class BrowserActivity extends BaseActivity
         TextView accountView = (TextView) findViewById(R.id.account_manager_view);
         mTransferLayoutView = (LinearLayout) findViewById(R.id.transfer_layout);
         mTransmissionListView = (ListView) findViewById(R.id.transmission_list_view);
+
+        mTransClose = (ImageButton) findViewById(R.id.trans_close);
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
 
         mView = new ArrayList<>();
@@ -426,6 +430,7 @@ public class BrowserActivity extends BaseActivity
         for (View v : mView) v.setEnabled(false);
 
         mTransferLayoutView.setVisibility(View.GONE);
+        mTransClose.setOnClickListener(this);
         back.setOnClickListener(this);
         forward.setOnClickListener(this);
         downloadView.setOnClickListener(this);
@@ -459,6 +464,7 @@ public class BrowserActivity extends BaseActivity
                         } else {
                             downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
                             mTransferLayoutView.setVisibility(View.VISIBLE);
+
                             mTransAdapter = new TransmissionAdapter(dirents, BrowserActivity.this);
                             mTransmissionListView.setAdapter(mTransAdapter);
 
@@ -934,6 +940,10 @@ public class BrowserActivity extends BaseActivity
                 startActivity(settingsIntent);
                 break;
             case R.id.account_manager_view:
+                break;
+
+            case R.id.trans_close:
+                mTransferLayoutView.setVisibility(View.GONE);
                 break;
 
         }
