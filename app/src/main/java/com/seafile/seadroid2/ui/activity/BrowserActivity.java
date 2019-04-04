@@ -269,7 +269,7 @@ public class BrowserActivity extends BaseActivity
     public void requestRightItem() {
         mRightMenu = (RecyclerView) findViewById(R.id.right_menu);
         mRightViewAdapter = new RecycleViewAdapter(this, TYPE_RIGHT);
-        mRightMenu.setLayoutManager(new GridLayoutManager(this, 4));
+        mRightMenu.setLayoutManager(new GridLayoutManager(this, 0));
         refreshView(true);
         mRightMenu.setAdapter(mRightViewAdapter);
         mRightViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
@@ -935,9 +935,7 @@ public class BrowserActivity extends BaseActivity
                 mTransferLayoutView.setVisibility(View.VISIBLE);
                 break;
             case R.id.settings_view:
-                Intent settingsIntent = new Intent(BrowserActivity.this, SettingsActivity.class);
-                settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(settingsIntent);
+                startActivity(new Intent(BrowserActivity.this,OpenthosSettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
             case R.id.account_manager_view:
                 break;

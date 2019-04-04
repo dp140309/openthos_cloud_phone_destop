@@ -205,4 +205,5 @@
     <dimen name="openthos_view_size_2">2dp</dimen>
     <dimen name="openthos_view_size_30">30dp</dimen>
     <dimen name="openthos_view_size_100">100dp</dimen>
+    <dimen name="openthos_view_size_70">70dp</dimen>
 </resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/ac_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="@dimen/openthos_about_size"
+        android:src="@drawable/trans_delete_icon" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/ac_icon"
+        android:layout_toLeftOf="@+id/settings_account_modify"
+        android:text="dongpeng@openthos.org" />
+
+    <Button
+        android:id="@+id/settings_account_modify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/trans_start_button_text_color"
+        android:background="@color/trans_start_button_background_color"
+        android:text="修改" />
+
+</RelativeLayout>

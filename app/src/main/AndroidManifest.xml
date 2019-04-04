@@ -153,6 +153,11 @@
         <activity android:name="com.seafile.seadroid2.cameraupload.CameraUploadConfigActivity"
                   android:label="@string/app_name">
         </activity>
+
+        <activity android:name="com.seafile.seadroid2.ui.activity.OpenthosSettingsActivity"
+            android:label="@string/settings">
+        </activity>
+
         <!--<activity android:name="com.seafile.seadroid2.cameraupload.ContactsUploadConfigActivity"-->
                   <!--android:label="@string/app_name">-->
         <!--</activity>-->
