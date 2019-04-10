@@ -207,6 +207,7 @@
     <dimen name="openthos_view_size_8">8dp</dimen>
     <dimen name="openthos_view_size_12">12dp</dimen>
     <dimen name="openthos_view_size_14">14dp</dimen>
+    <dimen name="openthos_view_size_15">15dp</dimen>
     <dimen name="openthos_view_size_16">16dp</dimen>
     <dimen name="openthos_view_size_22">22dp</dimen>
     <dimen name="openthos_view_size_25">25dp</dimen>

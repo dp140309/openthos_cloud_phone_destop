@@ -177,6 +177,20 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 mTextView = (TextView) itemView.findViewById(R.id.right_text_item);
                 mViewIcon = (ImageView) itemView.findViewById(R.id.recycler_image_item);
                 mCheckBox = (CheckBox) itemView.findViewById(R.id.right_view_checkbox);
+                mRelativeLayout.setOnHoverListener(new View.OnHoverListener() {
+                    @Override
+                    public boolean onHover(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_HOVER_ENTER:
+                                mRelativeLayout.setBackgroundResource(R.drawable.right_view_background);
+                                break;
+                            case MotionEvent.ACTION_HOVER_EXIT:
+                                mRelativeLayout.setBackgroundResource(0);
+                                break;
+                        }
+                        return false;
+                    }
+                });
             }
         }
     }

@@ -6,18 +6,14 @@
 
     <ImageView
         android:id="@+id/back_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TitleImageViewStyle"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/openthos_view_size_35"
         android:src="@drawable/openthos_title_back" />
 
     <ImageView
         android:id="@+id/forward_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        style="@style/TitleImageViewStyle"
         android:layout_toRightOf="@+id/back_view"
         android:layout_marginLeft="@dimen/openthos_view_size_28"
         android:src="@drawable/openthos_title_further" />
@@ -32,8 +28,7 @@
 
         <ImageView
             android:id="@+id/download_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TitleImageViewStyle"
             android:src="@drawable/openthos_title_download" />
         <TextView
             android:id="@+id/download_text"
@@ -54,8 +49,7 @@
 
         <ImageView
             android:id="@+id/upload_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TitleImageViewStyle"
             android:src="@drawable/openthos_title_upload" />
 
         <TextView
@@ -76,8 +70,7 @@
 
         <ImageView
             android:id="@+id/delete_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TitleImageViewStyle"
             android:src="@drawable/openthos_title_delete" />
 
         <TextView
@@ -99,8 +92,7 @@
 
         <ImageView
             android:id="@+id/transfer_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TitleImageViewStyle"
             android:src="@drawable/openthos_transfer" />
 
         <TextView
@@ -130,9 +122,7 @@
 
     <ImageView
         android:id="@+id/settings_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        style="@style/TitleImageViewStyle"
         android:layout_marginRight="@dimen/openthos_view_size_22"
         android:layout_toLeftOf="@+id/account_button"
         android:src="@drawable/openthos_title_setting" />

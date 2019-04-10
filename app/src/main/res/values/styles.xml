@@ -168,6 +168,13 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <!--library title them style-->
+    <style name="TitleImageViewStyle">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_width">@dimen/openthos_view_size_15</item>
+        <item name="android:layout_height">@dimen/openthos_view_size_15</item>
+    </style>
+
     <style name="dialogNoBg">
         <item name="android:background">#00000000</item>
         <item name="android:windowBackground">@android:color/transparent</item>
