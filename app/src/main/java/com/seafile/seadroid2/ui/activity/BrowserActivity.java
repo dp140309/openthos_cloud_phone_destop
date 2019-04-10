@@ -43,11 +43,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -269,7 +271,7 @@ public class BrowserActivity extends BaseActivity
     public void requestRightItem() {
         mRightMenu = (RecyclerView) findViewById(R.id.right_menu);
         mRightViewAdapter = new RecycleViewAdapter(this, TYPE_RIGHT);
-        mRightMenu.setLayoutManager(new GridLayoutManager(this, 0));
+        mRightMenu.setLayoutManager(new GridLayoutManager(this, 4));
         refreshView(true);
         mRightMenu.setAdapter(mRightViewAdapter);
         mRightViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
@@ -409,10 +411,10 @@ public class BrowserActivity extends BaseActivity
         requestReadExternalStoragePermission();
         ImageView back = (ImageView) findViewById(R.id.back_view);
         ImageView forward = (ImageView) findViewById(R.id.forward_view);
-        TextView downloadView = (TextView) findViewById(R.id.download_view);
-        TextView uploadView = (TextView) findViewById(R.id.upload_view);
-        TextView deleteView = (TextView) findViewById(R.id.delete_view);
-        TextView transferView = (TextView) findViewById(R.id.transfer_list_view);
+        RelativeLayout downloadView = (RelativeLayout) findViewById(R.id.download_view);
+        RelativeLayout uploadView = (RelativeLayout) findViewById(R.id.upload_view);
+        RelativeLayout deleteView = (RelativeLayout) findViewById(R.id.delete_view);
+        RelativeLayout transferView = (RelativeLayout) findViewById(R.id.transfer_list_view);
         ImageView settingView = (ImageView) findViewById(R.id.settings_view);
         TextView accountView = (TextView) findViewById(R.id.account_manager_view);
         mTransferLayoutView = (LinearLayout) findViewById(R.id.transfer_layout);

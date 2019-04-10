@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_list_right"
-    android:layout_width="150dp"
-    android:layout_height="150dp">
+    android:layout_width="@dimen/openthos_view_size_130"
+    android:layout_height="@dimen/openthos_view_size_130">
 
     <ImageView
         android:id="@+id/recycler_image_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_width="@dimen/openthos_view_size_60"
+        android:layout_height="@dimen/openthos_view_size_60"
+        android:layout_marginTop="@dimen/openthos_about_size"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/openthos_title_new_folder" />
 
     <TextView
         android:id="@+id/right_text_item"
-        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/recycler_image_item"
+        android:layout_marginTop="@dimen/openthos_view_size_16"
         android:layout_centerHorizontal="true"
-        android:text="sdd"
-        android:textSize="18sp" />
+        android:gravity="center"
+        android:lines="1"
+        android:textColor="@color/right_text_color"
+        android:textSize="@dimen/openthos_text_size_14" />
 
     <CheckBox
         android:id="@+id/right_view_checkbox"

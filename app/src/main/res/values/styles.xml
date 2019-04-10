@@ -163,9 +163,9 @@
     <style name="TitleTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">#959595</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="dialogNoBg">

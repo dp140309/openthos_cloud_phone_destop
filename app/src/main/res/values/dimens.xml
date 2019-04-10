@@ -195,15 +195,36 @@
     <dimen name="font_size_large">22sp</dimen>
 
     <!-- add new dimen -->
-
     <dimen name="openthos_icon_size">150dp</dimen>
     <dimen name="openthos_left_button_size">50dp</dimen>
     <dimen name="openthos_about_size">20dp</dimen>
     <dimen name="title_search_width_size">350dp</dimen>
     <dimen name="openthos_text_size">24sp</dimen>
-    <dimen name="openthos_view_size_12">12dp</dimen>
+
+    <!-- add new view size to openthos cloud -->
     <dimen name="openthos_view_size_2">2dp</dimen>
+    <dimen name="openthos_view_size_6">6dp</dimen>
+    <dimen name="openthos_view_size_8">8dp</dimen>
+    <dimen name="openthos_view_size_12">12dp</dimen>
+    <dimen name="openthos_view_size_14">14dp</dimen>
+    <dimen name="openthos_view_size_16">16dp</dimen>
+    <dimen name="openthos_view_size_22">22dp</dimen>
+    <dimen name="openthos_view_size_25">25dp</dimen>
+    <dimen name="openthos_view_size_26">26dp</dimen>
+    <dimen name="openthos_view_size_28">28dp</dimen>
     <dimen name="openthos_view_size_30">30dp</dimen>
-    <dimen name="openthos_view_size_100">100dp</dimen>
+    <dimen name="openthos_view_size_38">38dp</dimen>
+    <dimen name="openthos_view_size_35">35dp</dimen>
+    <dimen name="openthos_view_size_40">40dp</dimen>
+    <dimen name="openthos_view_size_60">60dp</dimen>
     <dimen name="openthos_view_size_70">70dp</dimen>
+    <dimen name="openthos_view_size_86">86dp</dimen>
+    <dimen name="openthos_view_size_100">100dp</dimen>
+    <dimen name="openthos_view_size_130">130dp</dimen>
+    <dimen name="openthos_view_size_160">160dp</dimen>
+    <dimen name="openthos_view_size_188">188dp</dimen>
+
+    <!-- add new text size to openthos cloud -->
+    <dimen name="openthos_text_size_14">14sp</dimen>
+    <dimen name="openthos_text_size_12">12sp</dimen>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="50dp">
+    android:layout_width="match_parent" android:layout_height="@dimen/openthos_view_size_35">
 
     <View
         android:layout_marginTop="1dp"
@@ -11,22 +11,22 @@
 
     <ImageView
         android:id="@+id/title_iv_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:src="@drawable/search" />
+        android:layout_marginLeft="@dimen/openthos_about_size"
+        android:src="@drawable/openthos_search" />
 
     <EditText
         android:id="@+id/title_et_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/title_iv_search"
+        android:layout_toRightOf="@+id/title_iv_search"
         android:background="@null"
         android:textColor="@color/fancy_search_text_color"
         android:hint="@string/openthos_title_search"
-        android:textSize="12sp" />
+        android:textSize="@dimen/openthos_text_size_14" />
 
     <View
         android:layout_width="match_parent"
