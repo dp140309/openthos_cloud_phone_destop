@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/openthos_view_size_35"
-    android:background="@color/fancy_right_title_color" >
+    android:background="@color/fancy_right_title_color">
 
     <ImageView
         android:id="@+id/back_view"
@@ -14,38 +14,39 @@
     <ImageView
         android:id="@+id/forward_view"
         style="@style/TitleImageViewStyle"
-        android:layout_toRightOf="@+id/back_view"
         android:layout_marginLeft="@dimen/openthos_view_size_28"
+        android:layout_toRightOf="@+id/back_view"
         android:src="@drawable/openthos_title_further" />
 
     <RelativeLayout
         android:id="@+id/download_view"
-        android:layout_toRightOf="@+id/forward_view"
-        android:layout_marginLeft="@dimen/openthos_view_size_35"
-        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/openthos_view_size_35"
+        android:layout_toRightOf="@+id/forward_view">
 
         <ImageView
             android:id="@+id/download_icon"
             style="@style/TitleImageViewStyle"
             android:src="@drawable/openthos_title_download" />
+
         <TextView
             android:id="@+id/download_text"
             style="@style/TitleTextStyle"
-            android:layout_toRightOf="@+id/download_icon"
             android:layout_marginLeft="@dimen/openthos_view_size_8"
+            android:layout_toRightOf="@+id/download_icon"
             android:text="@string/oenthos_download" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/upload_view"
-        android:layout_toRightOf="@+id/download_view"
-        android:layout_marginLeft="@dimen/openthos_view_size_14"
-        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/openthos_view_size_14"
+        android:layout_toRightOf="@+id/download_view">
 
         <ImageView
             android:id="@+id/upload_icon"
@@ -54,19 +55,19 @@
 
         <TextView
             style="@style/TitleTextStyle"
-            android:layout_toRightOf="@+id/upload_icon"
             android:layout_marginLeft="@dimen/openthos_view_size_8"
+            android:layout_toRightOf="@+id/upload_icon"
             android:text="@string/oenthos_upload" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/delete_view"
-        android:layout_toRightOf="@+id/upload_view"
-        android:layout_marginLeft="@dimen/openthos_view_size_14"
-        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/openthos_view_size_14"
+        android:layout_toRightOf="@+id/upload_view">
 
         <ImageView
             android:id="@+id/delete_icon"
@@ -76,19 +77,19 @@
         <TextView
             android:id="@+id/delete_text"
             style="@style/TitleTextStyle"
-            android:layout_toRightOf="@+id/delete_icon"
             android:layout_marginLeft="@dimen/openthos_view_size_8"
+            android:layout_toRightOf="@+id/delete_icon"
             android:text="@string/delete" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/transfer_list_view"
-        android:layout_toLeftOf="@+id/settings_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/openthos_view_size_35"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_toLeftOf="@+id/settings_view">
 
         <ImageView
             android:id="@+id/transfer_icon"
@@ -98,17 +99,11 @@
         <TextView
             android:id="@+id/transfer_text"
             style="@style/TitleTextStyle"
-            android:layout_toRightOf="@+id/transfer_icon"
             android:layout_marginLeft="@dimen/openthos_view_size_8"
+            android:layout_toRightOf="@+id/transfer_icon"
             android:text="@string/oenthos_transfer_list" />
 
     </RelativeLayout>
-
-
-
-
-
-
 
 
     <!--<TextView-->
@@ -117,7 +112,6 @@
     <!--android:layout_toEndOf="@+id/delete_view"-->
     <!--android:drawableLeft="@drawable/openthos_title_new_folder"-->
     <!--android:text="@string/oenthos_add_new_folder" />-->
-
 
 
     <ImageView
@@ -132,14 +126,18 @@
         android:layout_width="@dimen/openthos_view_size_160"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:background="@color/account_button_background_color" >
+        android:background="@color/account_button_background_color">
 
         <TextView
             android:id="@+id/account_manager_view"
             style="@style/TitleTextStyle"
-            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="fdsfsfsdfsdfsdf" />
+            android:layout_marginRight="@dimen/openthos_view_size_6"
+            android:layout_toLeftOf="@+id/account_icon"
+            android:ellipsize="end"
+            android:maxEms="8"
+            android:maxLines="1" />
 
         <ImageView
             android:id="@+id/account_icon"
@@ -147,8 +145,8 @@
             android:layout_height="@dimen/openthos_view_size_26"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/default_avatar"
-            android:layout_marginRight="@dimen/openthos_view_size_28"/>
+            android:layout_marginRight="@dimen/openthos_view_size_28"
+            android:src="@drawable/default_avatar" />
     </RelativeLayout>
 
 

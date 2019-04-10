@@ -69,8 +69,7 @@
                     android:id="@+id/right_menu"
                     android:layout_marginTop="@dimen/openthos_view_size_25"
                     android:layout_marginLeft="@dimen/openthos_view_size_35"
-
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
             </LinearLayout>
             <LinearLayout
