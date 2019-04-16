@@ -186,6 +186,7 @@ public class Utils {
 
     public static void writeFile(File file, String content) throws IOException {
         OutputStream os = null;
+
         try {
             os = new FileOutputStream(file);
             os.write(content.getBytes("UTF-8"));

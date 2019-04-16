@@ -8,27 +8,37 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="4" >
+        android:layout_weight="4">
 
-        <include layout="@layout/search_view"
-            android:id="@+id/search_view"/>
+        <include
+            android:id="@+id/search_view"
+            layout="@layout/search_view" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/left_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/search_view"
-            android:layout_marginTop="@dimen/openthos_view_size_40"/>
+            android:layout_marginTop="@dimen/openthos_view_size_40" />
+
+        <ProgressBar
+            android:id="@+id/memory_state"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/openthos_view_size_12"
+            android:layout_above="@+id/memory_text"
+            android:layout_marginLeft="@dimen/openthos_about_size"
+            android:layout_marginRight="@dimen/openthos_about_size" />
 
         <TextView
+            android:id="@+id/memory_text"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:textSize="@dimen/openthos_text_size_12"
-            android:text="内存使用状态 50%"
-            android:layout_marginLeft="@dimen/openthos_about_size"
             android:layout_marginBottom="@dimen/openthos_view_size_22"
-            android:layout_marginRight="@dimen/openthos_about_size"/>
+            android:layout_marginLeft="@dimen/openthos_about_size"
+            android:layout_marginRight="@dimen/openthos_about_size"
+            android:textSize="@dimen/openthos_text_size_12" />
 
     </RelativeLayout>
 
@@ -41,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <include layout="@layout/title_item" />
 
@@ -55,62 +65,66 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/current_directory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="bottom"
-                    android:textStyle="bold"
-                    android:textColor="@color/fancy_orange"
+                    android:layout_marginLeft="@dimen/openthos_view_size_35"
                     android:layout_marginTop="@dimen/openthos_view_size_30"
-                    android:layout_marginLeft="@dimen/openthos_view_size_35"  />
+                    android:gravity="bottom"
+                    android:textColor="@color/fancy_orange"
+                    android:textStyle="bold" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/right_menu"
-                    android:layout_marginTop="@dimen/openthos_view_size_25"
-                    android:layout_marginLeft="@dimen/openthos_view_size_35"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/openthos_view_size_35"
+                    android:layout_marginTop="@dimen/openthos_view_size_25" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/transfer_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
+                android:layout_weight="1.5"
                 android:background="@color/trans_list_background_color"
-                android:layout_weight="1.5">
+                android:orientation="vertical">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/openthos_view_size_28" >
+                    android:layout_marginTop="@dimen/openthos_view_size_28">
+
                     <Button
                         android:id="@+id/button_all_start"
                         android:layout_width="@dimen/openthos_view_size_86"
                         android:layout_height="@dimen/openthos_view_size_22"
-                        android:layout_marginLeft="@dimen/openthos_view_size_22"
                         android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/openthos_view_size_22"
+                        android:background="@color/trans_start_button_background_color"
                         android:text="@string/trans_start_button"
-                        android:textSize="@dimen/openthos_text_size_14"
                         android:textColor="@color/trans_start_button_text_color"
-                        android:background="@color/trans_start_button_background_color"/>
+                        android:textSize="@dimen/openthos_text_size_14" />
 
                     <Button
                         android:layout_width="@dimen/openthos_view_size_86"
                         android:layout_height="@dimen/openthos_view_size_22"
                         android:layout_marginLeft="@dimen/openthos_view_size_14"
                         android:layout_toRightOf="@+id/button_all_start"
+                        android:background="@color/trans_start_button_background_color"
                         android:text="@string/trans_cancel_button"
-                        android:textSize="@dimen/openthos_text_size_14"
                         android:textColor="@color/trans_start_button_text_color"
-                        android:background="@color/trans_start_button_background_color" />
+                        android:textSize="@dimen/openthos_text_size_14" />
 
                     <ImageButton
                         android:id="@+id/trans_close"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:background="@drawable/trans_delete_icon"
-                        android:layout_marginRight="@dimen/openthos_view_size_28"/>
+                        android:layout_marginRight="@dimen/openthos_view_size_28"
+                        android:background="@drawable/trans_delete_icon" />
                 </RelativeLayout>
 
                 <ListView
@@ -118,8 +132,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/openthos_view_size_28"
-                    android:dividerHeight="@dimen/openthos_view_size_28"
-                    android:divider="@color/trans_list_background_color"/>
+                    android:divider="@color/trans_list_background_color"
+                    android:dividerHeight="@dimen/openthos_view_size_28" />
 
             </LinearLayout>
         </LinearLayout>

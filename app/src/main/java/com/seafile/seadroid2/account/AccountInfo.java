@@ -1,5 +1,6 @@
 package com.seafile.seadroid2.account;
 
+import com.seafile.seadroid2.gallery.Util;
 import com.seafile.seadroid2.util.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,6 +50,14 @@ public class AccountInfo {
         String strUsage = Utils.readableFileSize(usage);
         String strTotal = Utils.readableFileSize(total);
         return strUsage + SPACE_USAGE_SEPERATOR + strTotal;
+    }
+
+    public String getUsageSize(){
+        return Utils.readableFileSize(usage);
+    }
+
+    public String getTotalSize(){
+        return Utils.readableFileSize(total);
     }
 
 }

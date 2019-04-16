@@ -49,6 +49,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +61,7 @@ import com.seafile.seadroid2.SeafConnection;
 import com.seafile.seadroid2.SeafException;
 import com.seafile.seadroid2.SettingsManager;
 import com.seafile.seadroid2.account.Account;
+import com.seafile.seadroid2.account.AccountInfo;
 import com.seafile.seadroid2.account.AccountManager;
 import com.seafile.seadroid2.cameraupload.MediaObserverService;
 import com.seafile.seadroid2.data.DataManager;
@@ -419,6 +421,7 @@ public class BrowserActivity extends BaseActivity
         TextView accountView = (TextView) findViewById(R.id.account_manager_view);
         mTransferLayoutView = (LinearLayout) findViewById(R.id.transfer_layout);
         mTransmissionListView = (ListView) findViewById(R.id.transmission_list_view);
+        ProgressBar mProgerssBar = (ProgressBar) findViewById(R.id.memory_state);
 
         mTransClose = (ImageButton) findViewById(R.id.trans_close);
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
@@ -441,6 +444,8 @@ public class BrowserActivity extends BaseActivity
         transferView.setOnClickListener(this);
         settingView.setOnClickListener(this);
         accountView.setOnClickListener(this);
+
+        ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
 
     }
 
@@ -3267,6 +3272,42 @@ public class BrowserActivity extends BaseActivity
                 mTimer.postDelayed(this, 1 * 3500);
             }
         }, 1 * 3500);
+    }
+
+    class RequestAccountInfoTask extends AsyncTask<Account, Void, AccountInfo> {
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected AccountInfo doInBackground(Account... params) {
+            AccountInfo accountInfo = null;
+
+            if (params == null) return null;
+
+            try {
+                // get account info from server
+                accountInfo = dataManager.getAccountInfo();
+            } catch (Exception e) {
+                Log.e(DEBUG_TAG, "could not get account info!", e);
+            }
+
+            return accountInfo;
+        }
+
+        @Override
+        protected void onPostExecute(AccountInfo accountInfo) {
+            if (accountInfo == null) return;
+
+            // update Account info settings
+            ((TextView) findViewById(R.id.memory_text)).setText(accountInfo.getSpaceUsed());
+            long usageSize = accountInfo.getUsage();
+            long totalSize = accountInfo.getTotal();
+            int first = (int) usageSize;
+            int max = (int) totalSize;
+            ((ProgressBar) findViewById(R.id.memory_state)).setMax(max);
+            ((ProgressBar) findViewById(R.id.memory_state)).setProgress(first);
+        }
     }
 
 }
