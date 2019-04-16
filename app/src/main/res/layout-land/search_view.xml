@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="@dimen/openthos_view_size_35">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/openthos_view_size_35"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <ImageView
         android:id="@+id/title_iv_search"
@@ -15,8 +18,9 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/title_iv_search"
         android:background="@null"
-        android:textColor="@color/fancy_search_text_color"
         android:hint="@string/openthos_title_search"
+        android:textColor="@color/fancy_search_text_color"
+        android:paddingLeft="@dimen/openthos_view_size_8"
         android:textSize="@dimen/openthos_text_size_14" />
 
     <View
