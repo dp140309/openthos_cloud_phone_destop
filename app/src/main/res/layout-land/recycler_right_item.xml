@@ -17,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/recycler_image_item"
-        android:layout_marginTop="@dimen/openthos_view_size_16"
         android:layout_marginBottom="@dimen/openthos_about_size"
         android:layout_centerHorizontal="true"
         android:gravity="center"

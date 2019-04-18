@@ -37,6 +37,7 @@
     <color name="fancy_left_gray">#b8b8b8</color>
     <color name="fancy_left_number_gray">#cfcfcf</color>
     <color name="fancy_right_title_color">#f1f1f1</color>
+    <color name="fancy_menu_background_color">#ffffff</color>
     <color name="fancy_search_text_color">#b8b8b8</color>
     <color name="fancy_gray_color">#00000000</color>
     <color name="trans_list_background_color">#fafafa</color>

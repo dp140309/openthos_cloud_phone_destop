@@ -133,6 +133,7 @@
             style="@style/TitleTextStyle"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/openthos_view_size_6"
             android:layout_marginRight="@dimen/openthos_view_size_6"
             android:layout_toLeftOf="@+id/account_icon"
             android:ellipsize="end"

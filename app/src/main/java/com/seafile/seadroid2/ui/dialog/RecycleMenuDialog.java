@@ -58,13 +58,17 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
     }
 
     public RecycleMenuDialog(@NonNull Context context) {
-        super(context, R.style.Theme_AppCompat_DayNight_Dialog);
+        super(context);
         create();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Window window = getWindow();
+        window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.recycle_item_right_menu);
         if (mPoint == null) {
             Display defaultDisplay = ((WindowManager)
@@ -199,14 +203,10 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
         public boolean onHover(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
-                    v.setBackgroundResource(R.color.vpi__background_holo_dark);
-                    ((TextView) v).setTextColor(getContext()
-                            .getResources().getColor(android.R.color.white));
+                    v.setBackgroundResource(R.drawable.recycle_item_backgroud);
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
-                    v.setBackgroundResource(android.R.color.white);
-                    ((TextView) v).setTextColor(getContext()
-                            .getResources().getColor(android.R.color.black));
+                    v.setBackgroundResource(0);
                     break;
             }
             return false;
@@ -216,7 +216,6 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
         public void onClick(View v) {
             if (mOnMenuClick != null) {
                 mOnMenuClick.menuClick(v, mRecycleMenuDialog, mSeafItem, ((TextView) v).getText().toString(),viewType);
-                Log.i("menudialog", "menu dialog is runing---------------2");
             }
 
         }
