@@ -191,10 +191,12 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
     }
 
     private class ViewHolder implements View.OnHoverListener, View.OnClickListener {
+        private LinearLayout mItemMenuView;
         private TextView name;
 
         public ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.left_text_item);
+            mItemMenuView = (LinearLayout) view.findViewById(R.id.item_menu_view);
             name.setOnHoverListener(this);
             name.setOnClickListener(this);
         }
@@ -203,10 +205,10 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
         public boolean onHover(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
-                    v.setBackgroundResource(R.drawable.recycle_item_backgroud);
+                    mItemMenuView.setBackgroundResource(R.drawable.right_view_background);
                     break;
                 case MotionEvent.ACTION_HOVER_EXIT:
-                    v.setBackgroundResource(0);
+                    mItemMenuView.setBackgroundResource(0);
                     break;
             }
             return false;

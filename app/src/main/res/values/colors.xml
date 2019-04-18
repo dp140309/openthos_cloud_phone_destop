@@ -45,5 +45,6 @@
     <color name="trans_start_button_text_color">#a8a8a8</color>
     <color name="trans_start_button_background_color">#f2f2f2</color>
     <color name="right_text_color">#aaaaaa</color>
+    <color name="menu_text_color">#5a5a5a</color>
 
 </resources>
