@@ -396,6 +396,7 @@ public class BrowserActivity extends BaseActivity
         refreshView(true);
         requestServerInfo();
         mLeftMenu.setLayoutManager(new LinearLayoutManager(this));
+        mLeftViewAdapter.removeData(0);
         mLeftMenu.setAdapter(mLeftViewAdapter);
         mLeftViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
             @Override

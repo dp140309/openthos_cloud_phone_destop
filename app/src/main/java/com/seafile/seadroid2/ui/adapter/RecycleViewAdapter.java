@@ -81,6 +81,20 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         items.add(entry);
     }
 
+    public void removeData(int postion) {
+            items.remove(postion);
+            notifyItemRemoved(postion);
+            notifyDataSetChanged();
+    }
+
+    public void removePersonalData(int postion) {
+        if (items.get(postion).getTitle().equals("个人")){
+            items.remove(postion);
+            notifyItemRemoved(postion);
+            notifyDataSetChanged();
+        }
+    }
+
     public void clear() {
         items.clear();
     }
@@ -109,6 +123,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull RightHolder holder, int position) {
+
         holder.mTextView.setText(items.get(position).getTitle());
         SeafItem seafile = items.get(position);
         holder.mRelativeLayout.setTag(seafile);
