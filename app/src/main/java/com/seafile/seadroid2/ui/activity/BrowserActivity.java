@@ -928,7 +928,20 @@ public class BrowserActivity extends BaseActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_view:
-//                break;
+                String parentPath = Utils.getParentPath(navContext
+                        .getDirPath());
+                navContext.setDir(parentPath, null);
+                refreshView(true);
+                if (mCurrentDirectory.getText() != null) {
+                    if (navContext.getDirPath() != "/"){
+                        String dataPatch = navContext.getDirPath().substring(1,navContext.getDirPath().length());
+                        mCurrentDirectory.setText(navContext.getRepoName());
+                        mCurrentDirectory.append(" > "+ dataPatch);
+                    }else {
+                        mCurrentDirectory.setText(navContext.getRepoName());
+                    }
+                }
+                break;
             case R.id.forward_view:
 //                break;
             case R.id.download_view:
@@ -2145,7 +2158,7 @@ public class BrowserActivity extends BaseActivity
             return;
         }
 
-        if (currentPosition == INDEX_LIBRARY_TAB) {
+        if (currentPosition == INDEX_LIBRARY_TAB || Configuration.ORIENTATION_PORTRAIT == this.getResources().getConfiguration().orientation) {
             if (navContext.inRepo()) {
                 if (navContext.isRepoRoot()) {
                     navContext.setRepoID(null);
@@ -2155,16 +2168,18 @@ public class BrowserActivity extends BaseActivity
                             .getDirPath());
                     navContext.setDir(parentPath, null);
                     if (parentPath.equals(ACTIONBAR_PARENT_PATH)) {
-//                        getActionBarToolbar().setTitle(navContext.getRepoName());
+                        getActionBarToolbar().setTitle(navContext.getRepoName());
                     } else {
-//                        getActionBarToolbar().setTitle(parentPath.substring(parentPath.lastIndexOf(ACTIONBAR_PARENT_PATH) + 1));
+                        getActionBarToolbar().setTitle(parentPath.substring(parentPath.lastIndexOf(ACTIONBAR_PARENT_PATH) + 1));
                     }
                 }
-//                getReposFragment().refreshView(true);
+                getReposFragment().refreshView(true);
 
             } else
                 super.onBackPressed();
-        } else if (currentPosition == INDEX_ACTIVITIES_TAB) {
+        } else if (Configuration.ORIENTATION_LANDSCAPE == this.getResources().getConfiguration().orientation){
+
+        }else if (currentPosition == INDEX_ACTIVITIES_TAB) {
             if (getActivitiesFragment().isBottomSheetShown()) {
                 getActivitiesFragment().hideBottomSheet();
             } else
@@ -3292,14 +3307,12 @@ public class BrowserActivity extends BaseActivity
             } catch (Exception e) {
                 Log.e(DEBUG_TAG, "could not get account info!", e);
             }
-
             return accountInfo;
         }
 
         @Override
         protected void onPostExecute(AccountInfo accountInfo) {
             if (accountInfo == null) return;
-
             // update Account info settings
             ((TextView) findViewById(R.id.memory_text)).setText(accountInfo.getSpaceUsed());
             long usageSize = accountInfo.getUsage();
@@ -3310,5 +3323,4 @@ public class BrowserActivity extends BaseActivity
             ((ProgressBar) findViewById(R.id.memory_state)).setProgress(first);
         }
     }
-
 }
