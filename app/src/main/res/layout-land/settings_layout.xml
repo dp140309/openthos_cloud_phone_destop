@@ -13,7 +13,8 @@
         <TextView
             android:id="@+id/account_settings_view"
             android:layout_width="match_parent"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/openthos_about_size"
             android:layout_height="50dp"
             android:layout_marginTop="60dp"
             android:text="账号设置" />
@@ -22,7 +23,8 @@
             android:id="@+id/general_settings_view"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/openthos_about_size"
             android:layout_marginTop="@dimen/openthos_left_button_size"
             android:layout_below="@+id/account_settings_view"
             android:text="通用设置" />
