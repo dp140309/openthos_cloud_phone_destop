@@ -182,17 +182,19 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 mRelativeLayout.setOnHoverListener(new View.OnHoverListener() {
                     @Override
                     public boolean onHover(View v, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_HOVER_ENTER:
-                                mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
-                                mTextView.setTextColor(mContext
-                                        .getResources().getColor(R.color.fancy_purple));
-                                break;
-                            case MotionEvent.ACTION_HOVER_EXIT:
-                                mRelativeLayout.setBackgroundResource(0);
-                                mTextView.setTextColor(mContext
-                                        .getResources().getColor(R.color.fancy_left_gray));
-                                break;
+                        if (mItemPostion != getPosition()) {
+                            switch (event.getAction()) {
+                                case MotionEvent.ACTION_HOVER_ENTER:
+                                    mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
+                                    mTextView.setTextColor(mContext
+                                            .getResources().getColor(R.color.fancy_purple));
+                                    break;
+                                case MotionEvent.ACTION_HOVER_EXIT:
+                                    mRelativeLayout.setBackgroundResource(0);
+                                    mTextView.setTextColor(mContext
+                                            .getResources().getColor(R.color.fancy_left_gray));
+                                    break;
+                            }
                         }
                         return false;
                     }
