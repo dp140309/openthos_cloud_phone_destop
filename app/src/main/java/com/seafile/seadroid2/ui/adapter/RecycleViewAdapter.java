@@ -1,10 +1,10 @@
 package com.seafile.seadroid2.ui.adapter;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,7 +28,7 @@ import com.seafile.seadroid2.ui.activity.BrowserActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.LogRecord;
+import java.util.TreeMap;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.RightHolder> implements View.OnTouchListener {
 
@@ -39,7 +39,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     private List<DownloadTaskInfo> mDownloadTaskInfos;
     private BrowserActivity mActivity;
     private int groupSize = 1;
-
+    private int mItemPostion = -1;
 
     /**
      * item isfouse
@@ -63,7 +63,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
      */
     public static final int SORT_ORDER_DESCENDING = 12;
 
-//    private long ITEM_VIEW_LONG_DOWN = 1000 * 10;
 
     public RecycleViewAdapter(Context context, int type) {
         this.mContext = context;
@@ -82,13 +81,13 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     }
 
     public void removeData(int postion) {
-            items.remove(postion);
-            notifyItemRemoved(postion);
-            notifyDataSetChanged();
+        items.remove(postion);
+        notifyItemRemoved(postion);
+        notifyDataSetChanged();
     }
 
     public void removePersonalData(int postion) {
-        if (items.get(postion).getTitle().equals("个人")){
+        if (items.get(postion).getTitle().equals("个人")) {
             items.remove(postion);
             notifyItemRemoved(postion);
             notifyDataSetChanged();
@@ -127,9 +126,20 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         holder.mTextView.setText(items.get(position).getTitle());
         SeafItem seafile = items.get(position);
         holder.mRelativeLayout.setTag(seafile);
+        holder.mTextView.setTag(position);
         holder.mRelativeLayout.setOnTouchListener(this);
 
         if (isLeftRecycle(viewType)) {
+
+            if (position == mItemPostion) {
+                holder.mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
+                holder.mTextView.setTextColor(mContext
+                        .getResources().getColor(R.color.fancy_purple));
+            }else {
+               holder.mRelativeLayout.setBackgroundResource(0);
+                holder.mTextView.setTextColor(mContext
+                        .getResources().getColor(R.color.fancy_left_gray));
+            }
 //            if (isFocus.get(position)){
 //                holder.mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
 //            }else {
@@ -252,25 +262,24 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     /* 点击的次数 */
     private int mClickcount;
-
     private int mDownX;
     private int mDownY;
     private int mMoveX;
     private int mMoveY;
     private int mUpX;
     private int mUpY;
-
     private long mLastDownTime;
     private long mLastUpTime;
-
     private long mFirstClick;
     private long mSecondClick;
-
     private boolean isDoubleClick = false;
-
     private int MAX_LONG_PRESS_TIME = 1000;
     private int MAX_MOVE_FOR_CLICK = 50;
+    private String mFirstName;
 
+
+    private TreeMap<SeafItem, Boolean> mSelectedItemsIds = new TreeMap<>();
+    private View mView;
     public boolean onTouch(View v, MotionEvent event) {
         if (isFocus != null && isFocus.size() > 0) {
             for (int i = 0; i < isFocus.size(); i++) {
@@ -278,29 +287,56 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             }
         }
 
+        RightHolder mHolder = new RightHolder(v);
+
+        SeafItem mi = (SeafItem) v.getTag();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mLastDownTime = System.currentTimeMillis();
                 mDownX = (int) event.getX();
                 mDownY = (int) event.getY();
+
                 mClickcount++;
-                if (mClickcount == 1) {
-                    mFirstClick = System.currentTimeMillis();
-                } else if (mClickcount == 2) {
-                    mSecondClick = System.currentTimeMillis();
-                    if (mSecondClick - mFirstClick <= MAX_LONG_PRESS_TIME) {
-                        onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
+
+                int postion = (int) mHolder.mTextView.getTag();
+
+                if (isLeftRecycle(viewType)) {
+                    setSelectPosition(postion);
+                    onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
+                } else {
+                    if (mFirstName != null && !mFirstName.equals(((SeafItem) v.getTag()).getTitle())) {
+                        mClickcount = 0;
                     }
-                    mClickcount = 0;
+                    if (mClickcount == 1) {
+                        mHolder.mRelativeLayout.setSelected(true);
+                        mFirstClick = System.currentTimeMillis();
+                    } else if (mClickcount == 2) {
+                        mSecondClick = System.currentTimeMillis();
+                        if (mSecondClick - mFirstClick <= MAX_LONG_PRESS_TIME) {
+                            onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
+                        }
+                        mClickcount = 0;
+                    }
                 }
-//                    onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
+
+                if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
+                }
+//                    onRecyclerViewItemClickListen*
+                return true;
+            case MotionEvent.ACTION_MOVE:
                 break;
+
             case MotionEvent.ACTION_UP:
                 mLastUpTime = System.currentTimeMillis();
                 mUpX = (int) event.getX();
                 mUpY = (int) event.getY();
                 int mx = Math.abs(mUpX - mDownX);
                 int my = Math.abs(mUpY - mDownY);
+                Log.i(" --------- ", " --- 0000000 --- " + mi.getTitle());
+
+                if (!isLeftRecycle(viewType)) mFirstName = mi.getTitle();
+
                 if (mx <= MAX_MOVE_FOR_CLICK && my <= MAX_MOVE_FOR_CLICK) {
 
                 } else { // 移动
@@ -308,17 +344,14 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 }
                 break;
         }
-        switch (event.getButtonState()) {
-//                case MotionEvent.BUTTON_PRIMARY:
-//                    onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-//                    break;
-            case MotionEvent.BUTTON_SECONDARY:
-//                    new RecycleMenuDialog();
-                onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-                break;
-        }
-//        }
         return false;
+    }
+
+    public void setSelectPosition(int position) {
+        if (!(position < 0 || position > items.size())) {
+            mItemPostion = position;
+            notifyDataSetChanged();
+        }
     }
 
     class RecycleFocusChange implements View.OnFocusChangeListener {
@@ -362,10 +395,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                     files.add(((SeafDirent) item));
             }
         }
-
-        Log.i("datamanager----->", groups.toString() + "\n" + cachedFiles.toString() + "\n" + files.toString() + "\n" + files.toString());
-
-
         items.clear();
 
         // sort SeafGroups and SeafRepos
@@ -415,30 +444,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-
-    ///            int action = MotionEventCompat.getActionMasked(event);
-//////            if (MotionEvent.ACTION_DOWN == event.getAction()) {
-////            switch (action) {
-////                case MotionEvent.ACTION_DOWN:
-////                    long downTime = event.getDownTime();
-////                    if (downTime == ITEM_VIEW_LONG_DOWN )Toast.makeText(mContext,"is chang an button",Toast.LENGTH_LONG).show();
-////                    break;
-////
-////                case MotionEvent.BUTTON_PRIMARY:
-////                    Toast.makeText(mContext,"is left button",Toast.LENGTH_LONG).show();
-//////                        mOnClickCallback.open((AppInfo) v.getTag());
-////                    break;
-////                case MotionEvent.BUTTON_SECONDARY:
-////                    Toast.makeText(mContext,"is rigtht button",Toast.LENGTH_LONG).show();
-//////                        mOnClickCallback.showDialog(
-//////                        (int) event.getRawX(), (int) event.getRawY(), (AppInfo) v.getTag());
-////                    break;
-////            }
-//            return false;
-//        }
-//
-
-//
 //    class RecycleItemOnTuch implements GestureDetector.OnGestureListener {
 //
 //        @Override
@@ -475,7 +480,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 //        @Override
 //        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 //            Toast.makeText(mContext, "chang an onFling", Toast.LENGTH_LONG).show();
-//            return false;j
+//            return false;
 //        }
 //
 //    }

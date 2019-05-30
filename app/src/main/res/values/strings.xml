@@ -572,4 +572,6 @@
   <string name="oenthos_collection">Join the collection</string>
   <string name="trans_start_button">Start All</string>
   <string name="trans_cancel_button">Cancel All</string>
+  <string name="unsubscribe_view">Unsubscribe</string>
+  <string name="account_about">About</string>
 </resources>

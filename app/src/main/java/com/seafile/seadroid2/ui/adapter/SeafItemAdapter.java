@@ -492,7 +492,7 @@ public class SeafItemAdapter extends BaseAdapter {
 
     public void toggleSelection(int position) {
         if (mSelectedItemsIds.get(position)) {
-            // unselected
+//            // unselected
             mSelectedItemsIds.delete(position);
             mSelectedItemsPositions.remove(Integer.valueOf(position));
             mSelectedItemsValues.remove(items.get(position));

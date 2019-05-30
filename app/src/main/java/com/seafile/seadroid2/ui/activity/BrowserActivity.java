@@ -168,6 +168,7 @@ public class BrowserActivity extends BaseActivity
      */
     public static final int TYPE_LEFT = 1;
     public static final int TYPE_RIGHT = 2;
+    public static final int TYPE_ACCOUNT = 3;
 
     private static final int[] ICONS = new int[]{
             R.drawable.tab_library, R.drawable.tab_starred,
@@ -401,7 +402,6 @@ public class BrowserActivity extends BaseActivity
         mLeftViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
             @Override
             public void onTunchListener(int x, int y, SeafItem position, MotionEvent event, View v) {
-
                 requestLeftClickListener(x, y, position, event, v);
             }
 
@@ -423,6 +423,8 @@ public class BrowserActivity extends BaseActivity
         mTransferLayoutView = (LinearLayout) findViewById(R.id.transfer_layout);
         mTransmissionListView = (ListView) findViewById(R.id.transmission_list_view);
         ProgressBar mProgerssBar = (ProgressBar) findViewById(R.id.memory_state);
+        RelativeLayout mAccountButton = (RelativeLayout) findViewById(R.id.account_button);
+
 
         mTransClose = (ImageButton) findViewById(R.id.trans_close);
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
@@ -445,11 +447,56 @@ public class BrowserActivity extends BaseActivity
         transferView.setOnClickListener(this);
         settingView.setOnClickListener(this);
         accountView.setOnClickListener(this);
+        mAccountButton.setOnClickListener(this);
 
         ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
 
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.back_view:
+                String parentPath = Utils.getParentPath(navContext
+                        .getDirPath());
+                navContext.setDir(parentPath, null);
+                refreshView(true);
+                if (mCurrentDirectory.getText() != null) {
+                    if (navContext.getDirPath() != "/"){
+                        String dataPatch = navContext.getDirPath().substring(1,navContext.getDirPath().length());
+                        mCurrentDirectory.setText(navContext.getRepoName());
+                        mCurrentDirectory.append(" > "+ dataPatch);
+                    }else {
+                        mCurrentDirectory.setText(navContext.getRepoName());
+                    }
+                }
+                break;
+            case R.id.forward_view:
+//                break;
+            case R.id.download_view:
+//                break;
+            case R.id.upload_view:
+//                break;
+            case R.id.delete_view:
+                Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.transfer_list_view:
+                mTransferLayoutView.setVisibility(View.VISIBLE);
+                break;
+            case R.id.settings_view:
+                startActivity(new Intent(BrowserActivity.this,OpenthosSettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                break;
+            case R.id.account_manager_view:
+                break;
+            case R.id.trans_close:
+                mTransferLayoutView.setVisibility(View.GONE);
+                break;
+            case R.id.account_button:
+//                RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_ACCOUNT);
+                Toast.makeText(BrowserActivity.this, " account_button   -   COMING SOON ", Toast.LENGTH_LONG).show();
+                break;
+        }
+    }
     private OnMenuClick mOnMenuClick = new OnMenuClick() {
         @Override
         public void menuClick(View view, Dialog dialog, SeafItem position, String menu, int type) {
@@ -924,49 +971,7 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_view:
-                String parentPath = Utils.getParentPath(navContext
-                        .getDirPath());
-                navContext.setDir(parentPath, null);
-                refreshView(true);
-                if (mCurrentDirectory.getText() != null) {
-                    if (navContext.getDirPath() != "/"){
-                        String dataPatch = navContext.getDirPath().substring(1,navContext.getDirPath().length());
-                        mCurrentDirectory.setText(navContext.getRepoName());
-                        mCurrentDirectory.append(" > "+ dataPatch);
-                    }else {
-                        mCurrentDirectory.setText(navContext.getRepoName());
-                    }
-                }
-                break;
-            case R.id.forward_view:
-//                break;
-            case R.id.download_view:
-//                break;
-            case R.id.upload_view:
-//                break;
-            case R.id.delete_view:
-                Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
 
-                break;
-            case R.id.transfer_list_view:
-                mTransferLayoutView.setVisibility(View.VISIBLE);
-                break;
-            case R.id.settings_view:
-                startActivity(new Intent(BrowserActivity.this,OpenthosSettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                break;
-            case R.id.account_manager_view:
-                break;
-
-            case R.id.trans_close:
-                mTransferLayoutView.setVisibility(View.GONE);
-                break;
-
-        }
-    }
 
 
     class RequestServerInfoTask extends AsyncTask<Void, Void, ServerInfo> {

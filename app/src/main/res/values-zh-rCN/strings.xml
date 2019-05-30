@@ -543,6 +543,7 @@
   <string name="oenthos_collection">加入收藏</string>
   <string name="trans_start_button">全部开始</string>
   <string name="trans_cancel_button">全部取消</string>
-
+  <string name="unsubscribe_view">注销账户</string>
+  <string name="account_about">关于</string>
 
 </resources>

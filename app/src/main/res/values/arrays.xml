@@ -9,4 +9,9 @@
         <item>@string/download_file</item>
         <item>@string/oenthos_collection</item>
     </string-array>
+
+    <string-array name="account_button_menu">
+        <item>@string/unsubscribe_view</item>
+        <item>@string/account_about</item>
+    </string-array>
 </resources>

@@ -126,6 +126,9 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
             case 2:
                 sArr = getContext().getResources().getStringArray(R.array.right_item_menu);
                 break;
+            case 3:
+                sArr = getContext().getResources().getStringArray(R.array.account_button_menu);
+                break;
         }
 
         mDatas.addAll(Arrays.asList(sArr));
