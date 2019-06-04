@@ -397,7 +397,6 @@ public class BrowserActivity extends BaseActivity
         refreshView(true);
         requestServerInfo();
         mLeftMenu.setLayoutManager(new LinearLayoutManager(this));
-        mLeftViewAdapter.removeData(0);
         mLeftMenu.setAdapter(mLeftViewAdapter);
         mLeftViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
             @Override
@@ -2858,10 +2857,10 @@ public class BrowserActivity extends BaseActivity
             addReposToAdapter(repos);
 //            List<SeafDirent> dirents = getDataManager().getCachedDirents(
 //                    getNavContext().getRepoID(), getNavContext().getDirPath());
-//
+            mLeftViewAdapter.removePersonalData();
 //            Log.i("dirent-----",dirents.size()+"-----00000");
-            mLeftViewAdapter.sortFiles(SettingsManager.instance().getSortFilesTypePref(),
-                    SettingsManager.instance().getSortFilesOrderPref());
+//            mLeftViewAdapter.sortFiles(SettingsManager.instance().getSortFilesTypePref(),
+//                    SettingsManager.instance().getSortFilesOrderPref());
 //            notifyDataSetChanged();
 //            mListView.setVisibility(View.VISIBLE);
 //            restoreRepoScrollPosition(restoreScrollPosition);

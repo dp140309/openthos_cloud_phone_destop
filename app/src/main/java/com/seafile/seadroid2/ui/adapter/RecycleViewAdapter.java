@@ -86,10 +86,10 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         notifyDataSetChanged();
     }
 
-    public void removePersonalData(int postion) {
-        if (items.get(postion).getTitle().equals("个人")) {
-            items.remove(postion);
-            notifyItemRemoved(postion);
+    public void removePersonalData() {
+        if (items.get(0).getTitle().equals("个人")) {
+            items.remove(0);
+            notifyItemRemoved(0);
             notifyDataSetChanged();
         }
     }
