@@ -279,15 +279,15 @@ public class BrowserActivity extends BaseActivity
         mRightMenu.setAdapter(mRightViewAdapter);
         mRightViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
             @Override
-            public void onTunchListener(int x, int y, SeafItem position, MotionEvent event, View v) {
-                requestRightClickListener(x, y, position, event, v);
+            public void onTunchListener( SeafItem position) {
+                requestRightClickListener(position);
                 for (View view : mView){
                     view.setEnabled(true);
                 }
             }
 
             @Override
-            public void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v) {
+            public void onRecycleRightMouseClick(int x, int y, SeafItem position) {
                 RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_RIGHT, x, y, position);
             }
         });
@@ -400,12 +400,12 @@ public class BrowserActivity extends BaseActivity
         mLeftMenu.setAdapter(mLeftViewAdapter);
         mLeftViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
             @Override
-            public void onTunchListener(int x, int y, SeafItem position, MotionEvent event, View v) {
-                requestLeftClickListener(x, y, position, event, v);
+            public void onTunchListener(SeafItem position) {
+                requestLeftClickListener(position);
             }
 
             @Override
-            public void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v) {
+            public void onRecycleRightMouseClick(int x, int y, SeafItem position) {
                 RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_LEFT, x, y, position);
             }
         });
@@ -893,7 +893,7 @@ public class BrowserActivity extends BaseActivity
     //    }
 
 
-    private void requestLeftClickListener(int x, int y, SeafItem position, MotionEvent event, View v) {
+    private void requestLeftClickListener(SeafItem position) {
 
 //        SeafRepo repo = null;
 //        SeafItem item = adapter.getItem(position);
@@ -920,7 +920,7 @@ public class BrowserActivity extends BaseActivity
 
     }
 
-    private void requestRightClickListener(int x, int y, SeafItem position, MotionEvent event, View v) {
+    private void requestRightClickListener(SeafItem position) {
         if (position instanceof SeafDirent) {
             SeafDirent dirent = (SeafDirent) position;
 

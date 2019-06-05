@@ -38,13 +38,18 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     private ArrayList<SeafItem> items;
     private List<DownloadTaskInfo> mDownloadTaskInfos;
     private BrowserActivity mActivity;
-    private int groupSize = 1;
     private int mItemPostion = -1;
 
-    /**
-     * item isfouse
-     */
-    private List<Boolean> isFocus;
+    private OnItemClickListener onRecyclerViewItemClickListener;
+
+    /* 点击的次数 */
+    private int mClickcount, mDownX, mDownY, mUpX, mUpY;
+    private long mLastDownTime, mLastUpTime, mFirstClick, mSecondClick;
+
+    private boolean isDoubleClick = false;
+    private int MAX_LONG_PRESS_TIME = 1000;
+    private int MAX_MOVE_FOR_CLICK = 50;
+    private String mFirstName;
 
     /**
      * sort files type
@@ -69,21 +74,10 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         this.viewType = type;
         if (items == null) items = new ArrayList<>();
         Inflater = LayoutInflater.from(context);
-//        isFocus = new ArrayList<>();
-//        for (int i = 0; i< items.size(); i++){
-//            isFocus.add(false);
-//        }
-
     }
 
     public void add(SeafItem entry) {
         items.add(entry);
-    }
-
-    public void removeData(int postion) {
-        items.remove(postion);
-        notifyItemRemoved(postion);
-        notifyDataSetChanged();
     }
 
     public void removePersonalData() {
@@ -103,8 +97,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         return items == null ? 0 : items.size();
     }
 
-
-    //    mGestureDetector = new GestureDetector(new RecycleItemOnTuch());
     @NonNull
     @Override
     public RightHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -130,38 +122,26 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         holder.mRelativeLayout.setOnTouchListener(this);
 
         if (isLeftRecycle(viewType)) {
-
             if (position == mItemPostion) {
                 holder.mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
                 holder.mTextView.setTextColor(mContext
                         .getResources().getColor(R.color.fancy_purple));
-            }else {
-               holder.mRelativeLayout.setBackgroundResource(0);
+            } else {
+                holder.mRelativeLayout.setBackgroundResource(0);
                 holder.mTextView.setTextColor(mContext
                         .getResources().getColor(R.color.fancy_left_gray));
             }
-//            if (isFocus.get(position)){
-//                holder.mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
-//            }else {
-//                holder.mRelativeLayout.setBackgroundResource(0);
-//            }
-
-            if (onRecyclerViewItemClickListener != null) {
-                holder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        for (int i=0;i< isFocus.size();i++){
-//                            isFocus.set(i,false);
-//                        }
-//                        isFocus.set(position,true);
-                        notifyDataSetChanged();
-//                        onRecyclerViewItemClickListener.onTunchListener(1,1 ,position, v);
-                    }
-                });
-            }
-
             holder.mTextViewSize.setText(" -_- ");
         } else {
+            if (position == mItemPostion) {
+                holder.mCheckBox.setVisibility(View.VISIBLE);
+                holder.mCheckBox.setChecked(true);
+                holder.mRelativeLayout.setBackgroundResource(R.drawable.right_view_background);
+            } else {
+                holder.mCheckBox.setVisibility(View.GONE);
+                holder.mCheckBox.setChecked(false);
+                holder.mRelativeLayout.setBackgroundResource(0);
+            }
             holder.mViewIcon.setImageResource(items.get(position).getIcon());
         }
     }
@@ -174,6 +154,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         CheckBox mCheckBox;
 
         public RightHolder(View itemView) {
+
             super(itemView);
             if (isLeftRecycle(viewType)) {
                 mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_list_left);
@@ -247,104 +228,69 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         return newList.equals(oldList);
     }
 
-    //    GestureDetector mGestureDetector;
-    private OnItemClickListener onRecyclerViewItemClickListener;
-
     public interface OnItemClickListener {
-        //        void onClick(View v,SeafItem position);
-        void onRecycleRightMouseClick(int x, int y, SeafItem position, MotionEvent event, View v);
+        void onRecycleRightMouseClick(int x, int y, SeafItem position);
 
-        void onTunchListener(int x, int y, SeafItem position, MotionEvent event, View v);
+        void onTunchListener(SeafItem position);
     }
 
     public void setOnRecyclerViewItemClickListener(OnItemClickListener onItemClickListener) {
         this.onRecyclerViewItemClickListener = (OnItemClickListener) onItemClickListener;
     }
 
-
-    /* 点击的次数 */
-    private int mClickcount;
-    private int mDownX;
-    private int mDownY;
-    private int mMoveX;
-    private int mMoveY;
-    private int mUpX;
-    private int mUpY;
-    private long mLastDownTime;
-    private long mLastUpTime;
-    private long mFirstClick;
-    private long mSecondClick;
-    private boolean isDoubleClick = false;
-    private int MAX_LONG_PRESS_TIME = 1000;
-    private int MAX_MOVE_FOR_CLICK = 50;
-    private String mFirstName;
-
-
-    private TreeMap<SeafItem, Boolean> mSelectedItemsIds = new TreeMap<>();
-    private View mView;
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (isFocus != null && isFocus.size() > 0) {
-            for (int i = 0; i < isFocus.size(); i++) {
-                isFocus.set(i, false);
+
+        RightHolder mHolder = new RightHolder(v);
+        int postion = (int) mHolder.mTextView.getTag();
+        SeafItem mi = (SeafItem) v.getTag();
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            mLastDownTime = System.currentTimeMillis();
+            mDownX = (int) event.getX();
+            mDownY = (int) event.getY();
+            mClickcount++;
+
+            if (isLeftRecycle(viewType)) {
+                setSelectPosition(postion);
+                onRecyclerViewItemClickListener.onTunchListener((SeafItem) v.getTag());
+            } else {
+                setSelectPosition(postion);
+                if (mClickcount == 1) {
+                    mFirstClick = System.currentTimeMillis();
+                } else if (mClickcount == 2 || items.get(postion).getTitle() == ((SeafItem) v.getTag()).getTitle()) {
+                    mSecondClick = System.currentTimeMillis();
+                    if (mSecondClick - mFirstClick <= MAX_LONG_PRESS_TIME) {
+                        onRecyclerViewItemClickListener.onTunchListener((SeafItem) v.getTag());
+                    }
+                    mClickcount = 0;
+                }
             }
         }
 
-        RightHolder mHolder = new RightHolder(v);
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            mLastUpTime = System.currentTimeMillis();
+            mUpX = (int) event.getX();
+            mUpY = (int) event.getY();
+            int mx = Math.abs(mUpX - mDownX);
+            int my = Math.abs(mUpY - mDownY);
+            Log.i(" --------- ", " --- 0000000 --- " + mi.getTitle());
 
-        SeafItem mi = (SeafItem) v.getTag();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mLastDownTime = System.currentTimeMillis();
-                mDownX = (int) event.getX();
-                mDownY = (int) event.getY();
+            if (!isLeftRecycle(viewType)) mFirstName = mi.getTitle();
 
-                mClickcount++;
+//            if (mx <= MAX_MOVE_FOR_CLICK && my <= MAX_MOVE_FOR_CLICK) {
+//
+//            } else { // 移动
+//                mClickcount = 0;
+//            }
+//
+        }
 
-                int postion = (int) mHolder.mTextView.getTag();
-
-                if (isLeftRecycle(viewType)) {
-                    setSelectPosition(postion);
-                    onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-                } else {
-                    if (mFirstName != null && !mFirstName.equals(((SeafItem) v.getTag()).getTitle())) {
-                        mClickcount = 0;
-                    }
-                    if (mClickcount == 1) {
-                        mHolder.mRelativeLayout.setSelected(true);
-                        mFirstClick = System.currentTimeMillis();
-                    } else if (mClickcount == 2) {
-                        mSecondClick = System.currentTimeMillis();
-                        if (mSecondClick - mFirstClick <= MAX_LONG_PRESS_TIME) {
-                            onRecyclerViewItemClickListener.onTunchListener((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-                        }
-                        mClickcount = 0;
-                    }
-                }
-
-                if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                    onRecyclerViewItemClickListener.onRecycleRightMouseClick((int) event.getRawX(), (int) event.getRawY(), (SeafItem) v.getTag(), event, v);
-                }
-//                    onRecyclerViewItemClickListen*
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                break;
-
-            case MotionEvent.ACTION_UP:
-                mLastUpTime = System.currentTimeMillis();
-                mUpX = (int) event.getX();
-                mUpY = (int) event.getY();
-                int mx = Math.abs(mUpX - mDownX);
-                int my = Math.abs(mUpY - mDownY);
-                Log.i(" --------- ", " --- 0000000 --- " + mi.getTitle());
-
-                if (!isLeftRecycle(viewType)) mFirstName = mi.getTitle();
-
-                if (mx <= MAX_MOVE_FOR_CLICK && my <= MAX_MOVE_FOR_CLICK) {
-
-                } else { // 移动
-                    mClickcount = 0;
-                }
-                break;
+        if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+            onRecyclerViewItemClickListener.onRecycleRightMouseClick(
+                    (int) event.getRawX(),
+                    (int) event.getRawY(),
+                    (SeafItem) v.getTag());
         }
         return false;
     }
@@ -430,14 +376,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         items.addAll(files);
     }
 
-    private void itemIsFocus(View v, Boolean b) {
-        if (b) {
-            v.setBackgroundResource(R.drawable.left_list_item_background);
-        } else {
-            v.setBackgroundResource(0);
-        }
-    }
-
     public void setDownloadTaskList(List<DownloadTaskInfo> newList) {
         if (!equalLists(newList, mDownloadTaskInfos)) {
             this.mDownloadTaskInfos = newList;
@@ -445,46 +383,5 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             notifyDataSetChanged();
         }
     }
-
-//    class RecycleItemOnTuch implements GestureDetector.OnGestureListener {
-//
-//        @Override
-//        public boolean onDown(MotionEvent e) {
-////        items.get().getIcon();
-//
-//            Toast.makeText(mContext, "chang an onDown", Toast.LENGTH_LONG).show();
-//            return false;
-//        }
-//
-//        @Override
-//        public void onShowPress(MotionEvent e) {
-//            Toast.makeText(mContext, "chang an onShowPress", Toast.LENGTH_LONG).show();
-//        }
-//
-//        @Override
-//        public boolean onSingleTapUp(MotionEvent e) {
-//            Toast.makeText(mContext, "chang an onSingleTapUp", Toast.LENGTH_LONG).show();
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//            Toast.makeText(mContext, "chang an onScroll", Toast.LENGTH_LONG).show();
-//            return false;
-//        }
-//
-//        @Override
-//        public void onLongPress(MotionEvent e) {
-//
-//            Toast.makeText(mContext, "chang an onLongPress", Toast.LENGTH_LONG).show();
-//        }
-//
-//        @Override
-//        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//            Toast.makeText(mContext, "chang an onFling", Toast.LENGTH_LONG).show();
-//            return false;
-//        }
-//
-//    }
 
 }
