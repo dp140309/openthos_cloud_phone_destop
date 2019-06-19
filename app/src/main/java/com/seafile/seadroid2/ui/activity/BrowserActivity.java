@@ -277,7 +277,7 @@ public class BrowserActivity extends BaseActivity
         mRightMenu.setLayoutManager(new GridLayoutManager(this, 4));
         refreshView(true);
         mRightMenu.setAdapter(mRightViewAdapter);
-        mRightViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
+        mRightViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
             @Override
             public void onTunchListener( SeafItem position) {
                 requestRightClickListener(position);
@@ -398,7 +398,7 @@ public class BrowserActivity extends BaseActivity
         requestServerInfo();
         mLeftMenu.setLayoutManager(new LinearLayoutManager(this));
         mLeftMenu.setAdapter(mLeftViewAdapter);
-        mLeftViewAdapter.setOnRecyclerViewItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
+        mLeftViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
             @Override
             public void onTunchListener(SeafItem position) {
                 requestLeftClickListener(position);
@@ -447,9 +447,7 @@ public class BrowserActivity extends BaseActivity
         settingView.setOnClickListener(this);
         accountView.setOnClickListener(this);
         mAccountButton.setOnClickListener(this);
-
         ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
-
     }
 
     @Override

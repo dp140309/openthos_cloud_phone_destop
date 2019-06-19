@@ -46,7 +46,7 @@ android {
 //            keyPassword System.console().readPassword("\n\$ Enter key password: ").toString()
 
             def props = new Properties()
-            props.load(new FileInputStream(project.file("D:/work_package/2018-12-23-openthos-cloud/key.store")))
+            props.load(new FileInputStream(project.file("D:/openthos-code/key.store")))
 //            storeFile project.file(props.keyStore)
             storePassword props.openthos123
             keyAlias props.oto_key
