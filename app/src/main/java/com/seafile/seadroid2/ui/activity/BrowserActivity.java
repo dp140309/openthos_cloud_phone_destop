@@ -272,7 +272,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     public void requestRightItem() {
-        mRightMenu = (RecyclerView) findViewById(R.id.right_menu);
+        mRightMenu = findViewById(R.id.right_menu);
         mRightViewAdapter = new RecycleViewAdapter(this, TYPE_RIGHT);
         mRightMenu.setLayoutManager(new GridLayoutManager(this, 4));
         refreshView(true);
@@ -389,8 +389,8 @@ public class BrowserActivity extends BaseActivity
     List<View> mView;
 
     protected void onCreateLandView(Bundle savedInstanceState) {
-        mLeftMenu = (RecyclerView) findViewById(R.id.left_list);
-        mCurrentDirectory = (TextView) findViewById(R.id.current_directory);
+        mLeftMenu =  findViewById(R.id.left_list);
+        mCurrentDirectory = findViewById(R.id.current_directory);
         mMenuDialog = RecycleMenuDialog.getInstance(this);
         mMenuDialog.setOnMenuClick(mOnMenuClick);
         mLeftViewAdapter = new RecycleViewAdapter(this, TYPE_LEFT);
@@ -411,21 +411,21 @@ public class BrowserActivity extends BaseActivity
         });
 
         requestReadExternalStoragePermission();
-        ImageView back = (ImageView) findViewById(R.id.back_view);
-        ImageView forward = (ImageView) findViewById(R.id.forward_view);
-        RelativeLayout downloadView = (RelativeLayout) findViewById(R.id.download_view);
-        RelativeLayout uploadView = (RelativeLayout) findViewById(R.id.upload_view);
-        RelativeLayout deleteView = (RelativeLayout) findViewById(R.id.delete_view);
-        RelativeLayout transferView = (RelativeLayout) findViewById(R.id.transfer_list_view);
-        ImageView settingView = (ImageView) findViewById(R.id.settings_view);
-        TextView accountView = (TextView) findViewById(R.id.account_manager_view);
-        mTransferLayoutView = (LinearLayout) findViewById(R.id.transfer_layout);
-        mTransmissionListView = (ListView) findViewById(R.id.transmission_list_view);
-        ProgressBar mProgerssBar = (ProgressBar) findViewById(R.id.memory_state);
-        RelativeLayout mAccountButton = (RelativeLayout) findViewById(R.id.account_button);
+        ImageView back = findViewById(R.id.back_view);
+        ImageView forward = findViewById(R.id.forward_view);
+        RelativeLayout downloadView =  findViewById(R.id.download_view);
+        RelativeLayout uploadView = findViewById(R.id.upload_view);
+        RelativeLayout deleteView = findViewById(R.id.delete_view);
+        RelativeLayout transferView = findViewById(R.id.transfer_list_view);
+        ImageView settingView = findViewById(R.id.settings_view);
+        TextView accountView = findViewById(R.id.account_manager_view);
+        mTransferLayoutView =  findViewById(R.id.transfer_layout);
+        mTransmissionListView = findViewById(R.id.transmission_list_view);
+        ProgressBar mProgerssBar =  findViewById(R.id.memory_state);
+        RelativeLayout mAccountButton = findViewById(R.id.account_button);
 
 
-        mTransClose = (ImageButton) findViewById(R.id.trans_close);
+        mTransClose = findViewById(R.id.trans_close);
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
 
         mView = new ArrayList<>();
@@ -512,6 +512,7 @@ public class BrowserActivity extends BaseActivity
                         List<SeafDirent> dirents = dataManager.getCachedDirents(
                                 navContext.getRepoID(), navContext.getDirPath());
                         if (drent.isDir()) {
+
                             downloadDir(navContext.getRepoID(), drent.name, true);
                         } else {
                             downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
@@ -947,7 +948,6 @@ public class BrowserActivity extends BaseActivity
     }
 
     private Map<String, ScrollState> scrollPostions = Maps.newHashMap();
-    ;
 
     private void saveDirentScrollPosition(String repoId, String currentPath) {
         final String pathJoin = Utils.pathJoin(repoId, currentPath);

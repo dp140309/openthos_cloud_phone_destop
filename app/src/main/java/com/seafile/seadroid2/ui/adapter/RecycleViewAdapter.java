@@ -36,7 +36,7 @@ import java.util.logging.Handler;
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.RightHolder> implements View.OnTouchListener {
 
     private Context mContext;
-    private int viewType = 0;
+    private int viewType;
     private LayoutInflater Inflater;
     private ArrayList<SeafItem> items;
     private List<DownloadTaskInfo> mDownloadTaskInfos;
@@ -182,20 +182,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 mTextView = (TextView) itemView.findViewById(R.id.right_text_item);
                 mViewIcon = (ImageView) itemView.findViewById(R.id.recycler_image_item);
                 mCheckBox = (CheckBox) itemView.findViewById(R.id.right_view_checkbox);
-                mRelativeLayout.setOnHoverListener(new View.OnHoverListener() {
-                    @Override
-                    public boolean onHover(View v, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_HOVER_ENTER:
-                                mRelativeLayout.setBackgroundResource(R.drawable.right_view_background);
-                                break;
-                            case MotionEvent.ACTION_HOVER_EXIT:
-                                mRelativeLayout.setBackgroundResource(0);
-                                break;
-                        }
-                        return false;
-                    }
-                });
             }
         }
     }
@@ -253,8 +239,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 adapterCallback.onTunchListener((SeafItem) v.getTag());
             } else {
                 SeafDirent dirent = (SeafDirent) mi;
-//                Log.i("--11-->",dirent.id + "\n" + ((SeafDirent)items.get(postion)).id + "\n" + postion+"\n"+ mClickcount);
-//                map.put(dirent.name,true);
                 setSelectPosition(postion);
 
                 if (mClickcount == 1) {
@@ -265,23 +249,19 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                     mFirstName = mi.getTitle();
                 }else {
                     if (!mFirstName .equals(mi.getTitle())) {
-                        Log.i("--22-->", mFirstName);
                         mFirstName = mi.getTitle();
                         mClickcount = 1;
                     }
                 }
 
-                Log.i("--223-->",mi.getTitle()+"\n"+mFirstName+"\n"+mClickcount+"\n"+ mClickcount+"\n"+ (mClickcount == 2) +"\n"+mFirstName.equals(mi.getTitle()));
                 if (mClickcount == 2 && mFirstName.equals(mi.getTitle()) ) {
                     mLastTime = System.currentTimeMillis();
                     long time =mLastTime - mFirstTime;
-                    Log.i("--224-->", mClickcount+""+time+" "+ MAX_LONG_PRESS_TIME);
-                    Log.i("--224444-->", mFirstTime +"\n"+ mLastTime +"\n"+time+" "+ MAX_LONG_PRESS_TIME);
                     if (time <= MAX_LONG_PRESS_TIME) {
-                        Log.i("--225-->", mClickcount+"");
                         adapterCallback.onTunchListener((SeafItem) v.getTag());
+                        mItemPostion = -1;
+                        notifyDataSetChanged();
                     }
-
                     mClickcount = 0 ;
                 }
 
@@ -295,17 +275,11 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             int mx = Math.abs(mUpX - mDownX);
             int my = Math.abs(mUpY - mDownY);
 
-//            if (!isLeftRecycle(viewType)) mFirstName = mi.getTitle();
-
-            Log.i("---------", "---0000000---" + mi.getTitle());
-
-
 //            if (mx <= MAX_MOVE_FOR_CLICK && my <= MAX_MOVE_FOR_CLICK) {
 //
 //            } else { // 移动
 //                mClickcount = 0;
 //            }
-//
         }
 
         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
