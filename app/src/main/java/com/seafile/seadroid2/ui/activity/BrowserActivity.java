@@ -132,6 +132,7 @@ import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.Inflater;
@@ -193,7 +194,7 @@ public class BrowserActivity extends BaseActivity
     private TextView mCurrentDirectory;
 
     private ArrayList<SeafItem> mLeftDataList = new ArrayList<>();
-    private ArrayList<SeafItem> mRightDataList;
+    private ArrayList<SeafDirent> mRightDataList = new ArrayList<>();
 
 
     //    private FrameLayout container;
@@ -269,6 +270,10 @@ public class BrowserActivity extends BaseActivity
 
     public NavContext getNavContext() {
         return navContext;
+    }
+
+    public ArrayList<SeafDirent> getSeafDirent(){
+        return mRightDataList;
     }
 
     public void requestRightItem() {
@@ -469,9 +474,10 @@ public class BrowserActivity extends BaseActivity
                 }
                 break;
             case R.id.forward_view:
-//                break;
+                break;
             case R.id.download_view:
-//                break;
+                DownLoadFile();
+                break;
             case R.id.upload_view:
 //                break;
             case R.id.delete_view:
@@ -494,6 +500,30 @@ public class BrowserActivity extends BaseActivity
                 break;
         }
     }
+
+    private void DownLoadFile(){
+        if (mRightDataList.size() == 0) {
+            Toast.makeText(BrowserActivity.this, " 请选择下载的文件及文件夹", Toast.LENGTH_LONG).show();
+            return;
+        }
+            if (mRightDataList.get(0).isDir()) {
+                downloadDir(mRightDataList.get(0).id, mRightDataList.get(0).name, true);
+                Log.i("0000","----dir---"+mRightDataList.get(0).id+"\n"+mRightDataList.get(0).name);
+            }else {
+                Log.i("land","---66666666---->"+ navContext.getRepoID()+"\n"+navContext.getDirPath());
+                String currentPath = getNavContext().getDirPath();
+                String newPath = currentPath.endsWith("/") ?
+                        currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
+                List<SeafDirent> dirents = dataManager.getCachedDirents(
+                        mRightDataList.get(0).id, newPath);
+                downloadFiles(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath, dirents);
+                Log.i("0000","----files---"+mRightDataList.get(0).id+"\n"+mRightDataList.get(0).name+"\n"+newPath);
+
+            }
+
+//        downloadFiles(id, name, path, dirents);
+    }
+
     private OnMenuClick mOnMenuClick = new OnMenuClick() {
         @Override
         public void menuClick(View view, Dialog dialog, SeafItem position, String menu, int type) {
@@ -512,7 +542,6 @@ public class BrowserActivity extends BaseActivity
                         List<SeafDirent> dirents = dataManager.getCachedDirents(
                                 navContext.getRepoID(), navContext.getDirPath());
                         if (drent.isDir()) {
-
                             downloadDir(navContext.getRepoID(), drent.name, true);
                         } else {
                             downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
@@ -863,49 +892,11 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-//    @Override
-////    public void onClick(View v, SeafItem position) {
-////
-////
-////    }
-
-
-//    @Override
-//    public void onLongClick(SeafItem position) {
-//        Log.i("leftclick_click","is runing on onLongClick");
-//
-//    }
-//    @Override
-//    public void onTunchListener(int x, int y, SeafItem position, MotionEvent event,View v) {
-//
-//        switch (v.getTag()){
-//            case R.layout.recycler_left_item:
-//                break;
-//            case R.layout.recycler_right_item:
-//                break;
-//        }
-
-
-//        setBackgroundResource(R.drawable.recycle_item_backgroud);
-
-
-    //    }
-
-
     private void requestLeftClickListener(SeafItem position) {
-
-//        SeafRepo repo = null;
-//        SeafItem item = adapter.getItem(position);
-
         SeafRepo repo = null;
-//        if (getNavContext().inRepo()) {
-//            repo = getDataManager().getCachedRepoByID(getNavContext().getRepoID());
-//        } else {
         if (position instanceof SeafRepo) {
             repo = (SeafRepo) position;
-//            }
         }
-
 
         if (mCurrentDirectory.getText() != null) mCurrentDirectory.setText("");
         mCurrentDirectory.setText(position.getTitle());
@@ -914,16 +905,17 @@ public class BrowserActivity extends BaseActivity
         navContext.setRepoID(repo.id);
         navContext.setRepoName(repo.getName());
         navContext.setDir("/", repo.root);
-        Log.i("leftclick_click", "onClick---" + repo.permission + "--" + repo.id + "--" + repo.getName() + "---ddd------" + repo.root);
         requestRightItem();
 
     }
 
     private void requestRightClickListener(SeafItem position) {
+
+//        downloadDir(navContext.getRepoID(), drent.name, true);
+//        downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
+
         if (position instanceof SeafDirent) {
             SeafDirent dirent = (SeafDirent) position;
-
-//            mCurrentDirectory.setText(position.getTitle());
 
             if (dirent.isDir()) {
                 String currentPath = getNavContext().getDirPath();
@@ -931,11 +923,9 @@ public class BrowserActivity extends BaseActivity
                         currentPath + dirent.name : currentPath + "/" + dirent.name;
                 getNavContext().setDir(newPath, dirent.id);
                 getNavContext().setDirPermission(dirent.permission);
-//                saveDirentScrollPosition(repo.getID(), currentPath);
-//                refreshView();
+                Log.i("------","recycle-----land---->"+dirent.name+"\n"+dirent.id+"\n"+newPath);
                 if (mCurrentDirectory.getText() != null) mCurrentDirectory.append(" > " + dirent.name);
                 refreshView(true);
-//                mActivity.setUpButtonTitle(dirent.name);
             } else {
                 SeafRepo repo = getDataManager().getCachedRepoByID(getNavContext().getRepoID());
                 String currentPath = getNavContext().getDirPath();
@@ -943,11 +933,7 @@ public class BrowserActivity extends BaseActivity
                 onFileSelected(dirent);
             }
         }
-
-        Log.i("right_click", "is runing on tunch");
     }
-
-    private Map<String, ScrollState> scrollPostions = Maps.newHashMap();
 
     private void saveDirentScrollPosition(String repoId, String currentPath) {
         final String pathJoin = Utils.pathJoin(repoId, currentPath);
@@ -969,6 +955,14 @@ public class BrowserActivity extends BaseActivity
     }
 
 
+    private class RecycleScrollState{
+        private int index;
+        private int top;
+        private RecycleScrollState(int i, int t){
+            this.index = i;
+            this.top = t;
+        }
+    }
 
 
     class RequestServerInfoTask extends AsyncTask<Void, Void, ServerInfo> {

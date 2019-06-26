@@ -1,11 +1,9 @@
 package com.seafile.seadroid2.ui.adapter;
 
 import android.content.Context;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.seafile.seadroid2.R;
@@ -28,30 +25,26 @@ import com.seafile.seadroid2.ui.activity.BrowserActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.logging.Handler;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.RightHolder> implements View.OnTouchListener {
 
     private Context mContext;
-    private int viewType;
     private LayoutInflater Inflater;
     private ArrayList<SeafItem> items;
     private List<DownloadTaskInfo> mDownloadTaskInfos;
     private BrowserActivity mActivity;
-    private int mItemPostion = -1;
-
     private AdapterCallback adapterCallback;
 
     /* 点击的次数 */
-    private int mClickcount, mDownX, mDownY, mUpX, mUpY;
+    private int mClickcount, mDownX, mDownY, mUpX, mUpY, viewType;
     private long mLastDownTime, mLastUpTime, mFirstTime, mLastTime;
 
     private boolean isDoubleClick = false;
     private long MAX_LONG_PRESS_TIME = 3000;
+    private int mItemPostion = -1;
     private int MAX_MOVE_FOR_CLICK = 50;
+
     private String mFirstName = null;
 
     /**
@@ -72,8 +65,8 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     public static final int SORT_ORDER_DESCENDING = 12;
 
 
-    public RecycleViewAdapter(Context context, int type) {
-        this.mContext = context;
+    public RecycleViewAdapter(BrowserActivity context, int type) {
+        this.mActivity = context;
         this.viewType = type;
         if (items == null) items = new ArrayList<>();
         Inflater = LayoutInflater.from(context);
@@ -121,11 +114,11 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         if (isLeftRecycle(viewType)) {
             if (position == mItemPostion) {
                 holder.mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
-                holder.mTextView.setTextColor(mContext
+                holder.mTextView.setTextColor(mActivity
                         .getResources().getColor(R.color.fancy_purple));
             } else {
                 holder.mRelativeLayout.setBackgroundResource(0);
-                holder.mTextView.setTextColor(mContext
+                holder.mTextView.setTextColor(mActivity
                         .getResources().getColor(R.color.fancy_left_gray));
             }
             holder.mTextViewSize.setText(" -_- ");
@@ -164,12 +157,12 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                             switch (event.getAction()) {
                                 case MotionEvent.ACTION_HOVER_ENTER:
                                     mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
-                                    mTextView.setTextColor(mContext
+                                    mTextView.setTextColor(mActivity
                                             .getResources().getColor(R.color.fancy_purple));
                                     break;
                                 case MotionEvent.ACTION_HOVER_EXIT:
                                     mRelativeLayout.setBackgroundResource(0);
-                                    mTextView.setTextColor(mContext
+                                    mTextView.setTextColor(mActivity
                                             .getResources().getColor(R.color.fancy_left_gray));
                                     break;
                             }
@@ -220,13 +213,12 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         this.adapterCallback = (AdapterCallback) adapterCallback;
     }
 
-    private HashMap<String, Boolean> map;
-    private Handler mHandler;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         RightHolder mHolder = new RightHolder(v);
         int postion = (int) mHolder.mTextView.getTag();
         SeafItem mi = (SeafItem) v.getTag();
+        ArrayList<SeafDirent> sd = mActivity.getSeafDirent();
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             mLastDownTime = System.currentTimeMillis();
@@ -239,6 +231,18 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 adapterCallback.onTunchListener((SeafItem) v.getTag());
             } else {
                 SeafDirent dirent = (SeafDirent) mi;
+                if (sd.size() == 0){
+                    sd.add(dirent);
+                    Log.i("i--","---sd is null----"+sd.get(0).id);
+                }else {
+                    sd.clear();
+                    sd.add(dirent);
+                    Log.i("i--","---sd is ----"+sd.get(0).id);
+                }
+//                String currentPath = mActivity.getNavContext().getDirPath();
+//                String newPath = currentPath.endsWith("/") ?
+//                        currentPath + dirent.name : currentPath + "/" + dirent.name;
+
                 setSelectPosition(postion);
 
                 if (mClickcount == 1) {
