@@ -514,10 +514,13 @@ public class BrowserActivity extends BaseActivity
                 String currentPath = getNavContext().getDirPath();
                 String newPath = currentPath.endsWith("/") ?
                         currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
-                List<SeafDirent> dirents = dataManager.getCachedDirents(
-                        mRightDataList.get(0).id, newPath);
-                downloadFiles(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath, dirents);
-                Log.i("0000","----files---"+mRightDataList.get(0).id+"\n"+mRightDataList.get(0).name+"\n"+newPath);
+//                List<SeafDirent> dirents = dataManager.getCachedDirents(
+//                        mRightDataList.get(0).id, newPath);
+                downloadFiles(mRightDataList.get(0).id, mRightDataList.get(0).name, "DATA1/Pictures", mRightDataList);
+                Log.i("0000","----files---"+mRightDataList.get(0).id+"\n"+mRightDataList.get(0).name+"\n"+newPath+"\n"+ currentPath);
+                mTransferLayoutView.setVisibility(View.VISIBLE);
+                mTransAdapter = new TransmissionAdapter(mRightDataList,BrowserActivity.this);
+                mTransmissionListView.setAdapter(mTransAdapter);
 
             }
 
