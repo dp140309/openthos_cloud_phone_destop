@@ -221,6 +221,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     public void addUpdateTask(String repoID, String repoName, String targetDir, String localFilePath) {
+        Log.i("---uploadin----","---=-=--=="+targetDir+"\n"+localFilePath);
         if (txService != null) {
             txService.addTaskToUploadQue(account, repoID, repoName, targetDir, localFilePath, true, true);
         } else {
@@ -457,6 +458,9 @@ public class BrowserActivity extends BaseActivity
 
     @Override
     public void onClick(View v) {
+        String currentPath = getNavContext().getDirPath();
+        String newPath = currentPath.endsWith("/") ?
+                currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
         switch (v.getId()) {
             case R.id.back_view:
                 String parentPath = Utils.getParentPath(navContext
@@ -474,14 +478,17 @@ public class BrowserActivity extends BaseActivity
                 }
                 break;
             case R.id.forward_view:
+                Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
                 break;
             case R.id.download_view:
                 DownLoadFile();
                 break;
             case R.id.upload_view:
-//                break;
+                final String localPath = getDataManager().getLocalRepoFile(mRightDataList.get(0).name, mRightDataList.get(0).id, newPath).getPath();
+                addUpdateTask(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath, localPath);
+                break;
             case R.id.delete_view:
-                Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
+                deleteDir(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath);
                 break;
             case R.id.transfer_list_view:
                 mTransferLayoutView.setVisibility(View.VISIBLE);
