@@ -171,6 +171,8 @@ public class BrowserActivity extends BaseActivity
     public static final int TYPE_RIGHT = 2;
     public static final int TYPE_ACCOUNT = 3;
 
+    public static boolean isLandPattern = false;
+
     private static final int[] ICONS = new int[]{
             R.drawable.tab_library, R.drawable.tab_starred,
             R.drawable.tab_activity
@@ -386,8 +388,10 @@ public class BrowserActivity extends BaseActivity
         startService(monitorIntent);
 
         if (Configuration.ORIENTATION_PORTRAIT == this.getResources().getConfiguration().orientation) {
+            isLandPattern = false;
             onCreatePortView(savedInstanceState);
         } else if (Configuration.ORIENTATION_LANDSCAPE == this.getResources().getConfiguration().orientation) {
+            isLandPattern = true;
             onCreateLandView(savedInstanceState);
         }
     }
@@ -488,7 +492,7 @@ public class BrowserActivity extends BaseActivity
                 addUpdateTask(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath, localPath);
                 break;
             case R.id.delete_view:
-                deleteDir(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath);
+                DeleteData(newPath);
                 break;
             case R.id.transfer_list_view:
                 mTransferLayoutView.setVisibility(View.VISIBLE);
@@ -505,6 +509,14 @@ public class BrowserActivity extends BaseActivity
 //                RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_ACCOUNT);
                 Toast.makeText(BrowserActivity.this, " account_button   -   COMING SOON ", Toast.LENGTH_LONG).show();
                 break;
+        }
+    }
+
+    private void DeleteData(String path){
+        if (mRightDataList.get(0).isDir()){
+            deleteDir(getNavContext().getRepoID(), getNavContext().getRepoName(), path);
+        } else {
+            deleteFile(getNavContext().getRepoID(), getNavContext().getRepoName(), path);
         }
     }
 
@@ -2398,8 +2410,12 @@ public class BrowserActivity extends BaseActivity
                 showShortToast(BrowserActivity.this, R.string.delete_successful);
                 List<SeafDirent> cachedDirents = getDataManager()
                         .getCachedDirents(repoID, getNavContext().getDirPath());
-                getReposFragment().getAdapter().setItems(cachedDirents);
-                getReposFragment().getAdapter().notifyDataSetChanged();
+                if (isLandPattern){
+                    refreshView(true);
+                }else {
+                    getReposFragment().getAdapter().setItems(cachedDirents);
+                    getReposFragment().getAdapter().notifyDataSetChanged();
+                }
             }
         });
         dialog.show(getSupportFragmentManager(), TAG_DELETE_FILE_DIALOG_FRAGMENT);
