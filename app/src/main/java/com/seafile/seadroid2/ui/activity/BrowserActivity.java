@@ -485,7 +485,7 @@ public class BrowserActivity extends BaseActivity
                 Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
                 break;
             case R.id.download_view:
-                DownLoadFile();
+                DownLoadFile(currentPath);
                 break;
             case R.id.upload_view:
                 final String localPath = getDataManager().getLocalRepoFile(mRightDataList.get(0).name, mRightDataList.get(0).id, newPath).getPath();
@@ -520,30 +520,20 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void DownLoadFile(){
+    private void DownLoadFile(String currentPath){
         if (mRightDataList.size() == 0) {
             Toast.makeText(BrowserActivity.this, " 请选择下载的文件及文件夹", Toast.LENGTH_LONG).show();
             return;
         }
-            if (mRightDataList.get(0).isDir()) {
-                downloadDir(mRightDataList.get(0).id, mRightDataList.get(0).name, true);
-                Log.i("0000","----dir---"+mRightDataList.get(0).id+"\n"+mRightDataList.get(0).name);
-            }else {
-                Log.i("land","---66666666---->"+ navContext.getRepoID()+"\n"+navContext.getDirPath());
-                String currentPath = getNavContext().getDirPath();
-                String newPath = currentPath.endsWith("/") ?
-                        currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
-//                List<SeafDirent> dirents = dataManager.getCachedDirents(
-//                        mRightDataList.get(0).id, newPath);
-                downloadFiles(mRightDataList.get(0).id, mRightDataList.get(0).name, "DATA1/Pictures", mRightDataList);
-                Log.i("0000","----files---"+mRightDataList.get(0).id+"\n"+mRightDataList.get(0).name+"\n"+newPath+"\n"+ currentPath);
-                mTransferLayoutView.setVisibility(View.VISIBLE);
-                mTransAdapter = new TransmissionAdapter(mRightDataList,BrowserActivity.this);
-                mTransmissionListView.setAdapter(mTransAdapter);
 
-            }
-
-//        downloadFiles(id, name, path, dirents);
+        if (mRightDataList.get(0).isDir()) {
+            downloadDir(currentPath, mRightDataList.get(0).name, true);
+        }else {
+            downloadFile(currentPath, mRightDataList.get(0).name);
+            mTransferLayoutView.setVisibility(View.VISIBLE);
+            mTransAdapter = new TransmissionAdapter(mRightDataList,BrowserActivity.this);
+            mTransmissionListView.setAdapter(mTransAdapter);
+        }
     }
 
     private OnMenuClick mOnMenuClick = new OnMenuClick() {
@@ -564,11 +554,10 @@ public class BrowserActivity extends BaseActivity
                         List<SeafDirent> dirents = dataManager.getCachedDirents(
                                 navContext.getRepoID(), navContext.getDirPath());
                         if (drent.isDir()) {
-                            downloadDir(navContext.getRepoID(), drent.name, true);
+                            downloadDir(navContext.getDirPath(), drent.name, true);
                         } else {
-                            downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
+                            downloadFile(navContext.getDirPath(), drent.name);
                             mTransferLayoutView.setVisibility(View.VISIBLE);
-
                             mTransAdapter = new TransmissionAdapter(dirents, BrowserActivity.this);
                             mTransmissionListView.setAdapter(mTransAdapter);
 
@@ -1963,10 +1952,17 @@ public class BrowserActivity extends BaseActivity
             txService.saveDownloadNotifProvider(provider);
         }
 
-        SeafItemAdapter adapter = getReposFragment().getAdapter();
-        List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
-        // update downloading progress
-        adapter.setDownloadTaskList(infos);
+        if (isLandPattern){
+            mRightViewAdapter = new RecycleViewAdapter(BrowserActivity.this,2);
+            List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
+            // update downloading progress
+            mRightViewAdapter.setDownloadTaskList(infos);
+        }else {
+            SeafItemAdapter adapter = getReposFragment().getAdapter();
+            List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
+            // update downloading progress
+            adapter.setDownloadTaskList(infos);
+        }
     }
 
     /**
@@ -2089,7 +2085,11 @@ public class BrowserActivity extends BaseActivity
             }
 
             // set download tasks info to adapter in order to update download progress in UI thread
-            getReposFragment().getAdapter().setDownloadTaskList(txService.getDownloadTaskInfosByPath(repoID, dirPath));
+            if (isLandPattern){
+                mRightViewAdapter.setDownloadTaskList(txService.getDownloadTaskInfosByPath(repoID, dirPath));
+            }else {
+                getReposFragment().getAdapter().setDownloadTaskList(txService.getDownloadTaskInfosByPath(repoID, dirPath));
+            }
         }
     }
 
