@@ -1953,9 +1953,7 @@ public class BrowserActivity extends BaseActivity
         }
 
         if (isLandPattern){
-            mRightViewAdapter = new RecycleViewAdapter(BrowserActivity.this,2);
             List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
-            // update downloading progress
             mRightViewAdapter.setDownloadTaskList(infos);
         }else {
             SeafItemAdapter adapter = getReposFragment().getAdapter();
