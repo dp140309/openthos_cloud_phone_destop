@@ -16,16 +16,18 @@ import java.util.List;
 
 public class TransmissionAdapter extends BaseAdapter {
 
-    private List<SeafDirent> mList;
+    private List<SeafDirent> mList = new ArrayList<>();
     private LayoutInflater Inflater;
 
 
     public  TransmissionAdapter(List<SeafDirent> list, Context context) {
-        mList = new ArrayList<>();
         Inflater = LayoutInflater.from(context);
         this.mList = list;
     }
 
+    public void add(SeafDirent entry) {
+        mList.add(entry);
+    }
 
     @Override
     public int getCount() {

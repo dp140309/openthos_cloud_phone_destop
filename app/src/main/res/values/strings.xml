@@ -574,4 +574,6 @@
   <string name="trans_cancel_button">Cancel All</string>
   <string name="unsubscribe_view">Unsubscribe</string>
   <string name="account_about">About</string>
+  <string name="delete_item_unselected">Please select the files and folders you want to delete</string>
+  <string name="download_item_unselected">Please select the files and folders you want to delete</string>
 </resources>

@@ -285,13 +285,18 @@ public class BrowserActivity extends BaseActivity
         mRightMenu.setLayoutManager(new GridLayoutManager(this, 4));
         refreshView(true);
         mRightMenu.setAdapter(mRightViewAdapter);
+
+        for (View view : mView){
+            view.setEnabled(true);
+        }
+
+        mRightDataList.clear();
+
         mRightViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
             @Override
             public void onTunchListener( SeafItem position) {
                 requestRightClickListener(position);
-                for (View view : mView){
-                    view.setEnabled(true);
-                }
+
             }
 
             @Override
@@ -443,6 +448,7 @@ public class BrowserActivity extends BaseActivity
         mView.add(forward);
         mView.add(downloadView);
         mView.add(uploadView);
+        mView.add(deleteView);
 
         for (View v : mView) v.setEnabled(false);
 
@@ -462,9 +468,6 @@ public class BrowserActivity extends BaseActivity
 
     @Override
     public void onClick(View v) {
-        String currentPath = getNavContext().getDirPath();
-        String newPath = currentPath.endsWith("/") ?
-                currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
         switch (v.getId()) {
             case R.id.back_view:
                 String parentPath = Utils.getParentPath(navContext
@@ -485,14 +488,14 @@ public class BrowserActivity extends BaseActivity
                 Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
                 break;
             case R.id.download_view:
-                DownLoadFile(currentPath);
+                DownLoadFile();
                 break;
             case R.id.upload_view:
-                final String localPath = getDataManager().getLocalRepoFile(mRightDataList.get(0).name, mRightDataList.get(0).id, newPath).getPath();
-                addUpdateTask(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath, localPath);
+//                final String localPath = getDataManager().getLocalRepoFile(mRightDataList.get(0).name, mRightDataList.get(0).id, newPath).getPath();
+//                addUpdateTask(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath, localPath);
                 break;
             case R.id.delete_view:
-                DeleteData(newPath);
+                DeleteData();
                 break;
             case R.id.transfer_list_view:
                 mTransferLayoutView.setVisibility(View.VISIBLE);
@@ -512,24 +515,36 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void DeleteData(String path){
+    private void DeleteData(){
+        if (mRightDataList.isEmpty()){
+            Toast.makeText(BrowserActivity.this, R.string.delete_item_unselected, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String currentPath = getNavContext().getDirPath();
+        String newPath = currentPath.endsWith("/") ?
+                currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
+
         if (mRightDataList.get(0).isDir()){
-            deleteDir(getNavContext().getRepoID(), getNavContext().getRepoName(), path);
+            deleteDir(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
         } else {
-            deleteFile(getNavContext().getRepoID(), getNavContext().getRepoName(), path);
+            deleteFile(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
         }
     }
 
-    private void DownLoadFile(String currentPath){
+    private void DownLoadFile(){
         if (mRightDataList.size() == 0) {
-            Toast.makeText(BrowserActivity.this, " 请选择下载的文件及文件夹", Toast.LENGTH_LONG).show();
+            Toast.makeText(BrowserActivity.this, R.string.download_item_unselected, Toast.LENGTH_LONG).show();
             return;
         }
 
         if (mRightDataList.get(0).isDir()) {
-            downloadDir(currentPath, mRightDataList.get(0).name, true);
+            downloadDir(getNavContext().getDirPath(), mRightDataList.get(0).name, true);
+                for (SeafDirent drent: mRightDataList){
+                    mTransAdapter.add(drent);
+                }
         }else {
-            downloadFile(currentPath, mRightDataList.get(0).name);
+            downloadFile(getNavContext().getDirPath(), mRightDataList.get(0).name);
             mTransferLayoutView.setVisibility(View.VISIBLE);
             mTransAdapter = new TransmissionAdapter(mRightDataList,BrowserActivity.this);
             mTransmissionListView.setAdapter(mTransAdapter);
@@ -558,7 +573,7 @@ public class BrowserActivity extends BaseActivity
                         } else {
                             downloadFile(navContext.getDirPath(), drent.name);
                             mTransferLayoutView.setVisibility(View.VISIBLE);
-                            mTransAdapter = new TransmissionAdapter(dirents, BrowserActivity.this);
+                            mTransAdapter = new TransmissionAdapter(mRightDataList, BrowserActivity.this);
                             mTransmissionListView.setAdapter(mTransAdapter);
 
                         }
@@ -921,7 +936,6 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void requestRightClickListener(SeafItem position) {
-
 //        downloadDir(navContext.getRepoID(), drent.name, true);
 //        downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
 
