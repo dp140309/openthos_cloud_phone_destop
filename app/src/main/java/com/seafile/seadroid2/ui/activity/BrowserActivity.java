@@ -38,12 +38,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -55,7 +52,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.seafile.seadroid2.R;
 import com.seafile.seadroid2.SeafConnection;
 import com.seafile.seadroid2.SeafException;
@@ -92,7 +88,6 @@ import com.seafile.seadroid2.ui.CopyMoveContext;
 import com.seafile.seadroid2.ui.NavContext;
 import com.seafile.seadroid2.ui.WidgetUtils;
 import com.seafile.seadroid2.ui.adapter.RecycleViewAdapter;
-
 import com.seafile.seadroid2.ui.adapter.SeafItemAdapter;
 import com.seafile.seadroid2.ui.adapter.TransmissionAdapter;
 import com.seafile.seadroid2.ui.dialog.AppChoiceDialog;
@@ -132,10 +127,8 @@ import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
 
 public class BrowserActivity extends BaseActivity
         implements ReposFragment.OnFileSelectedListener, StarredFragment.OnStarredFileSelectedListener,
@@ -538,15 +531,14 @@ public class BrowserActivity extends BaseActivity
             return;
         }
 
+        mTransAdapter = new TransmissionAdapter(mRightDataList,BrowserActivity.this);
         if (mRightDataList.get(0).isDir()) {
             downloadDir(getNavContext().getDirPath(), mRightDataList.get(0).name, true);
-                for (SeafDirent drent: mRightDataList){
-                    mTransAdapter.add(drent);
-                }
+            mTransferLayoutView.setVisibility(View.VISIBLE);
+            mTransmissionListView.setAdapter(mTransAdapter);
         }else {
             downloadFile(getNavContext().getDirPath(), mRightDataList.get(0).name);
             mTransferLayoutView.setVisibility(View.VISIBLE);
-            mTransAdapter = new TransmissionAdapter(mRightDataList,BrowserActivity.this);
             mTransmissionListView.setAdapter(mTransAdapter);
         }
     }

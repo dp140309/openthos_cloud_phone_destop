@@ -264,6 +264,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                     if (time <= MAX_LONG_PRESS_TIME) {
                         adapterCallback.onTunchListener((SeafItem) v.getTag());
                         mItemPostion = -1;
+                        mActivity.getSeafDirent().clear();
                         notifyDataSetChanged();
                     }
                     mClickcount = 0 ;
