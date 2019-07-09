@@ -576,4 +576,5 @@
   <string name="account_about">About</string>
   <string name="delete_item_unselected">Please select the files and folders you want to delete</string>
   <string name="download_item_unselected">Please select the files and folders you want to delete</string>
+  <string name="upload_item_unselected">Please select the files you want to upload</string>
 </resources>

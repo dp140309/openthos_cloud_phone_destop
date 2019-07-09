@@ -547,5 +547,6 @@
   <string name="account_about">关于</string>
   <string name="delete_item_unselected">请选择您要删除的文件及文件夹</string>
   <string name="download_item_unselected">请选择您要下载的文件及文件夹</string>
+  <string name="upload_item_unselected">请选择您要上传的文件</string>
 
 </resources>

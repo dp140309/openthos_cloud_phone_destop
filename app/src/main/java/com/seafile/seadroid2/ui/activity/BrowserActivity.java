@@ -216,7 +216,6 @@ public class BrowserActivity extends BaseActivity
     }
 
     public void addUpdateTask(String repoID, String repoName, String targetDir, String localFilePath) {
-        Log.i("---uploadin----","---=-=--=="+targetDir+"\n"+localFilePath);
         if (txService != null) {
             txService.addTaskToUploadQue(account, repoID, repoName, targetDir, localFilePath, true, true);
         } else {
@@ -484,8 +483,7 @@ public class BrowserActivity extends BaseActivity
                 DownLoadFile();
                 break;
             case R.id.upload_view:
-//                final String localPath = getDataManager().getLocalRepoFile(mRightDataList.get(0).name, mRightDataList.get(0).id, newPath).getPath();
-//                addUpdateTask(mRightDataList.get(0).id, mRightDataList.get(0).name, newPath, localPath);
+                UpLoadFile();
                 break;
             case R.id.delete_view:
                 DeleteData();
@@ -505,6 +503,21 @@ public class BrowserActivity extends BaseActivity
 //                RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_ACCOUNT);
                 Toast.makeText(BrowserActivity.this, " account_button   -   COMING SOON ", Toast.LENGTH_LONG).show();
                 break;
+        }
+    }
+
+    private void UpLoadFile(){
+        if (mRightDataList.isEmpty()){
+            Toast.makeText(BrowserActivity.this, R.string.upload_item_unselected, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (mRightDataList.get(0).isDir()){
+            Toast.makeText(BrowserActivity.this, "暂不支持文件夹上传功能", Toast.LENGTH_LONG).show();
+        }else {
+            String path = Utils.pathJoin(getNavContext().getDirPath(), mRightDataList.get(0).name);
+            String localPath = getDataManager().getLocalRepoFile(mRightDataList.get(0).name, getNavContext().getRepoID(), path).getPath();
+            addUpdateTask(getNavContext().getRepoID(), getNavContext().getRepoName(), getNavContext().getDirPath(), localPath);
         }
     }
 
@@ -2547,9 +2560,16 @@ public class BrowserActivity extends BaseActivity
         if (currentPosition == INDEX_LIBRARY_TAB
                 && repoID.equals(navContext.getRepoID())
                 && dir.equals(navContext.getDirPath())) {
-            getReposFragment().refreshView(true, true);
-            String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
-            showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
+            if (isLandPattern){
+                refreshView(true);
+                String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
+                showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
+            }else {
+                getReposFragment().refreshView(true, true);
+                String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
+                showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
+            }
+
         }
     }
 
