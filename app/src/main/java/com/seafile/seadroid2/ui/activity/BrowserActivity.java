@@ -544,12 +544,13 @@ public class BrowserActivity extends BaseActivity
         String currentPath = getNavContext().getDirPath();
         String newPath = currentPath.endsWith("/") ?
                 currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
-
         if (mRightDataList.get(0).isDir()){
             deleteDir(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
         } else {
             deleteFile(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
         }
+
+        mRightDataList.clear();
         mRightViewAdapter.getItemPostion(-1);
     }
 
