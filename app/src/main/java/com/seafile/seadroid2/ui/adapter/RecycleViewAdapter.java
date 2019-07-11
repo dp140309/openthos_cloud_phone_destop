@@ -76,6 +76,12 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         items.add(entry);
     }
 
+    public int getItemPostion(int number){
+        mItemPostion = number;
+        notifyDataSetChanged();
+        return mItemPostion;
+    }
+
     public void removePersonalData() {
         if (items.get(0).getTitle().equals("个人")) {
             items.remove(0);

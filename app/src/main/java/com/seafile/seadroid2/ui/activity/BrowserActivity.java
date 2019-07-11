@@ -462,22 +462,10 @@ public class BrowserActivity extends BaseActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_view:
-                String parentPath = Utils.getParentPath(navContext
-                        .getDirPath());
-                navContext.setDir(parentPath, null);
-                refreshView(true);
-                if (mCurrentDirectory.getText() != null) {
-                    if (navContext.getDirPath() != "/"){
-                        String dataPatch = navContext.getDirPath().substring(1,navContext.getDirPath().length());
-                        mCurrentDirectory.setText(navContext.getRepoName());
-                        mCurrentDirectory.append(" > "+ dataPatch);
-                    }else {
-                        mCurrentDirectory.setText(navContext.getRepoName());
-                    }
-                }
+                LandBack();
                 break;
             case R.id.forward_view:
-                Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
+                LandForward();
                 break;
             case R.id.download_view:
                 DownLoadFile();
@@ -504,6 +492,32 @@ public class BrowserActivity extends BaseActivity
                 Toast.makeText(BrowserActivity.this, " account_button   -   COMING SOON ", Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    private void LandBack(){
+
+        // 清空item的选中状态
+        if (mRightViewAdapter !=null) mRightViewAdapter.getItemPostion(-1);
+
+        String parentPath = Utils.getParentPath(navContext
+                .getDirPath());
+        navContext.setDir(parentPath, null);
+        refreshView(true);
+
+        if (mCurrentDirectory.getText() != null) {
+            if (navContext.getDirPath() != "/"){
+                String dataPatch = navContext.getDirPath().substring(1,navContext.getDirPath().length());
+                mCurrentDirectory.setText(navContext.getRepoName());
+                mCurrentDirectory.append(" > "+ dataPatch);
+            }else {
+                mCurrentDirectory.setText(navContext.getRepoName());
+                Toast.makeText(BrowserActivity.this, "已是根目录", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void LandForward(){
+        Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
     }
 
     private void UpLoadFile(){
