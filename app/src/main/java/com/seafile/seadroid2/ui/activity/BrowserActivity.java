@@ -550,6 +550,7 @@ public class BrowserActivity extends BaseActivity
         } else {
             deleteFile(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
         }
+        mRightViewAdapter.getItemPostion(-1);
     }
 
     private void DownLoadFile(){
