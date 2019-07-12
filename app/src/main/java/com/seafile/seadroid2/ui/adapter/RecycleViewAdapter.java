@@ -131,7 +131,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             SeafRepo name = (SeafRepo) items.get(position);
             List<SeafDirent> dirents = mActivity.getDataManager().getCachedDirents(
                     name.id, "/");
-            holder.mTextViewSize.setText(dirents.size()+"");
+            if (dirents != null) holder.mTextViewSize.setText(dirents.size() + "");
         } else {
             if (position == mItemPostion) {
                 holder.mCheckBox.setVisibility(View.VISIBLE);
