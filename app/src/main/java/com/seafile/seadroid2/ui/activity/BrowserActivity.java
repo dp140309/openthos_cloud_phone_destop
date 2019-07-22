@@ -126,6 +126,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -190,6 +191,8 @@ public class BrowserActivity extends BaseActivity
 
     private ArrayList<SeafItem> mLeftDataList = new ArrayList<>();
     private ArrayList<SeafDirent> mRightDataList = new ArrayList<>();
+    private ArrayList<String> landFortName = new ArrayList<>();
+    private int recycleCurrentPosition;
 
 
     //    private FrameLayout container;
@@ -408,6 +411,7 @@ public class BrowserActivity extends BaseActivity
         mLeftViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
             @Override
             public void onTunchListener(SeafItem position) {
+                if (!landFortName.isEmpty()) landFortName.clear();
                 requestLeftClickListener(position);
             }
 
@@ -506,18 +510,46 @@ public class BrowserActivity extends BaseActivity
 
         if (mCurrentDirectory.getText() != null) {
             if (navContext.getDirPath() != "/"){
-                String dataPatch = navContext.getDirPath().substring(1,navContext.getDirPath().length());
-                mCurrentDirectory.setText(navContext.getRepoName());
-                mCurrentDirectory.append(" > "+ dataPatch);
+                if (mCurrentDirectory.getText().toString().trim() == "/"){
+                    mCurrentDirectory.setText(navContext.getRepoName());
+                }else {
+                    String dataPatch = navContext.getDirPath().substring(1,navContext.getDirPath().length());
+                    String newDataPatch = dataPatch.replace("/"," > ");
+                    mCurrentDirectory.setText(navContext.getRepoName());
+                    mCurrentDirectory.append(" > "+ newDataPatch);
+
+                    String tName = mCurrentDirectory.getText().toString().substring(
+                            mCurrentDirectory.getText().toString().lastIndexOf(" > ") + 3,
+                            mCurrentDirectory.getText().toString().length()).trim();
+                    recycleCurrentPosition = landFortName.indexOf(tName);
+                }
+
             }else {
                 mCurrentDirectory.setText(navContext.getRepoName());
+
+                recycleCurrentPosition = 0;
+                mRightDataList.clear();
                 Toast.makeText(BrowserActivity.this, "已是根目录", Toast.LENGTH_LONG).show();
             }
         }
     }
 
     private void LandForward(){
-        Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
+        if (landFortName.size() == 0) {
+            Toast.makeText(BrowserActivity.this, "请选择您要打开的文件夹", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        int forwardSize = landFortName.size()-1;
+        recycleCurrentPosition++;
+
+        if (recycleCurrentPosition <= forwardSize){
+            mCurrentDirectory.append(" > " + landFortName.get(recycleCurrentPosition));
+            navContext.setDir(navContext.getDirPath()+"/"+landFortName.get(recycleCurrentPosition), null);
+            refreshView(true);
+        }else {
+            Toast.makeText(BrowserActivity.this, "已是最后打开位置", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void UpLoadFile(){
@@ -962,23 +994,30 @@ public class BrowserActivity extends BaseActivity
 
         if (position instanceof SeafDirent) {
             SeafDirent dirent = (SeafDirent) position;
-
+            SeafRepo repo = getDataManager().getCachedRepoByID(getNavContext().getRepoID());
+            String currentPath = getNavContext().getDirPath();
             if (dirent.isDir()) {
-                String currentPath = getNavContext().getDirPath();
                 String newPath = currentPath.endsWith("/") ?
                         currentPath + dirent.name : currentPath + "/" + dirent.name;
                 getNavContext().setDir(newPath, dirent.id);
                 getNavContext().setDirPermission(dirent.permission);
-                Log.i("------","recycle-----land---->"+dirent.name+"\n"+dirent.id+"\n"+newPath);
                 if (mCurrentDirectory.getText() != null) mCurrentDirectory.append(" > " + dirent.name);
+                saveDateName(newPath);
+                saveDirentScrollPosition(repo.getID(), currentPath);
                 refreshView(true);
             } else {
-                SeafRepo repo = getDataManager().getCachedRepoByID(getNavContext().getRepoID());
-                String currentPath = getNavContext().getDirPath();
                 saveDirentScrollPosition(repo.getID(), currentPath);
+                String mPath = Utils.pathJoin(currentPath, dirent.name);
+                saveDateName(mPath);
                 onFileSelected(dirent);
             }
         }
+    }
+    private void saveDateName(String n){
+        String[] name = n.split("/");
+        if (!landFortName.isEmpty()) landFortName.clear();
+        for (String n1 : name) landFortName.add(n1);
+
     }
 
     private void saveDirentScrollPosition(String repoId, String currentPath) {
