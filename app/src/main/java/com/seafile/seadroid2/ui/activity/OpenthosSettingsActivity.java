@@ -63,13 +63,11 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
         mGeneralView.setOnClickListener(this);
         mAccountView.setOnHoverListener(this);
         mGeneralView.setOnHoverListener(this);
-        maText.setOnHoverListener(this);
         GSText.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-//        if (frameLayout != null) frameLayout.removeAllViews();
         switch (v.getId()) {
             case R.id.account_settings_view:
                 if (frameLayout != null) frameLayout.removeAllViews();
@@ -109,14 +107,16 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
     public boolean onHover(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_HOVER_ENTER:
-                v.setBackgroundResource(R.drawable.recycle_item_backgroud);
-                ((TextView) v).setTextColor(this
-                        .getResources().getColor(R.color.fancy_purple));
+                if (v.getId() == R.id.account_settings_view)
+                    mAccountView.setBackgroundResource(R.drawable.recycle_item_backgroud);
+
+                if (v.getId() == R.id.general_settings_view)
+                    mGeneralView.setBackgroundResource(R.drawable.recycle_item_backgroud);
                 break;
             case MotionEvent.ACTION_HOVER_EXIT:
-                v.setBackgroundResource(0);
-                ((TextView) v).setTextColor(this
-                        .getResources().getColor(R.color.fancy_left_gray));
+                if (v.getId() == R.id.account_settings_view) mAccountView.setBackgroundResource(0);
+
+                if (v.getId() == R.id.general_settings_view) mGeneralView.setBackgroundResource(0);
                 break;
         }
         return false;
