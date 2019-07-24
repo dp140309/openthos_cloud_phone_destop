@@ -15,16 +15,18 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/general_service_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="http://dev.openthos.org" />
 
         <Spinner
+            android:id="@+id/general_service_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/trans_delete_icon" />
+            android:background="@drawable/general_service_spinner" />
     </RelativeLayout>
 
     <TextView
@@ -35,18 +37,21 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
         <EditText
+            android:id="@+id/general_path_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="http://dev.openthos.org" />
 
-        <Spinner
-            android:layout_width="25dp"
-            android:layout_height="20dp"
+        <Button
+            android:id="@+id/general_path_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/trans_delete_icon" />
+            android:text="浏览"
+            android:textColor="@color/trans_start_button_text_color"
+            android:background="@color/trans_start_button_background_color" />
     </RelativeLayout>
 
 </LinearLayout>

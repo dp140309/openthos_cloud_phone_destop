@@ -367,7 +367,7 @@ public class BrowserActivity extends BaseActivity
         String path = intent.getStringExtra("path");
         String dirID = intent.getStringExtra("dirID");
         String permission = intent.getStringExtra("permission");
-        Log.i("repo------", "dddddd" + repoID);
+        Log.i("repo------", "dddddd" + account.getDisplayName()+"\n"+account.getServer()+"\n"+account.getToken());
         if (repoID != null) {
             navContext.setRepoID(repoID);
             navContext.setRepoName(repoName);
@@ -484,7 +484,11 @@ public class BrowserActivity extends BaseActivity
                 mTransferLayoutView.setVisibility(View.VISIBLE);
                 break;
             case R.id.settings_view:
-                startActivity(new Intent(BrowserActivity.this,OpenthosSettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                Intent intent = new Intent(this,OpenthosSettingsActivity.class);
+                intent.putExtra("account",account.getServerHost());
+                intent.putExtra("server",account.getServer());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 break;
             case R.id.account_manager_view:
                 break;
@@ -502,6 +506,8 @@ public class BrowserActivity extends BaseActivity
 
         // 清空item的选中状态
         if (mRightViewAdapter !=null) mRightViewAdapter.getItemPostion(-1);
+
+        isClickBack = true;
 
         String parentPath = Utils.getParentPath(navContext
                 .getDirPath());
@@ -534,11 +540,14 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
+    private boolean isClickBack = false;
     private void LandForward(){
         if (landFortName.size() == 0) {
             Toast.makeText(BrowserActivity.this, "请选择您要打开的文件夹", Toast.LENGTH_LONG).show();
             return;
         }
+
+        if (!isClickBack) return;
 
         int forwardSize = landFortName.size()-1;
         recycleCurrentPosition++;
@@ -993,6 +1002,8 @@ public class BrowserActivity extends BaseActivity
 //        downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
 
         if (position instanceof SeafDirent) {
+
+            isClickBack = false;
             SeafDirent dirent = (SeafDirent) position;
             SeafRepo repo = getDataManager().getCachedRepoByID(getNavContext().getRepoID());
             String currentPath = getNavContext().getDirPath();
@@ -1008,7 +1019,6 @@ public class BrowserActivity extends BaseActivity
             } else {
                 saveDirentScrollPosition(repo.getID(), currentPath);
                 String mPath = Utils.pathJoin(currentPath, dirent.name);
-                saveDateName(mPath);
                 onFileSelected(dirent);
             }
         }
@@ -1017,7 +1027,6 @@ public class BrowserActivity extends BaseActivity
         String[] name = n.split("/");
         if (!landFortName.isEmpty()) landFortName.clear();
         for (String n1 : name) landFortName.add(n1);
-
     }
 
     private void saveDirentScrollPosition(String repoId, String currentPath) {

@@ -10,25 +10,33 @@
         android:layout_height="match_parent"
         android:layout_weight="4">
 
-        <TextView
+        <LinearLayout
             android:id="@+id/account_settings_view"
             android:layout_width="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/openthos_about_size"
-            android:layout_height="50dp"
-            android:layout_marginTop="60dp"
-            android:text="账号设置" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp">
+            <TextView
+                android:id="@+id/account_settings_text"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/openthos_about_size"
+                android:layout_height="50dp"
+                android:text="账号设置" />
+        </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:id="@+id/general_settings_view"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/openthos_about_size"
-            android:layout_marginTop="@dimen/openthos_left_button_size"
-            android:layout_below="@+id/account_settings_view"
-            android:text="通用设置" />
-
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/account_settings_view" >
+            <TextView
+                android:id="@+id/general_settings_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/openthos_about_size"
+                android:text="通用设置" />
+        </LinearLayout>
     </RelativeLayout>
 
     <View
@@ -44,7 +52,7 @@
 
         <FrameLayout
             android:id="@+id/settings_item_fragment"
-            android:layout_width="300dp"
+            android:layout_width="400dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/openthos_left_button_size"
             android:layout_marginTop="@dimen/openthos_view_size_70"/>
