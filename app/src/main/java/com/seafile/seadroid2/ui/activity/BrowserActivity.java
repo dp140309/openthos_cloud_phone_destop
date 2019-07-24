@@ -193,6 +193,7 @@ public class BrowserActivity extends BaseActivity
     private ArrayList<SeafDirent> mRightDataList = new ArrayList<>();
     private ArrayList<String> landFortName = new ArrayList<>();
     private int recycleCurrentPosition;
+    private ImageView mBackImag, mForwardImg;
 
 
     //    private FrameLayout container;
@@ -291,7 +292,6 @@ public class BrowserActivity extends BaseActivity
             @Override
             public void onTunchListener( SeafItem position) {
                 requestRightClickListener(position);
-
             }
 
             @Override
@@ -422,8 +422,8 @@ public class BrowserActivity extends BaseActivity
         });
 
         requestReadExternalStoragePermission();
-        ImageView back = findViewById(R.id.back_view);
-        ImageView forward = findViewById(R.id.forward_view);
+        mBackImag = findViewById(R.id.back_view);
+        mForwardImg = findViewById(R.id.forward_view);
         RelativeLayout downloadView =  findViewById(R.id.download_view);
         RelativeLayout uploadView = findViewById(R.id.upload_view);
         RelativeLayout deleteView = findViewById(R.id.delete_view);
@@ -440,18 +440,20 @@ public class BrowserActivity extends BaseActivity
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
 
         mView = new ArrayList<>();
-        mView.add(back);
-        mView.add(forward);
         mView.add(downloadView);
         mView.add(uploadView);
         mView.add(deleteView);
 
         for (View v : mView) v.setEnabled(false);
+        mBackImag.setEnabled(false);
+        mForwardImg.setEnabled(false);
+        mBackImag.setBackgroundResource(R.drawable.openthos_title_back_lose_focus);
+        mForwardImg.setBackgroundResource(R.drawable.openthos_title_forward_lose_focus);
 
         mTransferLayoutView.setVisibility(View.GONE);
         mTransClose.setOnClickListener(this);
-        back.setOnClickListener(this);
-        forward.setOnClickListener(this);
+        mBackImag.setOnClickListener(this);
+        mForwardImg.setOnClickListener(this);
         downloadView.setOnClickListener(this);
         uploadView.setOnClickListener(this);
         deleteView.setOnClickListener(this);
@@ -509,6 +511,9 @@ public class BrowserActivity extends BaseActivity
 
         isClickBack = true;
 
+        mForwardImg.setBackgroundResource(R.drawable.openthos_title_further);
+        mForwardImg.setEnabled(true);
+
         String parentPath = Utils.getParentPath(navContext
                 .getDirPath());
         navContext.setDir(parentPath, null);
@@ -532,10 +537,10 @@ public class BrowserActivity extends BaseActivity
 
             }else {
                 mCurrentDirectory.setText(navContext.getRepoName());
-
                 recycleCurrentPosition = 0;
                 mRightDataList.clear();
-                Toast.makeText(BrowserActivity.this, "已是根目录", Toast.LENGTH_LONG).show();
+                mBackImag.setBackgroundResource(R.drawable.openthos_title_back_lose_focus);
+                mBackImag.setEnabled(false);
             }
         }
     }
@@ -553,11 +558,14 @@ public class BrowserActivity extends BaseActivity
         recycleCurrentPosition++;
 
         if (recycleCurrentPosition <= forwardSize){
+            mBackImag.setBackgroundResource(R.drawable.openthos_title_back);
+            mBackImag.setEnabled(true);
             mCurrentDirectory.append(" > " + landFortName.get(recycleCurrentPosition));
             navContext.setDir(navContext.getDirPath()+"/"+landFortName.get(recycleCurrentPosition), null);
             refreshView(true);
         }else {
-            Toast.makeText(BrowserActivity.this, "已是最后打开位置", Toast.LENGTH_LONG).show();
+            mForwardImg.setBackgroundResource(R.drawable.openthos_title_forward_lose_focus);
+            mForwardImg.setEnabled(false);
         }
     }
 
@@ -986,6 +994,11 @@ public class BrowserActivity extends BaseActivity
             repo = (SeafRepo) position;
         }
 
+        mBackImag.setEnabled(false);
+        mForwardImg.setEnabled(false);
+        mBackImag.setBackgroundResource(R.drawable.openthos_title_back_lose_focus);
+        mForwardImg.setBackgroundResource(R.drawable.openthos_title_forward_lose_focus);
+
         if (mCurrentDirectory.getText() != null) mCurrentDirectory.setText("");
         mCurrentDirectory.setText(position.getTitle());
 
@@ -1008,6 +1021,8 @@ public class BrowserActivity extends BaseActivity
             SeafRepo repo = getDataManager().getCachedRepoByID(getNavContext().getRepoID());
             String currentPath = getNavContext().getDirPath();
             if (dirent.isDir()) {
+                mBackImag.setBackgroundResource(R.drawable.openthos_title_back);
+                mBackImag.setEnabled(true);
                 String newPath = currentPath.endsWith("/") ?
                         currentPath + dirent.name : currentPath + "/" + dirent.name;
                 getNavContext().setDir(newPath, dirent.id);
@@ -1026,7 +1041,10 @@ public class BrowserActivity extends BaseActivity
     private void saveDateName(String n){
         String[] name = n.split("/");
         if (!landFortName.isEmpty()) landFortName.clear();
-        for (String n1 : name) landFortName.add(n1);
+        for (String n1 : name) {
+            if (n1 == "/") continue;
+            landFortName.add(n1);
+        }
     }
 
     private void saveDirentScrollPosition(String repoId, String currentPath) {

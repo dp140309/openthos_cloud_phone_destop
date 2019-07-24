@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:src="@drawable/trans_delete_icon" />
+        android:src="@drawable/setting_dot" />
 
     <TextView
         android:id="@+id/account_text"

@@ -8,15 +8,13 @@
         android:id="@+id/back_view"
         style="@style/TitleImageViewStyle"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="@dimen/openthos_view_size_35"
-        android:src="@drawable/openthos_title_back" />
+        android:layout_marginLeft="@dimen/openthos_view_size_35" />
 
     <ImageView
         android:id="@+id/forward_view"
         style="@style/TitleImageViewStyle"
         android:layout_marginLeft="@dimen/openthos_view_size_28"
-        android:layout_toRightOf="@+id/back_view"
-        android:src="@drawable/openthos_title_further" />
+        android:layout_toRightOf="@+id/back_view" />
 
     <RelativeLayout
         android:id="@+id/download_view"
