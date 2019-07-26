@@ -2,6 +2,7 @@ package com.seafile.seadroid2.ui.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,15 +38,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -498,11 +504,94 @@ public class BrowserActivity extends BaseActivity
                 mTransferLayoutView.setVisibility(View.GONE);
                 break;
             case R.id.account_button:
-//                RecycleMenuDialog.getInstance(BrowserActivity.this).show(TYPE_ACCOUNT);
-                Toast.makeText(BrowserActivity.this, " account_button   -   COMING SOON ", Toast.LENGTH_LONG).show();
+                showAccountView(v);
                 break;
         }
     }
+
+    private void showAccountView(View v) {
+        View productListView = LayoutInflater.from(this).inflate(R.layout.account_view, null);
+        TextView logOut = productListView.findViewById(R.id.log_out_account);
+        TextView aboutAccount = productListView.findViewById(R.id.about_account);
+        PopupWindow popupWindow = new PopupWindow(this);
+        popupWindow.setWidth(v.getWidth());
+        popupWindow.setHeight(v.getHeight()+ v.getHeight());
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(null);
+        popupWindow.setContentView(productListView);
+        popupWindow.showAsDropDown(v);
+
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                accountManager.signOutAccount(account);
+                finishAndStartAccountsActivity();
+            }
+        });
+
+        aboutAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(BrowserActivity.this);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                View mView = inflater.inflate(R.layout.about_layout_icon,null,false);
+                Button button = mView.findViewById(R.id.openthos_about_button);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            Uri uri = Uri.parse("http://openthos.org/about.html");
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(intent);
+                        }catch(ActivityNotFoundException e){}
+                    }
+                });
+                builder.setView(mView);
+                builder.show();
+            }
+        });
+
+        logOut.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                        SwitchViewBackground(v,true);
+                        break;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        SwitchViewBackground(v,false);
+                        break;
+                }
+                return false;
+            }
+        });
+
+        aboutAccount.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                      SwitchViewBackground(v,true);
+                        break;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+                        SwitchViewBackground(v,false);
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void SwitchViewBackground(View v, boolean b){
+        if (b) {
+            v.setBackgroundResource(R.drawable.recycle_item_backgroud);
+            ((TextView)v).setTextColor(getResources().getColor(R.color.fancy_purple));
+        } else {
+            v.setBackgroundResource(0);
+            ((TextView)v).setTextColor(getResources().getColor(R.color.fancy_left_gray));
+        }
+    }
+
 
     private void LandBack(){
 
