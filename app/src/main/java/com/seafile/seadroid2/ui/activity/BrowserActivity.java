@@ -13,6 +13,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -514,10 +515,10 @@ public class BrowserActivity extends BaseActivity
         TextView logOut = productListView.findViewById(R.id.log_out_account);
         TextView aboutAccount = productListView.findViewById(R.id.about_account);
         PopupWindow popupWindow = new PopupWindow(this);
-        popupWindow.setWidth(v.getWidth());
+        popupWindow.setWidth((int)getResources().getDimension(R.dimen.openthos_view_size_112));
         popupWindow.setHeight(v.getHeight()+ v.getHeight());
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(null);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.setContentView(productListView);
         popupWindow.showAsDropDown(v);
 
@@ -584,14 +585,11 @@ public class BrowserActivity extends BaseActivity
 
     private void SwitchViewBackground(View v, boolean b){
         if (b) {
-            v.setBackgroundResource(R.drawable.recycle_item_backgroud);
-            ((TextView)v).setTextColor(getResources().getColor(R.color.fancy_purple));
+            v.setBackgroundResource(R.drawable.right_view_background);
         } else {
             v.setBackgroundResource(0);
-            ((TextView)v).setTextColor(getResources().getColor(R.color.fancy_left_gray));
         }
     }
-
 
     private void LandBack(){
 
