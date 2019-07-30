@@ -1,11 +1,13 @@
 package com.seafile.seadroid2.ui.adapter;
 
 import android.content.Context;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.seafile.seadroid2.R;
@@ -60,6 +62,8 @@ public class TransmissionAdapter extends BaseAdapter {
         holder.mTransIcon.setImageResource(mList.get(position).getIcon());
         holder.mTransName.setText(mList.get(position).name);
         holder.mTransime.setText(mList.get(position).size + "M/S");
+        holder.mProgressBar.setMax((int)mList.get(position).size);
+        holder.mProgressBar.setProgress(1000);
 
         return convertView;
     }
@@ -67,16 +71,28 @@ public class TransmissionAdapter extends BaseAdapter {
     private class ViewHolder {
         private ImageView mTransIcon, mTransDelete, mTransPause, mTransFile;
         private TextView mTransName, mTransime;
+        private ProgressBar mProgressBar;
 
         public ViewHolder(View view) {
-            mTransIcon = (ImageView) view.findViewById(R.id.transmission_icon);
-            mTransDelete = (ImageView) view.findViewById(R.id.transmission_delete);
-            mTransPause = (ImageView) view.findViewById(R.id.transmission_cancel);
-            mTransFile = (ImageView) view.findViewById(R.id.transmission_file);
-            mTransName = (TextView) view.findViewById(R.id.transmission_name);
-            mTransime = (TextView) view.findViewById(R.id.transmission_time);
+            mProgressBar = view.findViewById(R.id.transmission_progress);
+            mTransIcon =  view.findViewById(R.id.transmission_icon);
+            mTransDelete =  view.findViewById(R.id.transmission_delete);
+            mTransPause = view.findViewById(R.id.transmission_cancel);
+            mTransFile =  view.findViewById(R.id.transmission_file);
+            mTransName =  view.findViewById(R.id.transmission_name);
+            mTransime =  view.findViewById(R.id.transmission_time);
         }
     }
 
+    public void updateProgressBar(){}
 
+    public void ProgressBarPause(){}
+
+    public void deleteProgressBar(){}
+
+    public void FilePath(){}
+
+    public void onTaskStart(){}
+
+    public void onTaskStop(){}
 }

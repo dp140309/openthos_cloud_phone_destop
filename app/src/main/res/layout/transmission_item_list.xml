@@ -52,7 +52,8 @@
             android:layout_height="@dimen/openthos_view_size_12"
             android:layout_centerVertical="true"
             android:layout_marginBottom="@dimen/openthos_view_size_2"
-            android:layout_marginTop="@dimen/openthos_view_size_6" />
+            android:layout_marginTop="@dimen/openthos_view_size_6"
+            android:max="100"/>
 
     </LinearLayout>
 

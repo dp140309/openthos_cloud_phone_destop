@@ -193,6 +193,7 @@ public class BrowserActivity extends BaseActivity
     private ListView mTransmissionListView;
     private TransmissionAdapter mTransAdapter;
     private ImageButton mTransClose;
+    private Button mTaskStart, mTaskStop;
 
     private TextView mCurrentDirectory;
 
@@ -444,6 +445,8 @@ public class BrowserActivity extends BaseActivity
 
 
         mTransClose = findViewById(R.id.trans_close);
+        mTaskStart = findViewById(R.id.button_all_start);
+        mTaskStop = findViewById(R.id.button_all_stop);
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
 
         mView = new ArrayList<>();
@@ -506,6 +509,12 @@ public class BrowserActivity extends BaseActivity
                 break;
             case R.id.account_button:
                 showAccountView(v);
+                break;
+            case R.id.button_all_start:
+                mTransAdapter.onTaskStart();
+                break;
+            case R.id.button_all_stop:
+                mTransAdapter.onTaskStop();
                 break;
         }
     }
@@ -2182,6 +2191,18 @@ public class BrowserActivity extends BaseActivity
         private boolean recurse;
         private ArrayList<String> dirPaths = Lists.newArrayList();
         private SeafException err = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            mProgressBar
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+        }
 
         @Override
         protected List<SeafDirent> doInBackground(String... params) {

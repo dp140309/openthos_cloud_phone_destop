@@ -110,6 +110,7 @@
                         android:textSize="@dimen/openthos_text_size_14" />
 
                     <Button
+                        android:id="@+id/button_all_stop"
                         android:layout_width="@dimen/openthos_view_size_86"
                         android:layout_height="@dimen/openthos_view_size_22"
                         android:layout_marginLeft="@dimen/openthos_view_size_14"
