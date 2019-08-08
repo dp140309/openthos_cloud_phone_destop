@@ -295,7 +295,6 @@ public class BrowserActivity extends BaseActivity
         }
 
         mRightDataList.clear();
-
         mRightViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
             @Override
             public void onTunchListener( SeafItem position) {
@@ -309,15 +308,14 @@ public class BrowserActivity extends BaseActivity
         });
 
         requestReadExternalStoragePermission();
-        //        mRightMenu.setOnLongClickListener(new View.OnLongClickListener() {
+
+//        mRightMenu.setOnLongClickListener(new View.OnLongClickListener() {
 //            @Override
 //            public boolean onLongClick(View v) {
 //                Toast.makeText(BrowserActivity.this,"is chang an button",Toast.LENGTH_LONG).show();
-//
 //                return false;
 //            }
 //        });
-
     }
 
     @Override
@@ -496,11 +494,7 @@ public class BrowserActivity extends BaseActivity
                 mTransferLayoutView.setVisibility(View.VISIBLE);
                 break;
             case R.id.settings_view:
-                Intent intent = new Intent(this,OpenthosSettingsActivity.class);
-                intent.putExtra("account",account.getServerHost());
-                intent.putExtra("server",account.getServer());
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                ShowSettingPage();
                 break;
             case R.id.account_manager_view:
                 break;
@@ -511,9 +505,11 @@ public class BrowserActivity extends BaseActivity
                 showAccountView(v);
                 break;
             case R.id.button_all_start:
+                Toast.makeText(BrowserActivity.this, "CONMIG SOON START", Toast.LENGTH_LONG).show();
                 mTransAdapter.onTaskStart();
                 break;
             case R.id.button_all_stop:
+                Toast.makeText(BrowserActivity.this, "CONMING SOON STOP", Toast.LENGTH_LONG).show();
                 mTransAdapter.onTaskStop();
                 break;
         }
@@ -699,6 +695,19 @@ public class BrowserActivity extends BaseActivity
         mRightViewAdapter.getItemPostion(-1);
     }
 
+    private void ShowSettingPage(){
+        Intent intent = new Intent(this,OpenthosSettingsActivity.class);
+        intent.putExtra("account",account.getServerHost());
+        intent.putExtra("server",account.getServer());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    @Override
+    protected Toolbar getActionBarToolbar() {
+        return super.getActionBarToolbar();
+    }
+
     private void DownLoadFile(){
         if (mRightDataList.size() == 0) {
             Toast.makeText(BrowserActivity.this, R.string.download_item_unselected, Toast.LENGTH_LONG).show();
@@ -857,6 +866,7 @@ public class BrowserActivity extends BaseActivity
             String path = savedInstanceState.getString("path");
             String dirID = savedInstanceState.getString("dirID");
             String permission = savedInstanceState.getString("permission");
+
             if (repoID != null) {
                 navContext.setRepoID(repoID);
                 navContext.setRepoName(repoName);
@@ -866,9 +876,7 @@ public class BrowserActivity extends BaseActivity
         }
 
         requestServerInfo();
-
         requestReadExternalStoragePermission();
-
     }
 
     ;
@@ -2152,6 +2160,7 @@ public class BrowserActivity extends BaseActivity
         if (isLandPattern){
             List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
             mRightViewAdapter.setDownloadTaskList(infos);
+            mTransAdapter.updateProgressBar(11);
         }else {
             SeafItemAdapter adapter = getReposFragment().getAdapter();
             List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);

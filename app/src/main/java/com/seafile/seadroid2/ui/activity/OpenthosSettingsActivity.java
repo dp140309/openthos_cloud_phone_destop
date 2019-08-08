@@ -19,7 +19,7 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
     private TextView accountButton, generalButton;
     private LinearLayout mAccountView, mGeneralView;
     private LayoutInflater Inflater;
-    private TextView maText, GSText;
+    private TextView maText, GSText, mGeneraText;
     private String account,server;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,8 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
         GSText = generalSettings.findViewById(R.id.general_service_text);
         GSText.setText(server);
 //        generalSettings.findViewById(R.id.general_service_spinner).setOnClickListener(this);
-        generalSettings.findViewById(R.id.general_path_text).setOnClickListener(this);
+        mGeneraText = generalSettings.findViewById(R.id.general_path_text);
+        mGeneraText.setText(getExternalCacheDir().toString());
         generalSettings.findViewById(R.id.general_path_button).setOnClickListener(this);
 
 

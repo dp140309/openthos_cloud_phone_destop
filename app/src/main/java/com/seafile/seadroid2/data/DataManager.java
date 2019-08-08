@@ -596,7 +596,9 @@ public class DataManager {
         String cachedContent = null;
         File cacheFile = getFileForDirentCache(cachedDirID);
         if (cacheFile.exists()) {
+//            cachedContent = Utils.readFile(cacheFile);
             cachedContent = Utils.readFile(cacheFile);
+
         }
 
         // if that didn't work, then we have no cache.
