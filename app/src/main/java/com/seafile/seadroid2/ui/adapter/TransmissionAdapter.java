@@ -82,6 +82,7 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
 
         String txt = Utils.readableFileSize(finished) + " / " + Utils.readableFileSize(fileSize);
         viewHolder.mTransime.setText(txt);
+        notifyDataSetChanged();
     }
 
     public void add(SeafDirent entry) {
@@ -125,7 +126,16 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
 
         viewHolder.mTransIcon.setImageResource(mList.get(position).getIcon());
         viewHolder.mTransName.setText(mList.get(position).name);
-        viewHolder.mTransDelete.setOnClickListener(this);
+        viewHolder.mTransDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mList.remove(position);
+                mTimer.removeCallbacksAndMessages(null);
+                mActivity.getTransferService().cancelDownloadTask(taskID);
+                mActivity.getTransferService().cancelNotification();
+                notifyDataSetChanged();
+            }
+        });
         viewHolder.mTransPause.setOnClickListener(this);
         viewHolder.mTransFile.setOnClickListener(this);
 
