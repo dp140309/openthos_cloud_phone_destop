@@ -39,7 +39,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -133,7 +132,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -440,19 +438,18 @@ public class BrowserActivity extends BaseActivity
         mTransmissionListView = findViewById(R.id.transmission_list_view);
         ProgressBar mProgerssBar =  findViewById(R.id.memory_state);
         RelativeLayout mAccountButton = findViewById(R.id.account_button);
-
-
         mTransClose = findViewById(R.id.trans_close);
         mTaskStart = findViewById(R.id.button_all_start);
         mTaskStop = findViewById(R.id.button_all_stop);
+
         if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
 
         mView = new ArrayList<>();
         mView.add(downloadView);
         mView.add(uploadView);
         mView.add(deleteView);
-
         for (View v : mView) v.setEnabled(false);
+
         mBackImag.setEnabled(false);
         mForwardImg.setEnabled(false);
         mBackImag.setBackgroundResource(R.drawable.openthos_title_back_lose_focus);
@@ -469,6 +466,8 @@ public class BrowserActivity extends BaseActivity
         settingView.setOnClickListener(this);
         accountView.setOnClickListener(this);
         mAccountButton.setOnClickListener(this);
+        mTaskStart.setOnClickListener(this);
+        mTaskStop.setOnClickListener(this);
         ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
     }
 
@@ -2160,7 +2159,6 @@ public class BrowserActivity extends BaseActivity
         if (isLandPattern){
             List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
             mRightViewAdapter.setDownloadTaskList(infos);
-            mTransAdapter.updateProgressBar(11);
         }else {
             SeafItemAdapter adapter = getReposFragment().getAdapter();
             List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
@@ -2210,7 +2208,6 @@ public class BrowserActivity extends BaseActivity
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
-
         }
 
         @Override

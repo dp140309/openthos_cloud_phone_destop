@@ -127,11 +127,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 holder.mTextView.setTextColor(mActivity
                         .getResources().getColor(R.color.fancy_left_gray));
             }
-
-            SeafRepo name = (SeafRepo) items.get(position);
-            List<SeafDirent> dirents = mActivity.getDataManager().getCachedDirents(
-                    name.id, "/");
-            if (dirents != null) holder.mTextViewSize.setText(dirents.size() + "");
         } else {
             if (position == mItemPostion) {
                 holder.mCheckBox.setVisibility(View.VISIBLE);
