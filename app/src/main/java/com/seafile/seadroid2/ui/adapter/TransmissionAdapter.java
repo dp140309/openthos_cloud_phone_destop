@@ -17,6 +17,8 @@ import com.seafile.seadroid2.R;
 import com.seafile.seadroid2.data.SeafDirent;
 import com.seafile.seadroid2.data.SeafItem;
 import com.seafile.seadroid2.transfer.DownloadTaskInfo;
+import com.seafile.seadroid2.transfer.TransferManager;
+import com.seafile.seadroid2.transfer.TransferService;
 import com.seafile.seadroid2.transfer.TransferTaskInfo;
 import com.seafile.seadroid2.ui.activity.BrowserActivity;
 import com.seafile.seadroid2.util.Utils;
@@ -34,7 +36,7 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
     private static final String DEBUG_TAG = "TransmissionAdapter";
 
     private BrowserActivity mActivity;
-    private List<SeafDirent> mList = new ArrayList<>();
+    private List<SeafDirent> mList;
     private List<? extends TransferTaskInfo> mTransferTaskInfos;
     private int progressNumber;
     private int taskID = -1;
@@ -42,29 +44,30 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
     private final Handler mTimer = new Handler();
 
 
-    public  TransmissionAdapter(List<SeafDirent> list, BrowserActivity activity) {
-        this.mList = list;
+    public  TransmissionAdapter(BrowserActivity activity) {
         this.mActivity = activity;
-        String filePath = Utils.pathJoin(mActivity.getNavContext().getDirPath(), list.get(0).name);
-        taskID = mActivity.getTransferService().addDownloadTask(mActivity.getAccount(),
-                mActivity.getNavContext().getRepoName(),
-                mActivity.getNavContext().getRepoID(),filePath);
-        startTimer();
+        if (mList == null){
+            mList = new ArrayList<>();
+        }
     }
 
     public void startTimer() {
         Log.d(DEBUG_TAG, "timer started");
         mTimer.postDelayed(new Runnable() {
-
             @Override
             public void run() {
                 if (!mActivity.isLandPattern) {
                     mTimer.removeCallbacksAndMessages(null);
                     return;
                 }
+
+                if (taskID == 0) {
+                    mTimer.removeCallbacksAndMessages(null);
+                    return;
+                }
                 DownloadTaskInfo downloadTaskInfo = mActivity.getTransferService().getDownloadTaskInfo(taskID);
                 updateProgress(downloadTaskInfo.fileSize, downloadTaskInfo.finished);
-                Log.d(DEBUG_TAG, "timer post refresh signal " + System.currentTimeMillis());
+                Log.i(DEBUG_TAG, "timer post refresh signal" + System.currentTimeMillis());
                 mTimer.postDelayed(this, 1 * 1000);
             }
         }, 1 * 1000);
@@ -87,6 +90,11 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
 
     public void add(SeafDirent entry) {
         mList.add(entry);
+        String filePath = Utils.pathJoin(mActivity.getNavContext().getDirPath(), mList.get(0).name);
+        taskID = mActivity.getTransferService().addDownloadTask(mActivity.getAccount(),
+                mActivity.getNavContext().getRepoName(),
+                mActivity.getNavContext().getRepoID(),filePath);
+        startTimer();
     }
 
     @Override
@@ -107,9 +115,8 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-
         if (convertView == null){
-            view = LayoutInflater.from(mActivity).inflate(R.layout.transmission_item_list, null);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.transmission_item_list, null);
             ImageView mTransIcon =  (ImageView) view.findViewById(R.id.transmission_icon);
             ImageView mTransDelete =(ImageView)  view.findViewById(R.id.transmission_delete);
             ImageView mTransPause = (ImageView) view.findViewById(R.id.transmission_pause);
@@ -123,7 +130,6 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
         viewHolder.mTransIcon.setImageResource(mList.get(position).getIcon());
         viewHolder.mTransName.setText(mList.get(position).name);
         viewHolder.mTransDelete.setOnClickListener(new View.OnClickListener() {
@@ -204,5 +210,21 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
 
     public void onTaskStart(){}
 
-    public void onTaskStop(){}
+    public void onTaskStop(){
+        if (mList.size() != 0 && mList.size() > 0){
+            for (int i= 0; i<= mList.size()-1; i++ ){
+                String filePath = Utils.pathJoin(mActivity.getNavContext().getDirPath(), mList.get(i).name);
+                taskID = mActivity.getTransferService().addDownloadTask(mActivity.getAccount(),
+                        mActivity.getNavContext().getRepoName(),
+                        mActivity.getNavContext().getRepoID(),filePath);
+                mActivity.getTransferService().cancelDownloadTask(taskID);
+                mActivity.getTransferService().cancelNotification();
+                notifyDataSetChanged();
+            }
+        }else {
+            mActivity.getTransferService().cancelDownloadTask(taskID);
+            mActivity.getTransferService().cancelNotification();
+            notifyDataSetChanged();
+        }
+    }
 }

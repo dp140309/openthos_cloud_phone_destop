@@ -508,7 +508,7 @@ public class BrowserActivity extends BaseActivity
                 mTransAdapter.onTaskStart();
                 break;
             case R.id.button_all_stop:
-                Toast.makeText(BrowserActivity.this, "CONMING SOON STOP", Toast.LENGTH_LONG).show();
+//                Toast.makeText(BrowserActivity.this, "CONMING SOON STOP", Toast.LENGTH_LONG).show();
                 mTransAdapter.onTaskStop();
                 break;
         }
@@ -713,11 +713,13 @@ public class BrowserActivity extends BaseActivity
             return;
         }
 
-        mTransAdapter = new TransmissionAdapter(mRightDataList,BrowserActivity.this);
+        mTransAdapter = new TransmissionAdapter(BrowserActivity.this);
+        mTransAdapter.add(mRightDataList.get(0));
         if (mRightDataList.get(0).isDir()) {
             downloadDir(getNavContext().getDirPath(), mRightDataList.get(0).name, true);
             mTransferLayoutView.setVisibility(View.VISIBLE);
             mTransmissionListView.setAdapter(mTransAdapter);
+
         }else {
             downloadFile(getNavContext().getDirPath(), mRightDataList.get(0).name);
             mTransferLayoutView.setVisibility(View.VISIBLE);
@@ -747,7 +749,8 @@ public class BrowserActivity extends BaseActivity
                         } else {
                             downloadFile(navContext.getDirPath(), drent.name);
                             mTransferLayoutView.setVisibility(View.VISIBLE);
-                            mTransAdapter = new TransmissionAdapter(mRightDataList, BrowserActivity.this);
+                            mTransAdapter = new TransmissionAdapter(BrowserActivity.this);
+                            mTransAdapter.add(mRightDataList.get(0));
                             mTransmissionListView.setAdapter(mTransAdapter);
 
                         }
