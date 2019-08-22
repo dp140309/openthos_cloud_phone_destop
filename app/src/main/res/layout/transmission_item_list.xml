@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:src="@drawable/trans_pause_icon"
+        android:src="@drawable/change_mp_state"
         android:layout_marginLeft="@dimen/openthos_view_size_22"
         android:layout_toRightOf="@+id/transmission_layout" />
 

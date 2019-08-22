@@ -1,7 +1,5 @@
 package com.seafile.seadroid2.ui.adapter;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,14 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.seafile.seadroid2.R;
 import com.seafile.seadroid2.data.SeafDirent;
-import com.seafile.seadroid2.data.SeafItem;
 import com.seafile.seadroid2.transfer.DownloadTaskInfo;
-import com.seafile.seadroid2.transfer.TransferManager;
-import com.seafile.seadroid2.transfer.TransferService;
 import com.seafile.seadroid2.transfer.TransferTaskInfo;
 import com.seafile.seadroid2.ui.activity.BrowserActivity;
 import com.seafile.seadroid2.util.Utils;
@@ -148,11 +142,24 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
         return view;
     }
 
+    private int flag = 0;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.transmission_pause:
-                mActivity.showShortToast(mActivity,"COMING SONG PAUSE");
+                switch (flag){
+                    case 0:
+                        v.setActivated(true);
+                        flag = 1;
+                        transferPause();
+                        break;
+                    case 1:
+                        v.setActivated(false);
+                        flag = 0;
+                        transferPlay();
+                        break;
+                }
                 break;
 
             case R.id.transmission_delete:
@@ -171,6 +178,16 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
                 mActivity.showShortToast(mActivity,"COMING SONG FILE");
                 break;
         }
+    }
+
+    private void transferPause(){
+        mActivity.showShortToast(mActivity,"COMING SONG PAUSE");
+
+    }
+
+    private void transferPlay(){
+        mActivity.showShortToast(mActivity,"COMING SONG play");
+
     }
 
     private class ViewHolder {
