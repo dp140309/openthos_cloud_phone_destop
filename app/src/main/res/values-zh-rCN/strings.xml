@@ -549,5 +549,10 @@
   <string name="delete_item_unselected">请选择您要删除的文件及文件夹</string>
   <string name="download_item_unselected">请选择您要下载的文件及文件夹</string>
   <string name="upload_item_unselected">请选择您要上传的文件</string>
+  <string name="setting_service_name">OpenthosID服务器</string>
+  <string name="setting_storage_patch">存放路径</string>
+  <string name="setting_glance_over">浏览</string>
+  <string name="setting_modify">修改</string>
+  <string name="setting_network_url">http://dev.openthos.org</string>
 
 </resources>

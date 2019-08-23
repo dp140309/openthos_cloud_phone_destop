@@ -1,5 +1,7 @@
 package com.seafile.seadroid2.ui.adapter;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import com.seafile.seadroid2.transfer.TransferTaskInfo;
 import com.seafile.seadroid2.ui.activity.BrowserActivity;
 import com.seafile.seadroid2.util.Utils;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -136,8 +139,21 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
                 notifyDataSetChanged();
             }
         });
+
+        viewHolder.mTransFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File parentFlie = new File(mActivity.getExternalCacheDir() + mActivity.getNavContext().getDirPath());
+                Log.i("----",mActivity.getExternalCacheDir()+"---"+mActivity.getNavContext().getDirPath());
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setDataAndType(Uri.fromFile(parentFlie), "*/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                mActivity.startActivity(intent);
+            }
+        });
+
         viewHolder.mTransPause.setOnClickListener(this);
-        viewHolder.mTransFile.setOnClickListener(this);
+//        viewHolder.mTransFile.setOnClickListener(this);
 
         return view;
     }

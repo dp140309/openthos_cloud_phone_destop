@@ -578,4 +578,10 @@
   <string name="delete_item_unselected">Please select the files and folders you want to delete</string>
   <string name="download_item_unselected">Please select the files and folders you want to delete</string>
   <string name="upload_item_unselected">Please select the files you want to upload</string>
+  <string name="setting_service_name">OpenthosID Server</string>
+  <string name="setting_storage_patch">Storage Path</string>
+  <string name="setting_glance_over">Glance Over</string>
+  <string name="setting_modify">Modify</string>
+  <string name="setting_network_url">http://dev.openthos.org</string>
+
 </resources>
