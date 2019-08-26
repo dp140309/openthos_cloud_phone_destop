@@ -25,7 +25,8 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/openthos_view_size_8">
 
             <TextView
                 android:id="@+id/transmission_name"
@@ -62,9 +63,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:src="@drawable/trans_pause_icon"
-        android:layout_marginLeft="@dimen/openthos_view_size_22"
-        android:layout_toRightOf="@+id/transmission_layout" />
+        android:layout_marginLeft="22dp"
+        android:layout_toRightOf="@+id/transmission_layout"
+        android:src="@drawable/change_mp_state" />
 
     <ImageView
         android:id="@+id/transmission_delete"

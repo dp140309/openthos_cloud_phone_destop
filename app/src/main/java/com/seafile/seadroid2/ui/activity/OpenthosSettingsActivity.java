@@ -1,12 +1,16 @@
 package com.seafile.seadroid2.ui.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
     private LayoutInflater Inflater;
     private TextView maText, GSText, mGeneraText;
     private String account,server;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +53,10 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
         accountSettings.findViewById(R.id.account_text).setOnClickListener(this);
         GSText = generalSettings.findViewById(R.id.general_service_text);
         GSText.setText(server);
-//        generalSettings.findViewById(R.id.general_service_spinner).setOnClickListener(this);
+        generalSettings.findViewById(R.id.general_service_view).setOnClickListener(this);
         mGeneraText = generalSettings.findViewById(R.id.general_path_text);
         mGeneraText.setText(getExternalCacheDir().toString());
         generalSettings.findViewById(R.id.general_path_button).setOnClickListener(this);
-
 
     }
 
@@ -66,6 +70,8 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
         mGeneralView.setOnHoverListener(this);
         GSText.setOnClickListener(this);
     }
+
+    private int flag = 0;
 
     @Override
     public void onClick(View v) {
@@ -92,8 +98,20 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
             case R.id.general_service_text:
                 break;
 
-//            case R.id.general_service_spinner:
-//                break;
+            case R.id.general_service_view:
+                switch (flag){
+                    case 0:
+                        v.setActivated(true);
+                        flag = 1;
+                        showView(v);
+                        break;
+                    case 1:
+                        v.setActivated(false);
+                        flag = 0;
+                        closeView(v);
+                        break;
+                }
+                break;
 
             case R.id.general_path_text:
                 break;
@@ -102,6 +120,45 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
                 Toast.makeText(OpenthosSettingsActivity.this, "COMING SOON", Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+    PopupWindow popupWindow;
+    private void showView(View v){
+        View productListView = LayoutInflater.from(this).inflate(R.layout.setting_service_view, null);
+        TextView serviceDev = productListView.findViewById(R.id.service_view_dev);
+        TextView service185 = productListView.findViewById(R.id.service_view_185);
+        popupWindow = new PopupWindow(this);
+        popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(GSText.getHeight()+ GSText.getHeight());
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setContentView(productListView);
+        popupWindow.showAsDropDown(GSText);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                v.setActivated(false);
+            }
+        });
+
+        serviceDev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GSText.setText(serviceDev.getText());
+                popupWindow.dismiss();
+            }
+        });
+
+        service185.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GSText.setText(service185.getText());
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    private void closeView(View v){
+        popupWindow.dismiss();
     }
 
     @Override

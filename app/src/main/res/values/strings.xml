@@ -582,6 +582,7 @@
   <string name="setting_storage_patch">Storage Path</string>
   <string name="setting_glance_over">Glance Over</string>
   <string name="setting_modify">Modify</string>
-  <string name="setting_network_url">http://dev.openthos.org</string>
+  <string name="setting_network_url">http://dev.openthos.org/</string>
+  <string name="setting_network_158">http://192.168.0.158/</string>
 
 </resources>

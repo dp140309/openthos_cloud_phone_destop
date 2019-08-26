@@ -30,14 +30,14 @@
             android:maxLines="1"
             android:background="@null"/>
 
-        <Spinner
-            android:id="@+id/general_service_spinner"
+        <ImageView
+            android:id="@+id/general_service_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/openthos_view_size_20"
-            android:background="@drawable/general_service_spinner" />
+            android:src="@drawable/setting_spinner_background"/>
     </RelativeLayout>
 
     <TextView
