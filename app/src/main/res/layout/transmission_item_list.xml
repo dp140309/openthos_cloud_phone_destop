@@ -32,8 +32,8 @@
                 android:id="@+id/transmission_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:layout_alignParentLeft="true"
-                android:text="@string/rename_dir"
                 android:textSize="@dimen/openthos_text_size_12" />
 
             <TextView
@@ -41,7 +41,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="@string/rename_dir"
                 android:textSize="@dimen/openthos_text_size_12" />
 
         </RelativeLayout>
@@ -52,9 +51,15 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/openthos_view_size_12"
             android:layout_centerVertical="true"
+            android:visibility="gone"
             android:layout_marginBottom="@dimen/openthos_view_size_2"
             android:layout_marginTop="@dimen/openthos_view_size_6"/>
 
+        <TextView
+            android:id="@+id/transfer_land_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/openthos_text_size_12" />
     </LinearLayout>
 
 

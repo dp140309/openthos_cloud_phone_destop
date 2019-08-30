@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Adapter class for land transmission
  */
-public class TransmissionAdapter extends BaseAdapter implements View.OnClickListener {
+public class TransmissionAdapter extends BaseAdapter {
 
     private static final String DEBUG_TAG = "TransmissionAdapter";
 
@@ -38,6 +38,8 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
     private int progressNumber;
     private int taskID = -1;
     private ViewHolder viewHolder;
+    private int flag = 0;
+
     private final Handler mTimer = new Handler();
 
 
@@ -87,11 +89,6 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
 
     public void add(SeafDirent entry) {
         mList.add(entry);
-        String filePath = Utils.pathJoin(mActivity.getNavContext().getDirPath(), mList.get(0).name);
-        taskID = mActivity.getTransferService().addDownloadTask(mActivity.getAccount(),
-                mActivity.getNavContext().getRepoName(),
-                mActivity.getNavContext().getRepoID(),filePath);
-        startTimer();
     }
 
     @Override
@@ -129,6 +126,13 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
         }
         viewHolder.mTransIcon.setImageResource(mList.get(position).getIcon());
         viewHolder.mTransName.setText(mList.get(position).name);
+
+        String filePath = Utils.pathJoin(mActivity.getNavContext().getDirPath(), mList.get(0).name);
+        taskID = mActivity.getTransferService().addDownloadTask(mActivity.getAccount(),
+                mActivity.getNavContext().getRepoName(),
+                mActivity.getNavContext().getRepoID(),filePath);
+        startTimer();
+
         viewHolder.mTransDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,56 +156,32 @@ public class TransmissionAdapter extends BaseAdapter implements View.OnClickList
             }
         });
 
-        viewHolder.mTransPause.setOnClickListener(this);
-//        viewHolder.mTransFile.setOnClickListener(this);
-
-        return view;
-    }
-
-    private int flag = 0;
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.transmission_pause:
+        viewHolder.mTransPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 switch (flag){
                     case 0:
                         v.setActivated(true);
                         flag = 1;
-                        transferPause();
+                        transferPause(position);
                         break;
                     case 1:
                         v.setActivated(false);
                         flag = 0;
-                        transferPlay();
+                        transferPlay(position);
                         break;
                 }
-                break;
-
-            case R.id.transmission_delete:
-//                deleteProgressBar((Integer) v.getTag());
-                mActivity.showShortToast(mActivity,"COMING SONG DELETE");
-                break;
-
-            case R.id.transmission_file:
-                try {
-                    URL uri = new URL("www.baidu.com");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-
-                FilePath();
-                mActivity.showShortToast(mActivity,"COMING SONG FILE");
-                break;
-        }
+            }
+        });
+        return view;
     }
 
-    private void transferPause(){
+    private void transferPause(int postion){
         mActivity.showShortToast(mActivity,"COMING SONG PAUSE");
 
     }
 
-    private void transferPlay(){
+    private void transferPlay(int postion){
         mActivity.showShortToast(mActivity,"COMING SONG play");
 
     }

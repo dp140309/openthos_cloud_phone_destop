@@ -84,6 +84,7 @@ import com.seafile.seadroid2.ssl.CertsManager;
 import com.seafile.seadroid2.transfer.DownloadTaskInfo;
 import com.seafile.seadroid2.transfer.DownloadTaskManager;
 import com.seafile.seadroid2.transfer.PendingUploadInfo;
+import com.seafile.seadroid2.transfer.TaskState;
 import com.seafile.seadroid2.transfer.TransferManager;
 import com.seafile.seadroid2.transfer.TransferService;
 import com.seafile.seadroid2.transfer.TransferService.TransferBinder;
@@ -93,6 +94,7 @@ import com.seafile.seadroid2.ui.ClickListener.OnMenuClick;
 import com.seafile.seadroid2.ui.CopyMoveContext;
 import com.seafile.seadroid2.ui.NavContext;
 import com.seafile.seadroid2.ui.WidgetUtils;
+import com.seafile.seadroid2.ui.adapter.LandTransmissionAdapter;
 import com.seafile.seadroid2.ui.adapter.RecycleViewAdapter;
 import com.seafile.seadroid2.ui.adapter.SeafItemAdapter;
 import com.seafile.seadroid2.ui.adapter.TransmissionAdapter;
@@ -189,7 +191,7 @@ public class BrowserActivity extends BaseActivity
     private RecycleViewAdapter mLeftViewAdapter;
     private LinearLayout mTransferLayoutView;
     private ListView mTransmissionListView;
-    private TransmissionAdapter mTransAdapter;
+    private LandTransmissionAdapter mTransAdapter;
     private ImageButton mTransClose;
     private Button mTaskStart, mTaskStop;
 
@@ -402,6 +404,7 @@ public class BrowserActivity extends BaseActivity
 
     List<View> mView;
 
+    // -------------------------- land view --------------------//
     protected void onCreateLandView(Bundle savedInstanceState) {
         mLeftMenu =  findViewById(R.id.left_list);
         mCurrentDirectory = findViewById(R.id.current_directory);
@@ -504,12 +507,14 @@ public class BrowserActivity extends BaseActivity
                 showAccountView(v);
                 break;
             case R.id.button_all_start:
-                Toast.makeText(BrowserActivity.this, "CONMIG SOON START", Toast.LENGTH_LONG).show();
-                mTransAdapter.onTaskStart();
+                if (txService != null || mTransAdapter != null){
+                    txService.restartDownloadTasksByIds(mTransAdapter.getSelectedIds());
+                    Log.i("size","--=-=-browser=-="+mTransAdapter.getSelectedIds().size());
+                }
                 break;
             case R.id.button_all_stop:
-//                Toast.makeText(BrowserActivity.this, "CONMING SOON STOP", Toast.LENGTH_LONG).show();
-                mTransAdapter.onTaskStop();
+                if (txService != null)
+                txService.cancellAllDownloadTasks();
                 break;
         }
     }
@@ -713,18 +718,19 @@ public class BrowserActivity extends BaseActivity
             return;
         }
 
-        mTransAdapter = new TransmissionAdapter(BrowserActivity.this);
-        mTransAdapter.add(mRightDataList.get(0));
         if (mRightDataList.get(0).isDir()) {
             downloadDir(getNavContext().getDirPath(), mRightDataList.get(0).name, true);
             mTransferLayoutView.setVisibility(View.VISIBLE);
-            mTransmissionListView.setAdapter(mTransAdapter);
 
         }else {
             downloadFile(getNavContext().getDirPath(), mRightDataList.get(0).name);
             mTransferLayoutView.setVisibility(View.VISIBLE);
-            mTransmissionListView.setAdapter(mTransAdapter);
         }
+
+        List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
+        mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this,infos);
+        mTransmissionListView.setAdapter(mTransAdapter);
+        startTimer();
     }
 
     private OnMenuClick mOnMenuClick = new OnMenuClick() {
@@ -749,11 +755,9 @@ public class BrowserActivity extends BaseActivity
                         } else {
                             downloadFile(navContext.getDirPath(), drent.name);
                             mTransferLayoutView.setVisibility(View.VISIBLE);
-                            mTransAdapter = new TransmissionAdapter(BrowserActivity.this);
-                            mTransAdapter.add(mRightDataList.get(0));
-                            mTransmissionListView.setAdapter(mTransAdapter);
-
                         }
+                        mTransAdapter.notifyDataSetChanged();
+                        startTimer();
                     } else {
                         if (menu.equals(getString(R.string.oenthos_collection))) {
                             Toast.makeText(BrowserActivity.this, " COMING SOON ", Toast.LENGTH_LONG).show();
@@ -766,6 +770,7 @@ public class BrowserActivity extends BaseActivity
         }
     };
 
+    // -------------------------- port view --------------------//
     protected void onCreatePortView(Bundle savedInstanceState) {
         mLayout = findViewById(R.id.main_layout);
         container = (LinearLayout) findViewById(R.id.bottom_sheet_container);
@@ -880,8 +885,6 @@ public class BrowserActivity extends BaseActivity
         requestServerInfo();
         requestReadExternalStoragePermission();
     }
-
-    ;
 
     public LinearLayout getContainer() {
         return container;
@@ -3520,15 +3523,9 @@ public class BrowserActivity extends BaseActivity
 
             @Override
             public void run() {
-                if (BrowserActivity.this == null) return;
-
                 TransferService ts = getTransferService();
-                String repoID = getNavContext().getRepoID();
-                String repoName = getNavContext().getRepoName();
-                String currentDir = getNavContext().getDirPath();
-                if (ts != null) {
-                    mRightViewAdapter.setDownloadTaskList(ts.getDownloadTaskInfosByPath(repoID, currentDir));
-                }
+                mTransAdapter.setTransferTaskInfos(ts.getAllDownloadTaskInfos());
+                mTransAdapter.notifyDataSetChanged();
                 // Log.d(DEBUG_TAG, "timer post refresh signal " + System.currentTimeMillis());
                 mTimer.postDelayed(this, 1 * 3500);
             }
