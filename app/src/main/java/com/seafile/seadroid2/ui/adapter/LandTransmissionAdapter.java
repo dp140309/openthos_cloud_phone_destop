@@ -141,10 +141,8 @@ public class LandTransmissionAdapter extends BaseAdapter {
         mTransferTaskInfos = mActivity.getTransferService().getAllDownloadTaskInfos();
         if (mSelectedItemsPositions != null) mSelectedItemsPositions.clear();
         for (int i = 0; i < mTransferTaskInfos.size(); i++) {
-//            mSelectedItemsIds.put(i, true);
             mSelectedItemsPositions.add(i);
         }
-        Log.i("--set--",mSelectedItemsPositions+"---0-0-0-0-0-0-");
         return mSelectedItemsPositions;
     }
 

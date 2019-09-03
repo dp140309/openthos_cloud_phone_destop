@@ -507,9 +507,9 @@ public class BrowserActivity extends BaseActivity
                 showAccountView(v);
                 break;
             case R.id.button_all_start:
-                if (txService != null || mTransAdapter != null){
-                    txService.restartDownloadTasksByIds(mTransAdapter.getSelectedIds());
-                    Log.i("size","--=-=-browser=-="+mTransAdapter.getSelectedIds().size());
+                if (txService != null){
+                    txService.restartAllDownloadTasksByState(TaskState.FAILED);
+                    txService.restartAllDownloadTasksByState(TaskState.CANCELLED);
                 }
                 break;
             case R.id.button_all_stop:
