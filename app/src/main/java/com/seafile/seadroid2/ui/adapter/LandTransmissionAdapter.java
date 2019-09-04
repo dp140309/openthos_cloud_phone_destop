@@ -3,7 +3,6 @@ package com.seafile.seadroid2.ui.adapter;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.LongFunction;
 
 public class LandTransmissionAdapter extends BaseAdapter {
 
@@ -32,7 +30,6 @@ public class LandTransmissionAdapter extends BaseAdapter {
     private List<? extends TransferTaskInfo> mTransferTaskInfos;
     private List<Integer> mSelectedItemsPositions = Lists.newArrayList();
     private BrowserActivity mActivity;
-    private int flag = 0;
 
     public LandTransmissionAdapter(BrowserActivity activity, List<? extends TransferTaskInfo> transferTaskInfos){
         this.mActivity = activity;
@@ -79,7 +76,9 @@ public class LandTransmissionAdapter extends BaseAdapter {
         final DownloadTaskInfo taskInfo = (DownloadTaskInfo) mTransferTaskInfos.get(position);
         viewHolder.mTransIcon.setImageResource(Utils.getFileIcon(taskInfo.pathInRepo));
         viewHolder.mTransName.setText(Utils.fileNameFromPath(taskInfo.pathInRepo));
+
         updateTaskView(taskInfo,viewHolder);
+
         viewHolder.mTransDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +97,6 @@ public class LandTransmissionAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 File parentFlie = new File(mActivity.getExternalCacheDir() + mActivity.getNavContext().getDirPath());
-                Log.i("----",mActivity.getExternalCacheDir()+"---"+mActivity.getNavContext().getDirPath()+"<<---0-0-0-0--->>"+mTransferTaskInfos.get(position).localFilePath);
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setDataAndType(Uri.fromFile(parentFlie), "*/*");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -109,17 +107,16 @@ public class LandTransmissionAdapter extends BaseAdapter {
         viewHolder.mTransPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (flag){
-                    case 0:
-                        v.setActivated(true);
-                        flag = 1;
-                        transferPause(position);
-                        break;
-                    case 1:
-                        v.setActivated(false);
-                        flag = 0;
-                        transferPlay(position);
-                        break;
+
+                List<Integer> ids = Lists.newArrayList();
+                TransferTaskInfo tti = getItem(position);
+                ids.add(tti.taskID);
+                if (v.isActivated()){
+                    v.setActivated(false);
+                    transferPlay(ids);
+                }else {
+                    v.setActivated(true);
+                    transferPause(ids);
                 }
             }
         });
@@ -127,14 +124,16 @@ public class LandTransmissionAdapter extends BaseAdapter {
         return view;
     }
 
-    private void transferPause(int postion){
-        mActivity.showShortToast(mActivity,"COMING SONG PAUSE");
-
+    private void transferPause(List<Integer> ids){
+        if (mActivity.getTransferService() != null) {
+            mActivity.getTransferService().cancellDownloadTasksByIds(ids);
+        }
     }
 
-    private void transferPlay(int postion){
-        mActivity.showShortToast(mActivity,"COMING SONG play");
-
+    private void transferPlay(List<Integer> ids){
+        if (mActivity.getTransferService() != null) {
+            mActivity.getTransferService().restartDownloadTasksByIds(ids);
+        }
     }
 
     public List<Integer> getSelectedIds() {
@@ -161,6 +160,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
         int stateColor = R.color.light_black;
         long totalSize = 0l;
         long transferedSize = 0l;
+        long pauseSize = 0l;
 
         DownloadTaskInfo dti = (DownloadTaskInfo) info;
         totalSize = dti.fileSize;
@@ -174,6 +174,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
 
                 viewHolder.mTransime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
+                viewHolder.mTransPause.setActivated(false);
                 break;
             case TRANSFERRING:
                 int percent;
@@ -188,6 +189,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
                         Utils.readableFileSize(totalSize));
                 viewHolder.mTransime.setVisibility(View.VISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.VISIBLE);
+                viewHolder.mTransPause.setActivated(false);
                 break;
             case FINISHED:
 //                if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.DOWNLOAD_TASK))
@@ -206,6 +208,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 stateColor = Color.RED;
                 viewHolder.mTransime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
+                viewHolder.mTransPause.setActivated(true);
                 break;
             case FAILED:
 //                if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.DOWNLOAD_TASK))
