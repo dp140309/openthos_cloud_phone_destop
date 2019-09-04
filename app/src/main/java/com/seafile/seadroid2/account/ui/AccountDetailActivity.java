@@ -3,6 +3,7 @@ package com.seafile.seadroid2.account.ui;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import com.seafile.seadroid2.SeafConnection;
 import com.seafile.seadroid2.SeafException;
 import com.seafile.seadroid2.account.Account;
 import com.seafile.seadroid2.account.AccountInfo;
+import com.seafile.seadroid2.account.AccountManager;
 import com.seafile.seadroid2.account.Authenticator;
 import com.seafile.seadroid2.data.DataManager;
 import com.seafile.seadroid2.ssl.CertsManager;
@@ -69,6 +71,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
     private EditText authTokenText;
 
     private android.accounts.AccountManager mAccountManager;
+    private AccountManager accountManager;
     private boolean serverTextHasFocus;
     private boolean isPasswddVisible;
     private CheckBox cbRemDevice;
@@ -80,6 +83,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_detail);
 
+        accountManager = new AccountManager(this);
         mAccountManager = android.accounts.AccountManager.get(getBaseContext());
 
         statusView = (TextView) findViewById(R.id.status_view);
@@ -104,8 +108,9 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
         setupServerText();
 
         Intent intent = getIntent();
-
         String defaultServerUri = intent.getStringExtra(SeafileAuthenticatorActivity.ARG_SERVER_URI);
+
+        String nameUrl = accountManager.getServiceUrl();
 
         if (intent.getBooleanExtra("isEdited", false)) {
             String account_name = intent.getStringExtra(SeafileAuthenticatorActivity.ARG_ACCOUNT_NAME);
@@ -133,7 +138,11 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
 //            serverText.setText(HTTPS_PREFIX + HTTPS_DEFAULT_ADDRESS);
             emailText.requestFocus();
         } else {
-            serverText.setText(HTTP_PREFIX + HTTPS_DEFAULT_ADDRESS);
+            if (nameUrl != null) {
+                serverText.setText(HTTP_PREFIX + nameUrl.toString());
+            }else
+                serverText.setText(HTTP_PREFIX + mAccountManager);
+
 //            int prefixLen = HTTP_PREFIX.length() + HTTPS_DEFAULT_ADDRESS.length();
 //            serverText.setSelection(prefixLen, prefixLen);
             emailText.requestFocus();

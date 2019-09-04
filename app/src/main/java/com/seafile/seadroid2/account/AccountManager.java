@@ -121,6 +121,26 @@ public class AccountManager {
     }
 
     /**
+     * save service url to SharedPreference<br>
+     * <strong>service url</strong> Switch service url
+     *
+     * @param serviceUrl
+     */
+    public void saveServiceUrl(String serviceUrl) {
+        serviceUrl = serviceUrl.substring(serviceUrl.indexOf("://") + 3);
+        editor.putString("SERVICE_URL", serviceUrl);
+        editor.commit();
+    }
+
+    /**
+     * get service url to SharedPreference<br>
+     *
+     */
+    public String  getServiceUrl() {
+        return actMangeSharedPref.getString("SERVICE_URL", null);
+    }
+
+    /**
      * when user sign out, delete authorized information of the current Account instance.<br>
      * If Camera Upload Service is running under the Account, stop the service.
      *

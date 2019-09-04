@@ -344,6 +344,7 @@ public class ReposFragment extends ListFragment {
         super.onResume();
         // Log.d(DEBUG_TAG, "ReposFragment onResume");
         // refresh the view (loading data)
+        if (!mActivity.isLandPattern)
         refreshView(true);
         mRefreshType = REFRESH_ON_RESUME;
     }

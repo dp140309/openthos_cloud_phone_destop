@@ -6,15 +6,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.seafile.seadroid2.R;
+import com.seafile.seadroid2.account.AccountManager;
+import com.seafile.seadroid2.account.ui.AccountDetailActivity;
+import com.seafile.seadroid2.account.ui.SeafileAuthenticatorActivity;
 
 public class OpenthosSettingsActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
 
@@ -25,12 +26,14 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
     private LayoutInflater Inflater;
     private TextView maText, GSText, mGeneraText;
     private String account,server;
+    private AccountManager accountManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         Inflater = LayoutInflater.from(this);
+        accountManager = new AccountManager(this);
         account = this.getIntent().getExtras().getString("account");
         server = this.getIntent().getExtras().getString("server");
         initView();
@@ -144,7 +147,11 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 GSText.setText(serviceDev.getText());
+                accountManager.saveServiceUrl(serviceDev.getText().toString());
+                Intent intent = new Intent(OpenthosSettingsActivity.this, AccountDetailActivity.class);
+                startActivity(intent);
                 popupWindow.dismiss();
+                OpenthosSettingsActivity.this.finish();
             }
         });
 
@@ -152,7 +159,11 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 GSText.setText(service185.getText());
+                accountManager.saveServiceUrl(service185.getText().toString());
+                Intent intent = new Intent(OpenthosSettingsActivity.this, AccountDetailActivity.class);
+                startActivity(intent);
                 popupWindow.dismiss();
+                OpenthosSettingsActivity.this.finish();
             }
         });
     }
