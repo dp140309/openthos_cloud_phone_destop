@@ -175,6 +175,8 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 viewHolder.mTransime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
                 viewHolder.mTransPause.setActivated(false);
+                viewHolder.mTransPause.setVisibility(View.VISIBLE);
+                viewHolder.mTransFile.setVisibility(View.GONE);
                 break;
             case TRANSFERRING:
                 int percent;
@@ -190,6 +192,8 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 viewHolder.mTransime.setVisibility(View.VISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.VISIBLE);
                 viewHolder.mTransPause.setActivated(false);
+                viewHolder.mTransPause.setVisibility(View.VISIBLE);
+                viewHolder.mTransFile.setVisibility(View.GONE);
                 break;
             case FINISHED:
 //                if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.DOWNLOAD_TASK))
@@ -199,6 +203,8 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 stateColor = Color.BLACK;
                 viewHolder.mTransime.setVisibility(View.VISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
+                viewHolder.mTransPause.setVisibility(View.GONE);
+                viewHolder.mTransFile.setVisibility(View.VISIBLE);
                 break;
             case CANCELLED:
 //                if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.DOWNLOAD_TASK))
@@ -209,6 +215,8 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 viewHolder.mTransime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
                 viewHolder.mTransPause.setActivated(true);
+                viewHolder.mTransPause.setVisibility(View.VISIBLE);
+                viewHolder.mTransFile.setVisibility(View.GONE);
                 break;
             case FAILED:
 //                if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.DOWNLOAD_TASK))
@@ -218,6 +226,8 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 stateColor = Color.RED;
                 viewHolder.mTransime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
+                viewHolder.mTransPause.setVisibility(View.VISIBLE);
+                viewHolder.mTransFile.setVisibility(View.GONE);
                 break;
         }
         viewHolder.mTransime.setText(sizeStr);
