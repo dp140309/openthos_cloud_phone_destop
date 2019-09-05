@@ -373,7 +373,6 @@ public class BrowserActivity extends BaseActivity
         String path = intent.getStringExtra("path");
         String dirID = intent.getStringExtra("dirID");
         String permission = intent.getStringExtra("permission");
-        Log.i("repo------", "dddddd" + account.getDisplayName()+"\n"+account.getServer()+"\n"+account.getToken());
         if (repoID != null) {
             navContext.setRepoID(repoID);
             navContext.setRepoName(repoName);
@@ -445,7 +444,7 @@ public class BrowserActivity extends BaseActivity
         mTaskStart = findViewById(R.id.button_all_start);
         mTaskStop = findViewById(R.id.button_all_stop);
 
-        if(account.getServerHost() != null ) accountView.setText(account.getServerHost());
+        if(account.getEmail() != null ) accountView.setText(account.getEmail());
 
         mView = new ArrayList<>();
         mView.add(downloadView);
@@ -467,7 +466,6 @@ public class BrowserActivity extends BaseActivity
         deleteView.setOnClickListener(this);
         transferView.setOnClickListener(this);
         settingView.setOnClickListener(this);
-        accountView.setOnClickListener(this);
         mAccountButton.setOnClickListener(this);
         mTaskStart.setOnClickListener(this);
         mTaskStop.setOnClickListener(this);
@@ -498,8 +496,6 @@ public class BrowserActivity extends BaseActivity
             case R.id.settings_view:
                 ShowSettingPage();
                 break;
-            case R.id.account_manager_view:
-                break;
             case R.id.trans_close:
                 mTransferLayoutView.setVisibility(View.GONE);
                 break;
@@ -513,8 +509,7 @@ public class BrowserActivity extends BaseActivity
                 }
                 break;
             case R.id.button_all_stop:
-                if (txService != null)
-                txService.cancellAllDownloadTasks();
+                if (txService != null) txService.cancellAllDownloadTasks();
                 break;
         }
     }
@@ -701,7 +696,7 @@ public class BrowserActivity extends BaseActivity
 
     private void ShowSettingPage(){
         Intent intent = new Intent(this,OpenthosSettingsActivity.class);
-        intent.putExtra("account",account.getServerHost());
+        intent.putExtra("email",account.getEmail());
         intent.putExtra("server",account.getServer());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

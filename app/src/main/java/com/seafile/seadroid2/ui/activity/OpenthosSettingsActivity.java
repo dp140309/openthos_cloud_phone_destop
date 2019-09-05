@@ -2,10 +2,12 @@ package com.seafile.seadroid2.ui.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -17,15 +19,18 @@ import com.seafile.seadroid2.account.AccountManager;
 import com.seafile.seadroid2.account.ui.AccountDetailActivity;
 import com.seafile.seadroid2.account.ui.SeafileAuthenticatorActivity;
 
+import java.io.File;
+
 public class OpenthosSettingsActivity extends BaseActivity implements View.OnClickListener, View.OnHoverListener {
 
     private FrameLayout frameLayout;
-    private View accountSettings, generalSettings;
+    private View accountSettings, generalSettings, modifyButton, confirmButton;
     private TextView accountButton, generalButton;
     private LinearLayout mAccountView, mGeneralView;
     private LayoutInflater Inflater;
-    private TextView maText, GSText, mGeneraText;
-    private String account,server;
+    private TextView  GSText, mGeneraText;
+    private EditText maText;
+    private String email,server;
     private AccountManager accountManager;
 
     @Override
@@ -34,7 +39,7 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
         setContentView(R.layout.settings_layout);
         Inflater = LayoutInflater.from(this);
         accountManager = new AccountManager(this);
-        account = this.getIntent().getExtras().getString("account");
+        email = this.getIntent().getExtras().getString("email");
         server = this.getIntent().getExtras().getString("server");
         initView();
         initData();
@@ -50,15 +55,18 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
         generalSettings = Inflater.inflate(R.layout.general_settings, null, false);
 
         maText = accountSettings.findViewById(R.id.account_text);
-        maText.setText(account);
-        accountSettings.findViewById(R.id.account_modify).setOnClickListener(this);
+        maText.setText(email);
+        modifyButton = accountSettings.findViewById(R.id.account_modify);
+        confirmButton = accountSettings.findViewById(R.id.account_confirm);
 
         accountSettings.findViewById(R.id.account_text).setOnClickListener(this);
         GSText = generalSettings.findViewById(R.id.general_service_text);
         GSText.setText(server);
+
         generalSettings.findViewById(R.id.general_service_view).setOnClickListener(this);
         mGeneraText = generalSettings.findViewById(R.id.general_path_text);
         mGeneraText.setText(getExternalCacheDir().toString());
+
         generalSettings.findViewById(R.id.general_path_button).setOnClickListener(this);
 
     }
@@ -72,6 +80,21 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
         mAccountView.setOnHoverListener(this);
         mGeneralView.setOnHoverListener(this);
         GSText.setOnClickListener(this);
+        modifyButton.setOnClickListener(this);
+        confirmButton.setOnClickListener(this);
+
+        maText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus){
+                    maText.setFocusableInTouchMode(false);
+                    maText.setBackgroundResource(0);
+                    confirmButton.setVisibility(View.GONE);
+                    modifyButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
     }
 
     private int flag = 0;
@@ -95,12 +118,13 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
                 break;
 
             case R.id.account_modify:
-                Toast.makeText(OpenthosSettingsActivity.this, "暂不支持修改", Toast.LENGTH_LONG).show();
+                modiryAccount();
                 break;
-
+            case R.id.account_confirm:
+                confirmAccountModify();
+                break;
             case R.id.general_service_text:
                 break;
-
             case R.id.general_service_view:
                 switch (flag){
                     case 0:
@@ -115,15 +139,37 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
                         break;
                 }
                 break;
-
-            case R.id.general_path_text:
-                break;
-
             case R.id.general_path_button:
-                Toast.makeText(OpenthosSettingsActivity.this, "COMING SOON", Toast.LENGTH_LONG).show();
+                File parentFlie = new File(getExternalCacheDir() + mGeneraText.getText().toString());
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setDataAndType(Uri.fromFile(parentFlie), "*/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivity(intent);
                 break;
         }
     }
+
+    private void modiryAccount(){
+        modifyButton.setVisibility(View.GONE);
+        confirmButton.setVisibility(View.VISIBLE);
+        maText.setSelection(email.length());
+        maText.setFocusableInTouchMode(true);
+        maText.setBackgroundResource(R.drawable.setting_background);
+    }
+    private void confirmAccountModify(){
+        if (maText.getText().toString().equals(email)) {
+            showLongToast(this,"未做修改");
+            return;
+        }
+        modifyButton.setVisibility(View.VISIBLE);
+        confirmButton.setVisibility(View.GONE);
+        maText.setText(email);
+        maText.setFocusableInTouchMode(false);
+        maText.setCursorVisible(false);
+        maText.setBackgroundResource(0);
+        showLongToast(this,"暂不支持用户名的修改");
+    }
+
     PopupWindow popupWindow;
     private void showView(View v){
         View productListView = LayoutInflater.from(this).inflate(R.layout.setting_service_view, null);
