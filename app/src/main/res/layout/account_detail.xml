@@ -1,33 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical">
-    <include layout="@layout/toolbar_actionbar" /> <!-- placeholder, empty except on L -->
-    <CheckBox
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
-        android:id="@+id/https_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/cb_padding_left"
-            android:layout_marginStart="@dimen/cb_padding_left"
-            android:layout_marginTop="@dimen/cb_padding_top"
-            android:onClick="onHttpsCheckboxClicked"
-            android:textSize="@dimen/cb_btn_txt_size"
-            android:text="@string/accounts_https_hint"/>
+    <!-- portrait  layout -->
+    <!--<include layout="@layout/toolbar_actionbar" /> &lt;!&ndash; placeholder, empty except on L &ndash;&gt;-->
+    <!--<CheckBox-->
+
+        <!--android:id="@+id/https_checkbox"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="@dimen/cb_padding_left"-->
+        <!--android:layout_marginStart="@dimen/cb_padding_left"-->
+        <!--android:layout_marginTop="@dimen/cb_padding_top"-->
+        <!--android:visibility="gone"-->
+        <!--android:onClick="onHttpsCheckboxClicked"-->
+        <!--android:textSize="@dimen/cb_btn_txt_size"-->
+        <!--android:text="@string/accounts_https_hint"/>-->
+
+    <ImageView
+        android:layout_width="128dp"
+        android:layout_height="51dp"
+        android:src="@drawable/openthos_about_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/form_padding_bottom"
-            android:paddingTop="@dimen/form_padding_top">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/form_padding_bottom"
+        android:paddingTop="@dimen/form_padding_top">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/server_hint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/server_url"
@@ -167,23 +176,30 @@
         android:textColor="@color/white"
         android:textSize="@dimen/long_btn_txt_size" />
 
-    <TextView
+    <RelativeLayout
+        android:id="@+id/log_in_erro_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tv_margin_left"
+        android:layout_marginRight="@dimen/tv_margin_right"
+        android:visibility="invisible" >
+
+        <TextView
             android:id="@+id/status_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tv_margin_left"
-            android:layout_marginRight="@dimen/tv_margin_right"
-            android:visibility="gone"
             android:text=""/>
 
+    </RelativeLayout>
+
     <TextView
-            android:id="@+id/seahub_url_hint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tv_margin_left"
-            android:layout_marginRight="@dimen/tv_margin_right"
-            android:visibility="gone"
-            android:textSize="@dimen/tv_txt_size"
-            android:text="@string/seahub_url_hint"/>
+        android:id="@+id/seahub_url_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tv_margin_left"
+        android:layout_marginRight="@dimen/tv_margin_right"
+        android:visibility="gone"
+        android:textSize="@dimen/tv_txt_size"
+        android:text="@string/seahub_url_hint"/>
 
 </LinearLayout>

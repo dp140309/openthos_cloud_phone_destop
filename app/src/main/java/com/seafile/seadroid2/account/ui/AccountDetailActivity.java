@@ -49,12 +49,13 @@ import org.json.JSONException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
-public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener {
+public class AccountDetailActivity extends BaseActivity {
     private static final String DEBUG_TAG = "AccountDetailActivity";
 
     private static final String HTTP_PREFIX = "http://";
     private static final String HTTPS_PREFIX = "https://";
-    private static final String HTTPS_DEFAULT_ADDRESS = "dev.openthos.org";
+//    private static final String HTTPS_DEFAULT_ADDRESS = "dev.openthos.org";
+    private static final String HTTPS_DEFAULT_ADDRESS = "192.168.0.158";
     public static final String TWO_FACTOR_AUTH = "two_factor_auth";
 
     private TextView statusView;
@@ -66,7 +67,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
     private CheckBox httpsCheckBox;
     private TextView seahubUrlHintText;
     private ImageView clearEmail, clearPasswd, ivEyeClick;
-    private RelativeLayout rlEye;
+    private RelativeLayout rlEye, logInErroViewIcon;
     private TextInputLayout authTokenLayout;
     private EditText authTokenText;
 
@@ -103,6 +104,8 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
         authTokenText = (EditText) findViewById(R.id.auth_token);
         authTokenLayout.setVisibility(View.GONE);
 
+        logInErroViewIcon = (RelativeLayout) findViewById(R.id.log_in_erro_view);
+
         cbRemDevice = findViewById(R.id.remember_device);
         cbRemDevice.setVisibility(View.GONE);
         setupServerText();
@@ -134,25 +137,26 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
         } else if (defaultServerUri != null) {
             if (defaultServerUri.startsWith(HTTPS_PREFIX))
                 httpsCheckBox.setChecked(true);
-                serverText.setText(defaultServerUri);
-//            serverText.setText(HTTPS_PREFIX + HTTPS_DEFAULT_ADDRESS);
+            serverText.setText(HTTP_PREFIX + HTTPS_DEFAULT_ADDRESS);
             emailText.requestFocus();
         } else {
             if (nameUrl != null) {
                 serverText.setText(HTTP_PREFIX + nameUrl.toString());
-            }else
-                serverText.setText(HTTP_PREFIX + mAccountManager);
+            }else {
 
+                serverText.setText(HTTP_PREFIX + HTTPS_DEFAULT_ADDRESS);
+            }
 //            int prefixLen = HTTP_PREFIX.length() + HTTPS_DEFAULT_ADDRESS.length();
 //            serverText.setSelection(prefixLen, prefixLen);
             emailText.requestFocus();
 
         }
-        Toolbar toolbar = getActionBarToolbar();
-        toolbar.setOnMenuItemClickListener(this);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.login);
+
+//        Toolbar toolbar = getActionBarToolbar();
+//        toolbar.setOnMenuItemClickListener(this);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle(R.string.login);
 
         initListener();
     }
@@ -278,10 +282,10 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
         cbRemDevice.setChecked((boolean) savedInstanceState.get("rememberDevice"));
     }
 
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        return false;
-    }
+//    @Override
+//    public boolean onMenuItemClick(MenuItem item) {
+//        return false;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -388,6 +392,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
 
         if (networkInfo != null && networkInfo.isConnected()) {
             if (serverURL.length() == 0) {
+                logInErroViewIcon.setVisibility(View.VISIBLE);
                 statusView.setText(R.string.err_server_andress_empty);
                 return;
             }
@@ -398,6 +403,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
             }
 
             if (passwd.length() == 0) {
+                logInErroViewIcon.setVisibility(View.VISIBLE);
                 passwdText.setError(getResources().getString(R.string.err_passwd_empty));
                 return;
             }
@@ -418,6 +424,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
             try {
                 serverURL = Utils.cleanServerURL(serverURL);
             } catch (MalformedURLException e) {
+                logInErroViewIcon.setVisibility(View.VISIBLE);
                 statusView.setText(R.string.invalid_server_address);
                 Log.d(DEBUG_TAG, "Invalid URL " + serverURL);
                 return;
@@ -437,6 +444,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
             ConcurrentAsyncTask.execute(new LoginTask(tmpAccount, passwd, authToken,rememberDevice));
 
         } else {
+            logInErroViewIcon.setVisibility(View.VISIBLE);
             statusView.setText(R.string.network_down);
         }
     }
@@ -489,6 +497,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
 
                             @Override
                             public void onRejected() {
+                                logInErroViewIcon.setVisibility(View.VISIBLE);
                                 statusView.setText(result);
                                 loginButton.setEnabled(true);
                             }
@@ -526,6 +535,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
                 setResult(RESULT_OK, retData);
                 finish();
             } else {
+                logInErroViewIcon.setVisibility(View.VISIBLE);
                 statusView.setText(result);
             }
             loginButton.setEnabled(true);
