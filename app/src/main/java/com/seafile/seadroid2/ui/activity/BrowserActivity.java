@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -46,6 +47,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -294,6 +296,8 @@ public class BrowserActivity extends BaseActivity
             view.setEnabled(true);
         }
 
+
+
         mRightDataList.clear();
         mRightViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
             @Override
@@ -405,6 +409,7 @@ public class BrowserActivity extends BaseActivity
 
     // -------------------------- land view --------------------//
     protected void onCreateLandView(Bundle savedInstanceState) {
+        Utils.checkPermission(BrowserActivity.this);
         mLeftMenu =  findViewById(R.id.left_list);
         mCurrentDirectory = findViewById(R.id.current_directory);
         mMenuDialog = RecycleMenuDialog.getInstance(this);
@@ -747,11 +752,15 @@ public class BrowserActivity extends BaseActivity
                                 navContext.getRepoID(), navContext.getDirPath());
                         if (drent.isDir()) {
                             downloadDir(navContext.getDirPath(), drent.name, true);
+                            mTransferLayoutView.setVisibility(View.VISIBLE);
                         } else {
                             downloadFile(navContext.getDirPath(), drent.name);
                             mTransferLayoutView.setVisibility(View.VISIBLE);
                         }
-                        mTransAdapter.notifyDataSetChanged();
+
+                        List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
+                        mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this,infos);
+                        mTransmissionListView.setAdapter(mTransAdapter);
                         startTimer();
                     } else {
                         if (menu.equals(getString(R.string.oenthos_collection))) {

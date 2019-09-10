@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -65,11 +66,8 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
-        window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         setContentView(R.layout.recycle_item_right_menu);
+
         if (mPoint == null) {
             Display defaultDisplay = ((WindowManager)
                     getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -99,7 +97,6 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
         mSeafItem = postion;
         viewType = type;
         Window dialogWindow = getWindow();
-        dialogWindow.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         dialogWindow.setGravity(Gravity.LEFT | Gravity.TOP);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.format = PixelFormat.TRANSPARENT;

@@ -18,13 +18,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
 import android.provider.OpenableColumns;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -860,5 +864,26 @@ public class Utils {
         }
     }
 
+
+    public static boolean checkPermission(Activity activity){
+        Window dialogWindow = activity.getWindow();
+        int LAYOUT_FLAG;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }else {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
+        }
+        dialogWindow.setType(LAYOUT_FLAG);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && !Settings.canDrawOverlays(activity)) {
+            Toast.makeText(activity, "当前无权限，请授权", Toast.LENGTH_SHORT).show();
+            activity.startActivityForResult(
+                    new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + activity.getPackageName())), 0);
+            return false;
+        }
+        return true;
+    }
 
 }
