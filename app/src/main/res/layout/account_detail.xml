@@ -5,30 +5,30 @@
     android:orientation="vertical">
 
     <!-- portrait  layout -->
-    <!--<include layout="@layout/toolbar_actionbar" /> &lt;!&ndash; placeholder, empty except on L &ndash;&gt;-->
-    <!--<CheckBox-->
-
-        <!--android:id="@+id/https_checkbox"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="@dimen/cb_padding_left"-->
-        <!--android:layout_marginStart="@dimen/cb_padding_left"-->
-        <!--android:layout_marginTop="@dimen/cb_padding_top"-->
-        <!--android:visibility="gone"-->
-        <!--android:onClick="onHttpsCheckboxClicked"-->
-        <!--android:textSize="@dimen/cb_btn_txt_size"-->
-        <!--android:text="@string/accounts_https_hint"/>-->
 
     <ImageView
         android:layout_width="128dp"
         android:layout_height="51dp"
+        android:layout_marginLeft="@dimen/auto_complete_ed_margin_left"
+        android:layout_marginRight="@dimen/auto_complete_ed_margin_right"
+        android:layout_marginTop="@dimen/openthos_view_size_20"
         android:src="@drawable/openthos_about_icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/auto_complete_ed_margin_left"
+        android:layout_marginRight="@dimen/auto_complete_ed_margin_right"
+        android:layout_marginTop="@dimen/openthos_view_size_30"
+        android:textSize="@dimen/openthos_view_size_16"
+        android:text="@string/login"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
+        android:layout_marginTop="@dimen/openthos_view_size_20"
         android:paddingBottom="@dimen/form_padding_bottom"
         android:paddingTop="@dimen/form_padding_top">
 
@@ -169,6 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:gravity="center"
+        android:layout_marginTop="@dimen/openthos_view_size_20"
         android:layout_marginRight="@dimen/long_btn_margin_right"
         android:onClick="login"
         android:text="@string/login"
@@ -176,12 +177,24 @@
         android:textColor="@color/white"
         android:textSize="@dimen/long_btn_txt_size" />
 
+    <TextView
+        android:id="@+id/fotgot_password_view"
+        android:onClick="fotgotPasswordView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:textColor="@color/fancy_purple"
+        android:textSize="@dimen/openthos_view_size_12"
+        android:layout_marginTop="@dimen/openthos_view_size_6"
+        android:layout_marginRight="@dimen/long_btn_margin_right"
+        android:text="@string/lockscreen_access_pattern_passwd_forget" />
     <RelativeLayout
         android:id="@+id/log_in_erro_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/tv_margin_left"
         android:layout_marginRight="@dimen/tv_margin_right"
+        android:layout_marginTop="@dimen/openthos_view_size_20"
         android:visibility="invisible" >
 
         <TextView

@@ -63,6 +63,8 @@
                 android:src="@drawable/icon_delete"
                 android:visibility="invisible" />
 
+        <!--android:onClick="onHttpsCheckboxClicked" -->
+
         <CheckBox
             android:id="@+id/https_checkbox"
             android:layout_width="wrap_content"
@@ -70,7 +72,6 @@
             android:layout_marginLeft="@dimen/cb_padding_left"
             android:layout_marginStart="@dimen/cb_padding_left"
             android:layout_marginTop="@dimen/cb_padding_top"
-            android:onClick="onHttpsCheckboxClicked"
             android:text="@string/accounts_https_hint"
             android:textSize="@dimen/cb_btn_txt_size"
             android:visibility="gone" />
@@ -214,9 +215,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="fotgotPasswordView"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="忘記密碼"/>
+            android:textColor="@color/fancy_purple"
+            android:textSize="@dimen/openthos_view_size_12"
+            android:text="@string/lockscreen_access_pattern_passwd_forget"/>
 
     </RelativeLayout>
 

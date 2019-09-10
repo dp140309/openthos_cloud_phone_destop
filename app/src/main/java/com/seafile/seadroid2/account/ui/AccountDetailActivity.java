@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -143,7 +144,6 @@ public class AccountDetailActivity extends BaseActivity {
             if (nameUrl != null) {
                 serverText.setText(HTTP_PREFIX + nameUrl.toString());
             }else {
-
                 serverText.setText(HTTP_PREFIX + HTTPS_DEFAULT_ADDRESS);
             }
 //            int prefixLen = HTTP_PREFIX.length() + HTTPS_DEFAULT_ADDRESS.length();
@@ -316,32 +316,12 @@ public class AccountDetailActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onHttpsCheckboxClicked(View view) {
-        refreshServerUrlPrefix();
+    public void fotgotPasswordView(View view){
+        sendEmailRequest();
     }
 
-    private void refreshServerUrlPrefix() {
-        boolean isHttps = httpsCheckBox.isChecked();
-        String url = serverText.getText().toString();
-        String prefix = isHttps ? HTTPS_PREFIX : HTTP_PREFIX;
-
-        String urlWithoutScheme = url.replace(HTTPS_PREFIX, "").replace(HTTP_PREFIX, "");
-
-        int oldOffset = serverText.getSelectionStart();
-
-        // Change the text
-        serverText.setText(prefix + urlWithoutScheme);
-
-        if (serverTextHasFocus) {
-            // Change the cursor position since we changed the text
-            if (isHttps) {
-                int offset = oldOffset + 1;
-                serverText.setSelection(offset, offset);
-            } else {
-                int offset = Math.max(0, oldOffset - 1);
-                serverText.setSelection(offset, offset);
-            }
-        }
+    private void sendEmailRequest(){
+        showLongToast(this,"COOMING SOON");
     }
 
     private void setupServerText() {
@@ -350,32 +330,6 @@ public class AccountDetailActivity extends BaseActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 Log.d(DEBUG_TAG, "serverText has focus: " + (hasFocus ? "yes" : "no"));
                 serverTextHasFocus = hasFocus;
-            }
-        });
-
-        serverText.addTextChangedListener(new TextWatcher() {
-            private String old;
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                old = serverText.getText().toString();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Don't allow the user to edit the "https://" or "http://" part of the serverText
-                String url = serverText.getText().toString();
-                boolean isHttps = httpsCheckBox.isChecked();
-                String prefix = isHttps ? HTTPS_PREFIX : HTTP_PREFIX;
-                if (!url.startsWith(prefix)) {
-                    int oldOffset = Math.max(prefix.length(), serverText.getSelectionStart());
-                    serverText.setText(old);
-                    serverText.setSelection(oldOffset, oldOffset);
-                }
             }
         });
     }
@@ -398,12 +352,13 @@ public class AccountDetailActivity extends BaseActivity {
             }
 
             if (email.length() == 0) {
+                logInErroViewIcon.setVisibility(View.INVISIBLE);
                 emailText.setError(getResources().getString(R.string.err_email_empty));
                 return;
             }
 
             if (passwd.length() == 0) {
-                logInErroViewIcon.setVisibility(View.VISIBLE);
+                logInErroViewIcon.setVisibility(View.INVISIBLE);
                 passwdText.setError(getResources().getString(R.string.err_passwd_empty));
                 return;
             }

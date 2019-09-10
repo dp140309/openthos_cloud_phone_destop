@@ -3063,7 +3063,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     public void navToReposView(boolean forceRefresh, boolean restorePosition) {
-        //stopTimer();
+//        stopTimer();
 
 //        mPullToRefreshStopRefreshing++;
 
@@ -3120,7 +3120,7 @@ public class BrowserActivity extends BaseActivity
         if (personalRepos != null) {
             SeafGroup personalGroup = new SeafGroup(getResources().getString(R.string.personal));
             mLeftViewAdapter.add(personalGroup);
-            mLeftDataList.add(personalGroup);
+//            mLeftDataList.add(personalGroup);
             for (SeafRepo repo : personalRepos)
 //                mLeftViewAdapter.add(repo);
 //                mLeftViewAdapter.add(repo);
@@ -3131,7 +3131,7 @@ public class BrowserActivity extends BaseActivity
         List<SeafRepo> sharedRepos = map.get(Utils.SHARED_REPO);
         if (sharedRepos != null) {
             SeafGroup sharedGroup = new SeafGroup(getResources().getString(R.string.shared));
-            mLeftViewAdapter.add(sharedGroup);
+//            mLeftViewAdapter.add(sharedGroup);
             for (SeafRepo repo : sharedRepos)
                 mLeftViewAdapter.add(repo);
         }
@@ -3141,7 +3141,7 @@ public class BrowserActivity extends BaseActivity
             if (!key.equals(Utils.PERSONAL_REPO)
                     && !key.endsWith(Utils.SHARED_REPO)) {
                 SeafGroup group = new SeafGroup(key);
-                mLeftViewAdapter.add(group);
+//                mLeftViewAdapter.add(group);
                 for (SeafRepo repo : entry.getValue()) {
                     mLeftViewAdapter.add(repo);
                 }
