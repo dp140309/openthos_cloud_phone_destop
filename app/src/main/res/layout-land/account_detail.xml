@@ -210,7 +210,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:textSize="@dimen/cb_btn_txt_size"
-            android:text="記住密碼" />
+            android:text="@string/remember_password" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -219,7 +219,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/fancy_purple"
-            android:textSize="@dimen/openthos_view_size_12"
+            android:textSize="@dimen/openthos_text_size_14"
             android:text="@string/lockscreen_access_pattern_passwd_forget"/>
 
     </RelativeLayout>

@@ -865,18 +865,21 @@ public class Utils {
     }
 
 
-    public static boolean checkPermission(Activity activity){
+    public static void checkPermission(Activity activity){
         Window dialogWindow = activity.getWindow();
         int LAYOUT_FLAG;
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            openAccess(activity);
         }else {
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
         }
         dialogWindow.setType(LAYOUT_FLAG);
+    }
 
+    private static boolean openAccess(Activity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && !Settings.canDrawOverlays(activity)) {
+                && !Settings.canDrawOverlays(activity)) {
             Toast.makeText(activity, "当前无权限，请授权", Toast.LENGTH_SHORT).show();
             activity.startActivityForResult(
                     new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -885,5 +888,4 @@ public class Utils {
         }
         return true;
     }
-
 }

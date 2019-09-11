@@ -584,5 +584,8 @@
   <string name="setting_modify">Modify</string>
   <string name="setting_network_url">http://dev.openthos.org</string>
   <string name="setting_network_158">http://192.168.0.158</string>
+  <string name="remember_password">Remember Password</string>
+  <string name="text_sum_number">SUM</string>
+  <string name="text_have_been_used">Have benn used</string>
 
 </resources>

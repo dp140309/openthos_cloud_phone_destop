@@ -554,5 +554,9 @@
   <string name="setting_glance_over">浏览</string>
   <string name="setting_modify">修改</string>
   <string name="setting_network_url">http://dev.openthos.org</string>
+  <string name="remember_password">记住密码</string>
+  <string name="text_sum_number">共</string>
+  <string name="text_have_been_used">已使用</string>
+
 
 </resources>

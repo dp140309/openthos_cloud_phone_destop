@@ -39,6 +39,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,6 +51,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,6 +59,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -198,6 +202,7 @@ public class BrowserActivity extends BaseActivity
     private Button mTaskStart, mTaskStop;
 
     private TextView mCurrentDirectory;
+    private EditText searchView;
 
     private ArrayList<SeafItem> mLeftDataList = new ArrayList<>();
     private ArrayList<SeafDirent> mRightDataList = new ArrayList<>();
@@ -445,6 +450,7 @@ public class BrowserActivity extends BaseActivity
         mTransmissionListView = findViewById(R.id.transmission_list_view);
         ProgressBar mProgerssBar =  findViewById(R.id.memory_state);
         RelativeLayout mAccountButton = findViewById(R.id.account_button);
+        searchView = (EditText) findViewById(R.id.search_text_view);
         mTransClose = findViewById(R.id.trans_close);
         mTaskStart = findViewById(R.id.button_all_start);
         mTaskStop = findViewById(R.id.button_all_stop);
@@ -474,8 +480,27 @@ public class BrowserActivity extends BaseActivity
         mAccountButton.setOnClickListener(this);
         mTaskStart.setOnClickListener(this);
         mTaskStop.setOnClickListener(this);
+        searchView.addTextChangedListener(mTextWatcher);
         ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
     }
+
+    private TextWatcher mTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String changeText = searchView.getText().toString().trim();
+            if (mRightViewAdapter == null){
+
+            }else {
+
+            }
+
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -3560,7 +3585,14 @@ public class BrowserActivity extends BaseActivity
         protected void onPostExecute(AccountInfo accountInfo) {
             if (accountInfo == null) return;
             // update Account info settings
-            ((TextView) findViewById(R.id.memory_text)).setText(accountInfo.getSpaceUsed());
+
+            ((TextView) findViewById(R.id.memory_text)).setText(
+                    accountInfo.getUsageSize() +
+                            getResources().getString(R.string.text_have_been_used));
+            ((TextView) findViewById(R.id.memory_text_size)).setText(
+                    getResources().getString(R.string.text_sum_number) +
+                            accountInfo.getTotalSize());
+
             long usageSize = accountInfo.getUsage();
             long totalSize = accountInfo.getTotal();
             int first = (int) usageSize;

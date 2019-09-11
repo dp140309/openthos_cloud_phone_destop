@@ -12,7 +12,7 @@
         android:src="@drawable/openthos_search" />
 
     <EditText
-        android:id="@+id/title_et_text"
+        android:id="@+id/search_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
