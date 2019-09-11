@@ -414,7 +414,6 @@ public class BrowserActivity extends BaseActivity
 
     // -------------------------- land view --------------------//
     protected void onCreateLandView(Bundle savedInstanceState) {
-        Utils.checkPermission(BrowserActivity.this);
         mLeftMenu =  findViewById(R.id.left_list);
         mCurrentDirectory = findViewById(R.id.current_directory);
         mMenuDialog = RecycleMenuDialog.getInstance(this);

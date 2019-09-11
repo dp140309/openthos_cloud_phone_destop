@@ -29,27 +29,24 @@ import com.seafile.seadroid2.R;
 import com.seafile.seadroid2.data.SeafItem;
 import com.seafile.seadroid2.ui.ClickListener.OnMenuClick;
 import com.seafile.seadroid2.ui.activity.BrowserActivity;
+import com.seafile.seadroid2.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClickListener {
+
     private static RecycleMenuDialog mRecycleMenuDialog;
-    private List<String> mDatas;
-    private int mWidth;
-    private int mHeight;
-    private int viewType;
-
-    private ListView mLeftView;
-    private MenuDialogAdapter mAdapter;
-    private int mStatusBarHeight;
-    private OnMenuClick mOnMenuClick;
-    private SeafItem mSeafItem;
-
     protected static Point mPoint;
 
-    private BrowserActivity mContext = null;
+    private List<String> mDatas;
+    private SeafItem mSeafItem;
+    private MenuDialogAdapter mAdapter;
+    private int mWidth, mHeight, viewType, mStatusBarHeight;
+    private ListView mLeftView;
+
+    private OnMenuClick mOnMenuClick;
 
     public static RecycleMenuDialog getInstance(Context context) {
         if (mRecycleMenuDialog == null) {
@@ -66,6 +63,7 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.recycle_item_right_menu);
 
         if (mPoint == null) {
@@ -96,18 +94,22 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
     public void show(int type, int x, int y, SeafItem postion) {
         mSeafItem = postion;
         viewType = type;
+
         Window dialogWindow = getWindow();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            dialogWindow.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        else
+            dialogWindow.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         dialogWindow.setGravity(Gravity.LEFT | Gravity.TOP);
+
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.format = PixelFormat.TRANSPARENT;
         lp.dimAmount = 0;
         prepareData(type);
         lp.x = x;
-        if (y + mHeight + mStatusBarHeight < mPoint.y) {
-            lp.y = y;
-        } else {
-            lp.y = y - mHeight;
-        }
+        if (y + mHeight + mStatusBarHeight < mPoint.y) lp.y = y;
+        else lp.y = y - mHeight;
+
         dialogWindow.setAttributes(lp);
         show();
     }

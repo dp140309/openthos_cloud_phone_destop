@@ -3,7 +3,6 @@ package com.seafile.seadroid2.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
@@ -12,12 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.seafile.seadroid2.R;
+import com.seafile.seadroid2.util.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +49,9 @@ public class BaseActivity extends AppCompatActivity {
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
+
+        Utils.openAccess(BaseActivity.this);
+
         Log.v("openthos_cloud1","this port runing");
 
     }
