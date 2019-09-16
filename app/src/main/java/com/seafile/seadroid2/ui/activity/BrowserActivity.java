@@ -927,19 +927,6 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void requestServerInfo() {
-        if (!checkServerProEdition()) {
-            // hide Activity tab
-//            adapter.hideActivityTab();
-//            adapter.notifyDataSetChanged();
-//            mTabLayout.setupWithViewPager(pager);
-        }
-
-        if (!checkSearchEnabled()) {
-            // hide search menu
-//            if (menuSearch != null)
-//                menuSearch.setVisible(false);
-        }
-
         if (!Utils.isNetworkOn())
             return;
 
@@ -1148,11 +1135,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void requestRightClickListener(SeafItem position) {
-//        downloadDir(navContext.getRepoID(), drent.name, true);
-//        downloadFiles(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), dirents);
-
         if (position instanceof SeafDirent) {
-
             isClickBack = false;
             SeafDirent dirent = (SeafDirent) position;
             SeafRepo repo = getDataManager().getCachedRepoByID(getNavContext().getRepoID());
@@ -1242,18 +1225,7 @@ public class BrowserActivity extends BaseActivity
                 return;
             }
 
-            if (serverInfo.isProEdition()) {
-                // show Activity tab
-//                adapter.unHideActivityTab();
-//                adapter.notifyDataSetChanged();
-//                mTabLayout.setupWithViewPager(pager);
-            }
-
-//            if (serverInfo.isSearchEnabled()) {
-//                // show search menu
-//                if (menuSearch != null)
-//                    menuSearch.setVisible(true);
-//            }
+            if (serverInfo.isProEdition()) {}
 
             accountManager.setServerInfo(account, serverInfo);
         }
@@ -2999,7 +2971,6 @@ public class BrowserActivity extends BaseActivity
         @Override
         protected void onPostExecute(Void aVoid) {
             // update ui
-//            getReposFragment().showLoading(false);
 
             if (err != null) {
                 showShortToast(BrowserActivity.this, R.string.transfer_list_network_error);
@@ -3082,40 +3053,21 @@ public class BrowserActivity extends BaseActivity
         if (BrowserActivity.this == null)
             return;
         NavContext navContext = getNavContext();
-        Log.i("refresh-------", "" + navContext.inRepo());
         if (navContext.inRepo()) {// != null
-
             navToDirectory(forceRefresh, restorePosition);
         } else {
             navToReposView(forceRefresh, restorePosition);
-
         }
-
 
         supportInvalidateOptionsMenu();
     }
 
     public void navToReposView(boolean forceRefresh, boolean restorePosition) {
-//        stopTimer();
 
-//        mPullToRefreshStopRefreshing++;
-
-//        if (mPullToRefreshStopRefreshing > 1) {
-//            refreshLayout.setRefreshing(false);
-//            mPullToRefreshStopRefreshing = 0;
-//        }
-
-//        forceRefresh = forceRefresh || isReposRefreshTimeOut();
         if (!Utils.isNetworkOn() || !forceRefresh) {
 
             List<SeafRepo> repos = getDataManager().getReposFromCache();
-//            Log.i("refer-------", "repos" + repos.size());
             if (repos != null) {
-//                if (mRefreshType == REFRESH_ON_PULL) {
-//                    refreshLayout.setRefreshing(false);
-//                    mPullToRefreshStopRefreshing = 0;
-//                }
-
                 updateAdapterWithRepos(repos, restorePosition);
                 return;
             }
@@ -3127,22 +3079,8 @@ public class BrowserActivity extends BaseActivity
     private void updateAdapterWithRepos(List<SeafRepo> repos, boolean restoreScrollPosition) {
         if (repos.size() > 0) {
             addReposToAdapter(repos);
-//            List<SeafDirent> dirents = getDataManager().getCachedDirents(
-//                    getNavContext().getRepoID(), getNavContext().getDirPath());
             mLeftViewAdapter.removePersonalData();
-//            Log.i("dirent-----",dirents.size()+"-----00000");
-//            mLeftViewAdapter.sortFiles(SettingsManager.instance().getSortFilesTypePref(),
-//                    SettingsManager.instance().getSortFilesOrderPref());
-//            notifyDataSetChanged();
-//            mListView.setVisibility(View.VISIBLE);
-//            restoreRepoScrollPosition(restoreScrollPosition);
-//            mEmptyView.setVisibility(View.GONE);
-        } else {
-//            mListView.setVisibility(View.GONE);
-//            mEmptyView.setVisibility(View.VISIBLE);
         }
-        // Collapses the currently open view
-        //mListView.collapse();
     }
 
     private void addReposToAdapter(List<SeafRepo> repos) {
@@ -3153,18 +3091,13 @@ public class BrowserActivity extends BaseActivity
         if (personalRepos != null) {
             SeafGroup personalGroup = new SeafGroup(getResources().getString(R.string.personal));
             mLeftViewAdapter.add(personalGroup);
-//            mLeftDataList.add(personalGroup);
             for (SeafRepo repo : personalRepos)
-//                mLeftViewAdapter.add(repo);
-//                mLeftViewAdapter.add(repo);
                 mLeftViewAdapter.add(repo);
-//            mRightDataList.add()
         }
 
         List<SeafRepo> sharedRepos = map.get(Utils.SHARED_REPO);
         if (sharedRepos != null) {
             SeafGroup sharedGroup = new SeafGroup(getResources().getString(R.string.shared));
-//            mLeftViewAdapter.add(sharedGroup);
             for (SeafRepo repo : sharedRepos)
                 mLeftViewAdapter.add(repo);
         }
@@ -3174,7 +3107,6 @@ public class BrowserActivity extends BaseActivity
             if (!key.equals(Utils.PERSONAL_REPO)
                     && !key.endsWith(Utils.SHARED_REPO)) {
                 SeafGroup group = new SeafGroup(key);
-//                mLeftViewAdapter.add(group);
                 for (SeafRepo repo : entry.getValue()) {
                     mLeftViewAdapter.add(repo);
                 }
@@ -3184,46 +3116,17 @@ public class BrowserActivity extends BaseActivity
 
 
     public void navToDirectory(boolean forceRefresh, boolean restorePosition) {
-//        startTimer();
-//
-//        mPullToRefreshStopRefreshing++;
-//
-//        if (mPullToRefreshStopRefreshing > 1) {
-//            refreshLayout.setRefreshing(false);
-//            mPullToRefreshStopRefreshing = 0;
-//        }
-//
+
         NavContext nav = getNavContext();
         DataManager dataManager = getDataManager();
-//
-        SeafRepo repo = getDataManager().getCachedRepoByID(nav.getRepoID());
-        if (repo != null) {
-//            adapter.setEncryptedRepo(repo.encrypted);
-//            if (nav.getDirPath().equals(BrowserActivity.ACTIONBAR_PARENT_PATH)) {
-//                setUpButtonTitle(nav.getRepoName());
-//            } else
-
-//                mActivity.setUpButtonTitle(nav.getDirPath().substring(
-//                        nav.getDirPath().lastIndexOf(BrowserActivity.ACTIONBAR_PARENT_PATH) + 1));
-        }
-//
-//        forceRefresh = forceRefresh || isDirentsRefreshTimeOut(nav.getRepoID(), nav.getDirPath());
-//        if (!Utils.isNetworkOn() || !forceRefresh) {
         List<SeafDirent> dirents = dataManager.getCachedDirents(
                 nav.getRepoID(), nav.getDirPath());
-//        Log.i("refer-------", "dirents" + dirents.size());
 
         if (dirents != null) {
-//                if (mRefreshType == REFRESH_ON_PULL) {
-//                    refreshLayout.setRefreshing(false);
-//                    mPullToRefreshStopRefreshing = 0;
-//                }
-//
             updateAdapterWithDirents(dirents, restorePosition);
             return;
         }
-//        }
-//
+
         ConcurrentAsyncTask.execute(new LoadDirTask(getDataManager()),
                 nav.getRepoName(),
                 nav.getRepoID(),
@@ -3244,15 +3147,7 @@ public class BrowserActivity extends BaseActivity
         }
 
         @Override
-        protected void onPreExecute() {
-//            if (mRefreshType == REFRESH_ON_CLICK
-////                    || mRefreshType == REFRESH_ON_OVERFLOW_MENU
-////                    || mRefreshType == REFRESH_ON_RESUME) {
-////                showLoading(true);
-////            } else if (mRefreshType == REFRESH_ON_PULL) {
-////                // mHeadProgress.setVisibility(ProgressBar.VISIBLE);
-////            }
-        }
+        protected void onPreExecute() {}
 
         @Override
         protected List<SeafDirent> doInBackground(String... params) {
@@ -3265,13 +3160,11 @@ public class BrowserActivity extends BaseActivity
             myRepoID = params[1];
             myPath = params[2];
             try {
-                Log.i("------ayncktask", params.toString());
                 return dataManager.getDirentsFromServer(myRepoID, myPath);
             } catch (SeafException e) {
                 err = e;
                 return null;
             }
-
         }
 
         private void resend() {
@@ -3293,7 +3186,6 @@ public class BrowserActivity extends BaseActivity
             if (!myRepoID.equals(nav.getRepoID()) || !myPath.equals(nav.getDirPath())) {
                 return;
             }
-//            showError(R.string.ssl_error);
         }
 
         // onPostExecute displays the results of the AsyncTask.
@@ -3302,18 +3194,6 @@ public class BrowserActivity extends BaseActivity
             if (BrowserActivity.this == null)
                 // this occurs if user navigation to another activity
                 return;
-
-//            if (mRefreshType == REFRESH_ON_CLICK
-//                    || mRefreshType == REFRESH_ON_OVERFLOW_MENU
-//                    || mRefreshType == REFRESH_ON_RESUME) {
-//                showLoading(false);
-//            } else if (mRefreshType == REFRESH_ON_PULL) {
-//                String lastUpdate = getDataManager().getLastPullToRefreshTime(DataManager.PULL_TO_REFRESH_LAST_TIME_FOR_REPOS_FRAGMENT);
-//                //mListView.onRefreshComplete(lastUpdate);
-//                refreshLayout.setRefreshing(false);
-//                getDataManager().saveLastPullToRefreshTime(System.currentTimeMillis(), DataManager.PULL_TO_REFRESH_LAST_TIME_FOR_REPOS_FRAGMENT);
-//                mPullToRefreshStopRefreshing = 0;
-//            }
 
             NavContext nav = getNavContext();
             if (!myRepoID.equals(nav.getRepoID()) || !myPath.equals(nav.getDirPath())) {
@@ -3335,7 +3215,6 @@ public class BrowserActivity extends BaseActivity
                                 displaySSLError();
                             }
                         });
-//                dialog.show(getFragmentManager(), SslConfirmDialog.FRAGMENT_TAG);
                 return;
             } else if (err == SeafException.remoteWipedException) {
                 completeRemoteWipe();
@@ -3378,15 +3257,7 @@ public class BrowserActivity extends BaseActivity
         }
 
         @Override
-        protected void onPreExecute() {
-//            if (mRefreshType == REFRESH_ON_CLICK
-//                    || mRefreshType == REFRESH_ON_OVERFLOW_MENU
-//                    || mRefreshType == REFRESH_ON_RESUME) {
-//                showLoading(true);
-//            } else if (mRefreshType == REFRESH_ON_PULL) {
-//
-//            }
-        }
+        protected void onPreExecute() {}
 
         @Override
         protected List<SeafRepo> doInBackground(Void... params) {
@@ -3405,8 +3276,6 @@ public class BrowserActivity extends BaseActivity
             if (getNavContext().inRepo()) {
                 return;
             }
-
-//            showError(R.string.ssl_error);
         }
 
         private void resend() {
@@ -3425,18 +3294,6 @@ public class BrowserActivity extends BaseActivity
             if (BrowserActivity.this == null)
                 // this occurs if user navigation to another activity
                 return;
-
-//            if (mRefreshType == REFRESH_ON_CLICK
-////                    || mRefreshType == REFRESH_ON_OVERFLOW_MENU
-////                    || mRefreshType == REFRESH_ON_RESUME) {
-////                showLoading(false);
-////            } else if (mRefreshType == REFRESH_ON_PULL) {
-////                String lastUpdate = getDataManager().getLastPullToRefreshTime(DataManager.PULL_TO_REFRESH_LAST_TIME_FOR_REPOS_FRAGMENT);
-////                //mListView.onRefreshComplete(lastUpdate);
-////                refreshLayout.setRefreshing(false);
-////                getDataManager().saveLastPullToRefreshTime(System.currentTimeMillis(), DataManager.PULL_TO_REFRESH_LAST_TIME_FOR_REPOS_FRAGMENT);
-////                mPullToRefreshStopRefreshing = 0;
-////            }
 
             if (getNavContext().inRepo()) {
                 // this occurs if user already navigate into a repo
@@ -3459,7 +3316,6 @@ public class BrowserActivity extends BaseActivity
                                 displaySSLError();
                             }
                         });
-//                dialog.show(getFragmentManager(), SslConfirmDialog.FRAGMENT_TAG);
                 return;
             } else if (err == SeafException.remoteWipedException) {
                 completeRemoteWipe();
@@ -3489,7 +3345,6 @@ public class BrowserActivity extends BaseActivity
 
     private void updateAdapterWithDirents(final List<SeafDirent> dirents, boolean restoreScrollPosition) {
         mRightViewAdapter.clear();
-        Log.i("dirent-------size", dirents.size() + "--------");
         if (dirents.size() > 0) {
             for (SeafDirent dirent : dirents) {
                 mRightViewAdapter.add(dirent);
@@ -3502,31 +3357,8 @@ public class BrowserActivity extends BaseActivity
             mRightViewAdapter.sortFiles(SettingsManager.instance().getSortFilesTypePref(),
                     SettingsManager.instance().getSortFilesOrderPref());
             mRightViewAdapter.notifyDataSetChanged();
-//            mListView.setVisibility(View.VISIBLE);
-//            restoreDirentScrollPosition(restoreScrollPosition, repoID, dirPath);
-//            mEmptyView.setVisibility(View.GONE);
-        } else {
-            // Directory is empty
-//            mListView.setVisibility(View.GONE);
-//            mEmptyView.setVisibility(View.VISIBLE);
         }
-        // Collapses the currently open view
-        //mListView.collapse();
     }
-
-//    private void restoreDirentScrollPosition(boolean restore, String repoId, String dirPath) {
-//        final String pathJoin = Utils.pathJoin(repoId, dirPath);
-//        if (restore) {
-//            ReposFragment.ScrollState state = scrollPostions.get(pathJoin);
-//            if (state != null) {
-//                mListView.setSelectionFromTop(state.index, state.top);
-//            } else {
-//                mListView.setSelectionAfterHeaderView();
-//            }
-//        } else {
-//            mListView.setSelectionAfterHeaderView();
-//        }
-//    }
 
     private boolean isDirentsRefreshTimeOut(String repoID, String path) {
         if (getDataManager().isDirentsRefreshTimeout(repoID, path)) {

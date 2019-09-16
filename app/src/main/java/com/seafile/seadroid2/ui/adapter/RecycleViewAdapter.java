@@ -22,6 +22,7 @@ import com.seafile.seadroid2.data.SeafItem;
 import com.seafile.seadroid2.data.SeafRepo;
 import com.seafile.seadroid2.transfer.DownloadTaskInfo;
 import com.seafile.seadroid2.ui.activity.BrowserActivity;
+import com.seafile.seadroid2.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,6 +119,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         holder.mTextView.setTag(position);
 
         if (isLeftRecycle(viewType)) {
+            holder.mTextViewSize.setText(countFilesNumber(position));
             if (position == mItemPostion) {
                 holder.mRelativeLayout.setBackgroundResource(R.drawable.recycle_item_backgroud);
                 holder.mTextView.setTextColor(mActivity
@@ -139,6 +141,13 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             }
             holder.mViewIcon.setImageResource(items.get(position).getIcon());
         }
+    }
+
+    private String countFilesNumber(int position){
+        SeafRepo name = (SeafRepo) items.get(position);
+        List<SeafDirent> dirents = mActivity.getDataManager().getCachedDirents(name.id, "/");
+        if (dirents == null) return"";
+        return dirents.size()+"";
     }
 
     class RightHolder extends RecyclerView.ViewHolder {
