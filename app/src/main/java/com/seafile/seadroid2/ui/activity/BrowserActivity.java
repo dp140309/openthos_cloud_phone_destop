@@ -200,6 +200,7 @@ public class BrowserActivity extends BaseActivity
     private LandTransmissionAdapter mTransAdapter;
     private ImageButton mTransClose;
     private Button mTaskStart, mTaskStop;
+    private List<View> mView;
 
     private TextView mCurrentDirectory;
     private EditText searchView;
@@ -317,14 +318,6 @@ public class BrowserActivity extends BaseActivity
         });
 
         requestReadExternalStoragePermission();
-
-//        mRightMenu.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                Toast.makeText(BrowserActivity.this,"is chang an button",Toast.LENGTH_LONG).show();
-//                return false;
-//            }
-//        });
     }
 
     @Override
@@ -362,21 +355,6 @@ public class BrowserActivity extends BaseActivity
 
         dataManager = new DataManager(account);
 
-
-//        if (savedInstanceState != null) {
-//            String repoID = savedInstanceState.getString("repoID");
-//            String repoName = savedInstanceState.getString("repoName");
-//            String path = savedInstanceState.getString("path");
-//            String dirID = savedInstanceState.getString("dirID");
-//            String permission = savedInstanceState.getString("permission");
-//            if (repoID != null) {
-//                navContext.setRepoID(repoID);
-//                navContext.setRepoName(repoName);
-//                navContext.setDir(path, dirID);
-//                navContext.setDirPermission(permission);
-//            }
-//        }
-
         String repoID = intent.getStringExtra("repoID");
         String repoName = intent.getStringExtra("repoName");
         String path = intent.getStringExtra("path");
@@ -410,9 +388,7 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    List<View> mView;
-
-    // -------------------------- land view --------------------//
+    // -------------------------- land view --------------------
     protected void onCreateLandView(Bundle savedInstanceState) {
         mLeftMenu =  findViewById(R.id.left_list);
         mCurrentDirectory = findViewById(R.id.current_directory);
@@ -462,10 +438,8 @@ public class BrowserActivity extends BaseActivity
         mView.add(deleteView);
         for (View v : mView) v.setEnabled(false);
 
-        mBackImag.setEnabled(false);
-        mForwardImg.setEnabled(false);
-        mBackImag.setBackgroundResource(R.drawable.openthos_title_back_lose_focus);
-        mForwardImg.setBackgroundResource(R.drawable.openthos_title_forward_lose_focus);
+        setBackViewState(false);
+        setForwardViewState(false);
 
         mTransferLayoutView.setVisibility(View.GONE);
         mTransClose.setOnClickListener(this);
@@ -624,6 +598,26 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
+    private void setForwardViewState(boolean b){
+        if (b){
+            mForwardImg.setBackgroundResource(R.drawable.openthos_title_further);
+            mForwardImg.setEnabled(true);
+        } else {
+            mForwardImg.setBackgroundResource(R.drawable.openthos_title_forward_lose_focus);
+            mForwardImg.setEnabled(false);
+        }
+    }
+
+    private void setBackViewState(boolean b){
+        if (b){
+            mBackImag.setBackgroundResource(R.drawable.openthos_title_back);
+            mBackImag.setEnabled(true);
+        } else {
+            mBackImag.setBackgroundResource(R.drawable.openthos_title_back_lose_focus);
+            mBackImag.setEnabled(false);
+        }
+    }
+
     private void LandBack(){
 
         // 清空item的选中状态
@@ -631,37 +625,26 @@ public class BrowserActivity extends BaseActivity
 
         isClickBack = true;
 
-        mForwardImg.setBackgroundResource(R.drawable.openthos_title_further);
-        mForwardImg.setEnabled(true);
+        setForwardViewState(true);
 
-        String parentPath = Utils.getParentPath(navContext
-                .getDirPath());
+        String parentPath = Utils.getParentPath(navContext.getDirPath());
         navContext.setDir(parentPath, null);
         refreshView(true);
 
-        if (mCurrentDirectory.getText() != null) {
-            if (navContext.getDirPath() != "/"){
-                if (mCurrentDirectory.getText().toString().trim() == "/"){
-                    mCurrentDirectory.setText(navContext.getRepoName());
-                }else {
-                    String dataPatch = navContext.getDirPath().substring(1,navContext.getDirPath().length());
-                    String newDataPatch = dataPatch.replace("/"," > ");
-                    mCurrentDirectory.setText(navContext.getRepoName());
-                    mCurrentDirectory.append(" > "+ newDataPatch);
+        mCurrentDirectory.setText(navContext.getRepoName()+Utils.getReplacePath(navContext.getDirPath()));
+        String tName = mCurrentDirectory.getText().toString().substring(
+                mCurrentDirectory.getText().toString().lastIndexOf(" > ") + 3,
+                mCurrentDirectory.getText().toString().length()).trim();
+        recycleCurrentPosition = landFortName.indexOf(tName)+1;
 
-                    String tName = mCurrentDirectory.getText().toString().substring(
-                            mCurrentDirectory.getText().toString().lastIndexOf(" > ") + 3,
-                            mCurrentDirectory.getText().toString().length()).trim();
-                    recycleCurrentPosition = landFortName.indexOf(tName);
-                }
-
-            }else {
-                mCurrentDirectory.setText(navContext.getRepoName());
-                recycleCurrentPosition = 0;
-                mRightDataList.clear();
-                mBackImag.setBackgroundResource(R.drawable.openthos_title_back_lose_focus);
-                mBackImag.setEnabled(false);
-            }
+        if (navContext.getDirPath().equals(ACTIONBAR_PARENT_PATH)){
+            navContext.setDir("/",null);
+            refreshView(true);
+            mCurrentDirectory.setText("");
+            mCurrentDirectory.setText(navContext.getRepoName());
+            recycleCurrentPosition = 0;
+            mRightDataList.clear();
+            setBackViewState(false);
         }
     }
 
@@ -674,19 +657,17 @@ public class BrowserActivity extends BaseActivity
 
         if (!isClickBack) return;
 
-        int forwardSize = landFortName.size()-1;
+        int forwardSize = landFortName.size();
+
+        setBackViewState(true);
+        mCurrentDirectory.append(" > " + landFortName.get(recycleCurrentPosition));
+        navContext.setDir(navContext.getDirPath()+"/"+landFortName.get(recycleCurrentPosition), null);
+        refreshView(true);
+
         recycleCurrentPosition++;
 
-        if (recycleCurrentPosition <= forwardSize){
-            mBackImag.setBackgroundResource(R.drawable.openthos_title_back);
-            mBackImag.setEnabled(true);
-            mCurrentDirectory.append(" > " + landFortName.get(recycleCurrentPosition));
-            navContext.setDir(navContext.getDirPath()+"/"+landFortName.get(recycleCurrentPosition), null);
-            refreshView(true);
-        }else {
-            mForwardImg.setBackgroundResource(R.drawable.openthos_title_forward_lose_focus);
-            mForwardImg.setEnabled(false);
-        }
+        if (recycleCurrentPosition == forwardSize) setForwardViewState(false);
+
     }
 
     private void UpLoadFile(){
@@ -1118,10 +1099,8 @@ public class BrowserActivity extends BaseActivity
             repo = (SeafRepo) position;
         }
 
-        mBackImag.setEnabled(false);
-        mForwardImg.setEnabled(false);
-        mBackImag.setBackgroundResource(R.drawable.openthos_title_back_lose_focus);
-        mForwardImg.setBackgroundResource(R.drawable.openthos_title_forward_lose_focus);
+        setBackViewState(false);
+        setForwardViewState(false);
 
         if (mCurrentDirectory.getText() != null) mCurrentDirectory.setText("");
         mCurrentDirectory.setText(position.getTitle());
@@ -1135,14 +1114,15 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void requestRightClickListener(SeafItem position) {
+        setForwardViewState(false);
+
         if (position instanceof SeafDirent) {
             isClickBack = false;
             SeafDirent dirent = (SeafDirent) position;
             SeafRepo repo = getDataManager().getCachedRepoByID(getNavContext().getRepoID());
             String currentPath = getNavContext().getDirPath();
             if (dirent.isDir()) {
-                mBackImag.setBackgroundResource(R.drawable.openthos_title_back);
-                mBackImag.setEnabled(true);
+                setBackViewState(true);
                 String newPath = currentPath.endsWith("/") ?
                         currentPath + dirent.name : currentPath + "/" + dirent.name;
                 getNavContext().setDir(newPath, dirent.id);
@@ -1162,7 +1142,7 @@ public class BrowserActivity extends BaseActivity
         String[] name = n.split("/");
         if (!landFortName.isEmpty()) landFortName.clear();
         for (String n1 : name) {
-            if (n1 == "/") continue;
+            if (n1.equals("")) continue;
             landFortName.add(n1);
         }
     }

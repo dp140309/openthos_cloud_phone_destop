@@ -24,8 +24,6 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -169,6 +167,30 @@ public class Utils {
             return "/";
         } else
             return parent;
+    }
+
+    public static String getReplacePath(String path) {
+        if (path == null) {
+            // the caller should not give null
+            Log.w(DEBUG_TAG, "null in getParentPath");
+            return null;
+        }
+
+        if (!path.contains("/")) {
+            return "";
+        }
+
+        StringBuilder newPatch = new StringBuilder();
+        String[] name = path.split("/");
+        for (String n :name) {
+            if (n.equals("")) continue;
+            path= "" + newPatch.append(" > " + n);
+        }
+
+        if (path.equals("/")) return "";
+        if (path.equals("//")) return "";
+
+        return path;
     }
 
     public static String fileNameFromPath(String path) {
