@@ -14,16 +14,23 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.common.collect.Lists;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.seafile.seadroid2.R;
+import com.seafile.seadroid2.SeadroidApplication;
+import com.seafile.seadroid2.data.DataManager;
 import com.seafile.seadroid2.data.SeafCachedFile;
 import com.seafile.seadroid2.data.SeafDirent;
 import com.seafile.seadroid2.data.SeafGroup;
 import com.seafile.seadroid2.data.SeafItem;
 import com.seafile.seadroid2.data.SeafRepo;
 import com.seafile.seadroid2.transfer.DownloadTaskInfo;
+import com.seafile.seadroid2.ui.AnimateFirstDisplayListener;
 import com.seafile.seadroid2.ui.activity.BrowserActivity;
 import com.seafile.seadroid2.util.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -91,6 +98,10 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
+    public void notifyChanged() {
+        notifyDataSetChanged();
+    }
+
     public void clear() {
         items.clear();
     }
@@ -139,8 +150,57 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 holder.mCheckBox.setChecked(false);
                 holder.mRelativeLayout.setBackgroundResource(0);
             }
-            holder.mViewIcon.setImageResource(items.get(position).getIcon());
+
+            SeafDirent dirent = (SeafDirent) seafile;
+            if (dirent.isDir()) {
+                holder.mViewIcon.setImageResource(items.get(position).getIcon());
+            } else {
+                updateRightItemPicture(holder,dirent);
+            }
         }
+    }
+
+    private void updateRightItemPicture(RightHolder holder,SeafDirent dirent){
+        DataManager dataManager = mActivity.getDataManager();
+        String repoName = mActivity.getNavContext().getRepoName();
+        String repoID = mActivity.getNavContext().getRepoID();
+        String filePath = Utils.pathJoin(mActivity.getNavContext().getDirPath(), dirent.name);
+        File file = null;
+        try {
+            file = mActivity.getDataManager().getLocalRepoFile(repoName, repoID, filePath);
+        } catch (RuntimeException e) {
+            mActivity.showShortToast(mActivity, mActivity.getResources().getString(R.string.storage_space_insufficient));
+            e.printStackTrace();
+            return;
+        }
+
+        if (Utils.isViewableImage(file.getName())) {
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .extraForDownloader(dataManager.getAccount())
+                    .delayBeforeLoading(500)
+                    .resetViewBeforeLoading(true)
+                    .showImageOnLoading(R.drawable.file_image)
+                    .showImageForEmptyUri(R.drawable.file_image)
+                    .showImageOnFail(R.drawable.file_image)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .considerExifParams(true)
+                    .build();
+
+            ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+            String url = dataManager.getThumbnailLink(repoName, repoID, filePath, getThumbnailWidth());
+            if (url == null) {
+                holder.mViewIcon.setImageResource(dirent.getIcon());
+            } else {
+                ImageLoader.getInstance().displayImage(url, holder.mViewIcon, options, animateFirstListener);
+            }
+        } else {
+            holder.mViewIcon.setImageResource(dirent.getIcon());
+        }
+    }
+
+    private int getThumbnailWidth() {
+        return (int) SeadroidApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width);
     }
 
     private String countFilesNumber(int position){

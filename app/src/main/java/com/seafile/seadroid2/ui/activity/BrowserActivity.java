@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -49,7 +48,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -59,7 +57,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,7 +100,6 @@ import com.seafile.seadroid2.ui.WidgetUtils;
 import com.seafile.seadroid2.ui.adapter.LandTransmissionAdapter;
 import com.seafile.seadroid2.ui.adapter.RecycleViewAdapter;
 import com.seafile.seadroid2.ui.adapter.SeafItemAdapter;
-import com.seafile.seadroid2.ui.adapter.TransmissionAdapter;
 import com.seafile.seadroid2.ui.dialog.AppChoiceDialog;
 import com.seafile.seadroid2.ui.dialog.AppChoiceDialog.CustomAction;
 import com.seafile.seadroid2.ui.dialog.CopyMoveDialog;
@@ -671,18 +667,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void UpLoadFile(){
-        if (mRightDataList.isEmpty()){
-            Toast.makeText(BrowserActivity.this, R.string.upload_item_unselected, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        if (mRightDataList.get(0).isDir()){
-            Toast.makeText(BrowserActivity.this, "暂不支持文件夹上传功能", Toast.LENGTH_LONG).show();
-        }else {
-            String path = Utils.pathJoin(getNavContext().getDirPath(), mRightDataList.get(0).name);
-            String localPath = getDataManager().getLocalRepoFile(mRightDataList.get(0).name, getNavContext().getRepoID(), path).getPath();
-            addUpdateTask(getNavContext().getRepoID(), getNavContext().getRepoName(), getNavContext().getDirPath(), localPath);
-        }
+        pickFile();
     }
 
     private void DeleteData(){
@@ -2743,7 +2728,7 @@ public class BrowserActivity extends BaseActivity
                 && repoID.equals(navContext.getRepoID())
                 && dir.equals(navContext.getDirPath())) {
             if (isLandPattern){
-                refreshView(true);
+                refreshView(true, true);
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
                 showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
             }else {
@@ -3099,12 +3084,15 @@ public class BrowserActivity extends BaseActivity
 
         NavContext nav = getNavContext();
         DataManager dataManager = getDataManager();
-        List<SeafDirent> dirents = dataManager.getCachedDirents(
-                nav.getRepoID(), nav.getDirPath());
 
-        if (dirents != null) {
-            updateAdapterWithDirents(dirents, restorePosition);
-            return;
+        forceRefresh = forceRefresh || isDirentsRefreshTimeOut(nav.getRepoID(), nav.getDirPath());
+        if (!Utils.isNetworkOn() || !forceRefresh) {
+            List<SeafDirent> dirents = dataManager.getCachedDirents(
+                    nav.getRepoID(), nav.getDirPath());
+            if (dirents != null) {
+                updateAdapterWithDirents(dirents, restorePosition);
+                return;
+            }
         }
 
         ConcurrentAsyncTask.execute(new LoadDirTask(getDataManager()),
@@ -3336,7 +3324,7 @@ public class BrowserActivity extends BaseActivity
 
             mRightViewAdapter.sortFiles(SettingsManager.instance().getSortFilesTypePref(),
                     SettingsManager.instance().getSortFilesOrderPref());
-            mRightViewAdapter.notifyDataSetChanged();
+            mRightViewAdapter.notifyChanged();
         }
     }
 
