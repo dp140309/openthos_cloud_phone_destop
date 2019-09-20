@@ -20,6 +20,7 @@ import android.os.LocaleList;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -897,4 +898,21 @@ public class Utils {
         }
         return true;
     }
+
+    public static Intent selectDifferentVersionIntent(Activity activity,File flie){
+
+        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Uri photoURI = FileProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName() + ".provider", flie);
+            intent.setDataAndType(photoURI, "*/*");
+        }else {
+            intent.setDataAndType(Uri.fromFile(flie), "*/*");
+        }
+
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
+
 }

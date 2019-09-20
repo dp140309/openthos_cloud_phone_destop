@@ -18,6 +18,8 @@ import com.seafile.seadroid2.R;
 import com.seafile.seadroid2.account.AccountManager;
 import com.seafile.seadroid2.account.ui.AccountDetailActivity;
 import com.seafile.seadroid2.account.ui.SeafileAuthenticatorActivity;
+import com.seafile.seadroid2.gallery.Util;
+import com.seafile.seadroid2.util.Utils;
 
 import java.io.File;
 
@@ -141,9 +143,7 @@ public class OpenthosSettingsActivity extends BaseActivity implements View.OnCli
                 break;
             case R.id.general_path_button:
                 File parentFlie = new File(getExternalCacheDir() + mGeneraText.getText().toString());
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setDataAndType(Uri.fromFile(parentFlie), "*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                Intent intent = Utils.selectDifferentVersionIntent(this,parentFlie);
                 startActivity(intent);
                 break;
         }

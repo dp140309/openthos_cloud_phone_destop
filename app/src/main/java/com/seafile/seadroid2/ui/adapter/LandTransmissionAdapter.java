@@ -3,6 +3,7 @@ package com.seafile.seadroid2.ui.adapter;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,9 +98,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 File parentFlie = new File(mActivity.getExternalCacheDir() + mActivity.getNavContext().getDirPath());
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setDataAndType(Uri.fromFile(parentFlie), "*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                Intent intent = Utils.selectDifferentVersionIntent(mActivity,parentFlie);
                 mActivity.startActivity(intent);
             }
         });
