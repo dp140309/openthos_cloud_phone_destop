@@ -557,6 +557,13 @@
   <string name="remember_password">记住密码</string>
   <string name="text_sum_number">共</string>
   <string name="text_have_been_used">已使用</string>
+  <string name="account_settings">账户设置</string>
+  <string name="general_settings">通用设置</string>
+  <string name="openthos_Browse">浏览</string>
 
 
+  <string-array name="choose_openthos_server_array">
+    <item>cloud.openthos.com</item>
+    <item>其他Openthos服务器</item>
+  </string-array>
 </resources>

@@ -362,6 +362,7 @@ public class Utils {
                 SeadroidApplication.getAppContext().getSystemService(
                         Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
         if (networkInfo == null) {
             return false;
         }
@@ -374,6 +375,10 @@ public class Utils {
         if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
             return true;
         }
+        if (networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET) {
+            return true;
+        }
+
         return false;
     }
 

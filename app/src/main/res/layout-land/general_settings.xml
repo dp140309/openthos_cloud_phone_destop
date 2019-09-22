@@ -72,7 +72,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="浏览"
+            android:text="@string/openthos_Browse"
             android:layout_marginLeft="@dimen/openthos_view_size_8"
             android:textColor="@color/trans_start_button_text_color"
             android:background="@color/trans_start_button_background_color" />

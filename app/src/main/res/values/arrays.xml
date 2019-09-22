@@ -17,7 +17,7 @@
 
     <string-array name="setting_service">
         <item>http://192.168.0.158/</item>
-        <item>http://dev.openthos.org/</item>
+        <!--<item>http://dev.openthos.org/</item>-->
         <item>http://cloud.openthos.com</item>
     </string-array>
 </resources>

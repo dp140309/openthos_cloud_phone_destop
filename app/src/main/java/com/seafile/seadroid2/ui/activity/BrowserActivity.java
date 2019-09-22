@@ -351,6 +351,7 @@ public class BrowserActivity extends BaseActivity
 
         dataManager = new DataManager(account);
 
+
         String repoID = intent.getStringExtra("repoID");
         String repoName = intent.getStringExtra("repoName");
         String path = intent.getStringExtra("path");
@@ -3044,18 +3045,21 @@ public class BrowserActivity extends BaseActivity
     private void updateAdapterWithRepos(List<SeafRepo> repos, boolean restoreScrollPosition) {
         if (repos.size() > 0) {
             addReposToAdapter(repos);
-            mLeftViewAdapter.removePersonalData();
+//            mLeftViewAdapter.removePersonalData();
         }
     }
 
     private void addReposToAdapter(List<SeafRepo> repos) {
         if (repos == null)
             return;
+
+
+
         Map<String, List<SeafRepo>> map = Utils.groupRepos(repos);
         List<SeafRepo> personalRepos = map.get(Utils.PERSONAL_REPO);
         if (personalRepos != null) {
             SeafGroup personalGroup = new SeafGroup(getResources().getString(R.string.personal));
-            mLeftViewAdapter.add(personalGroup);
+//            mLeftViewAdapter.add(personalGroup);
             for (SeafRepo repo : personalRepos)
                 mLeftViewAdapter.add(repo);
         }
@@ -3077,8 +3081,8 @@ public class BrowserActivity extends BaseActivity
                 }
             }
         }
-    }
 
+    }
 
     public void navToDirectory(boolean forceRefresh, boolean restorePosition) {
 

@@ -21,7 +21,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/openthos_about_size"
                 android:layout_height="50dp"
-                android:text="账号设置" />
+                android:text="@string/account_settings" />
         </LinearLayout>
 
         <LinearLayout
@@ -35,7 +35,7 @@
                 android:layout_height="50dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/openthos_about_size"
-                android:text="通用设置" />
+                android:text="@string/general_settings" />
         </LinearLayout>
     </RelativeLayout>
 
