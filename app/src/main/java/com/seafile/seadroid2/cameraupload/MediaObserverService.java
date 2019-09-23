@@ -99,6 +99,7 @@ public class MediaObserverService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null)intent = new Intent(Intent.ACTION_VIEW,Uri.parse("http://www.baidu.com"));
         PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(),0,intent,0);
         NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         if(Build.VERSION.SDK_INT >= 26) {

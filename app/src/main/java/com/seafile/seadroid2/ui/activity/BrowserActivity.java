@@ -2377,7 +2377,7 @@ public class BrowserActivity extends BaseActivity
             return;
         }
 
-        if (currentPosition == INDEX_LIBRARY_TAB || Configuration.ORIENTATION_PORTRAIT == this.getResources().getConfiguration().orientation) {
+        if (currentPosition == INDEX_LIBRARY_TAB && Configuration.ORIENTATION_PORTRAIT == this.getResources().getConfiguration().orientation) {
             if (navContext.inRepo()) {
                 if (navContext.isRepoRoot()) {
                     navContext.setRepoID(null);
