@@ -1,14 +1,20 @@
 package com.seafile.seadroid2.cameraupload;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.app.NotificationCompat;
 
+import com.seafile.seadroid2.R;
 import com.seafile.seadroid2.SettingsManager;
 import com.seafile.seadroid2.notification.BaseNotificationProvider;
 
@@ -93,9 +99,34 @@ public class MediaObserverService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Notification notification = new Notification.Builder(this.getApplicationContext()).build();
-        startForeground(BaseNotificationProvider.NOTIFICATION_ID_MEDIA, notification);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(),0,intent,0);
+        NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        if(Build.VERSION.SDK_INT >= 26) {
+            String id = "openthos cloud";
+            String description = "0";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel(id, description, importance);
+            manager.createNotificationChannel(channel);
+            Notification notification = new Notification.Builder(this.getApplicationContext(), id)
+                    .setCategory(Notification.CATEGORY_MESSAGE)
+                    .setSmallIcon(R.drawable.icon)
+                    .setContentTitle("This is a content title")
+                    .setContentText("This is a content text")
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+                    .build();
+            manager.notify(1, notification);
+            startForeground(BaseNotificationProvider.NOTIFICATION_ID_MEDIA, notification);
+        } else {
+            Notification notification = new NotificationCompat.Builder(this.getApplicationContext())
+                    .setContentTitle("This is content title")
+                    .setContentText("This is content text")
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(R.drawable.icon)
+                    .build();
+            manager.notify(1,notification);
+            startForeground(BaseNotificationProvider.NOTIFICATION_ID_MEDIA, notification);
+        }
         return START_STICKY;
     }
 

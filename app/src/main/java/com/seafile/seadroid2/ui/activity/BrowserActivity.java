@@ -452,6 +452,22 @@ public class BrowserActivity extends BaseActivity
         mTaskStop.setOnClickListener(this);
         searchView.addTextChangedListener(mTextWatcher);
         ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
+
+        if (savedInstanceState != null){
+            String repoID = savedInstanceState.getString("repoID");
+            String repoName = savedInstanceState.getString("repoName");
+            String path = savedInstanceState.getString("path");
+            String dirID = savedInstanceState.getString("dirID");
+            String permission = savedInstanceState.getString("permission");
+
+            if (repoID != null) {
+                navContext.setRepoID(repoID);
+                navContext.setRepoName(repoName);
+                navContext.setDir(path, dirID);
+                navContext.setDirPermission(permission);
+            }
+            requestRightItem();
+        }
     }
 
     private TextWatcher mTextWatcher = new TextWatcher() {
