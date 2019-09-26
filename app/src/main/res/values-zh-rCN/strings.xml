@@ -560,7 +560,10 @@
   <string name="account_settings">账户设置</string>
   <string name="general_settings">通用设置</string>
   <string name="openthos_Browse">浏览</string>
-
+  <string name="port_file">文件</string>
+  <string name="port_recently">最近</string>
+  <string name="port_transmission">传输</string>
+  <string name="port_mine">我的</string>
 
   <string-array name="choose_openthos_server_array">
     <item>cloud.openthos.com</item>

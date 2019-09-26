@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,7 +29,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
@@ -56,6 +56,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -118,8 +120,11 @@ import com.seafile.seadroid2.ui.dialog.SslConfirmDialog;
 import com.seafile.seadroid2.ui.dialog.TaskDialog;
 import com.seafile.seadroid2.ui.dialog.UploadChoiceDialog;
 import com.seafile.seadroid2.ui.fragment.ActivitiesFragment;
+import com.seafile.seadroid2.ui.fragment.RecentlyFragment;
 import com.seafile.seadroid2.ui.fragment.ReposFragment;
+import com.seafile.seadroid2.ui.fragment.SettingFragment;
 import com.seafile.seadroid2.ui.fragment.StarredFragment;
+import com.seafile.seadroid2.ui.fragment.TransmissionFragment;
 import com.seafile.seadroid2.util.ConcurrentAsyncTask;
 import com.seafile.seadroid2.util.Utils;
 import com.seafile.seadroid2.util.UtilsJellyBean;
@@ -143,7 +148,7 @@ import java.util.Map;
 public class BrowserActivity extends BaseActivity
         implements ReposFragment.OnFileSelectedListener, StarredFragment.OnStarredFileSelectedListener,
         FragmentManager.OnBackStackChangedListener, Toolbar.OnMenuItemClickListener,
-        SortFilesDialogFragment.SortItemClickListener, View.OnClickListener {
+        SortFilesDialogFragment.SortItemClickListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     private static final String DEBUG_TAG = "BrowserActivity";
     public static final String ACTIONBAR_PARENT_PATH = "/";
 
@@ -167,6 +172,10 @@ public class BrowserActivity extends BaseActivity
     public static final int INDEX_LIBRARY_TAB = 0;
     public static final int INDEX_ACTIVITIES_TAB = 2;
 
+    public static final int INDEX_RECENTLY_TAB = 1;
+    public static final int INDEX_TRANSMISSION_TAB = 2;
+    public static final int INDEX_MINE_TAB = 3;
+
     /**
      * right click menu for left(1) or right(2)
      */
@@ -178,7 +187,7 @@ public class BrowserActivity extends BaseActivity
 
     private static final int[] ICONS = new int[]{
             R.drawable.tab_library, R.drawable.tab_starred,
-            R.drawable.tab_activity
+            R.drawable.tab_activity,
     };
 
     List<SeafItem> mOpenthosDirteryData;
@@ -197,6 +206,10 @@ public class BrowserActivity extends BaseActivity
     private ImageButton mTransClose;
     private Button mTaskStart, mTaskStop;
     private List<View> mView;
+    private RadioButton fileButton;
+    private RadioButton recentlyButton;
+    private RadioButton transmissionButton;
+    private RadioButton mineButton;
 
     private TextView mCurrentDirectory;
     private EditText searchView;
@@ -783,53 +796,15 @@ public class BrowserActivity extends BaseActivity
 
     // -------------------------- port view --------------------//
     protected void onCreatePortView(Bundle savedInstanceState) {
-        mLayout = findViewById(R.id.main_layout);
-        container = (LinearLayout) findViewById(R.id.bottom_sheet_container);
-        setSupportActionBar(getActionBarToolbar());
-        // enable ActionBar app icon to behave as action back
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        findViewById(R.id.view_toolbar_bottom_line).setVisibility(View.GONE);
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
-
-        unsetRefreshing();
-        disableUpButton();
-
         pager = (ViewPager) findViewById(R.id.pager);
         adapter = new SeafileTabsAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
-        mTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        mTabLayout.setupWithViewPager(pager);
-        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                currentPosition = tab.getPosition();
-                supportInvalidateOptionsMenu();
-                pager.setCurrentItem(tab.getPosition(), true);
-                if (currentPosition != INDEX_LIBRARY_TAB) {
-                    disableUpButton();
-                } else if (navContext.inRepo()) {
-                    enableUpButton();
-                }
-
-                setUpButtonTitleOnSlideTabs(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        pager.setCurrentItem(0);
+        recycleRadioButtonIconSize();
 
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
             @Override
             public void onPageSelected(int position) {
@@ -847,54 +822,85 @@ public class BrowserActivity extends BaseActivity
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                if (state == 2) {
+                    int currentItemPosition = pager.getCurrentItem();
+                    switch (currentItemPosition) {
+                        case INDEX_LIBRARY_TAB:
+                            setButtonDrawableTrue(R.drawable.file_focus_true,fileButton);
+                            setButtonDrawableFalse(R.drawable.recently_focus_false,recentlyButton);
+                            setButtonDrawableFalse(R.drawable.transmission_focus_false,transmissionButton);
+                            setButtonDrawableFalse(R.drawable.mine_focus_false,mineButton);
+                            break;
+                        case INDEX_RECENTLY_TAB:
+                            setButtonDrawableFalse(R.drawable.file_focus_false,fileButton);
+                            setButtonDrawableTrue(R.drawable.recently_focus_true,recentlyButton);
+                            setButtonDrawableFalse(R.drawable.transmission_focus_false,transmissionButton);
+                            setButtonDrawableFalse(R.drawable.mine_focus_false,mineButton);
+                            break;
+                        case INDEX_TRANSMISSION_TAB:
+                            setButtonDrawableFalse(R.drawable.file_focus_false,fileButton);
+                            setButtonDrawableFalse(R.drawable.recently_focus_false,recentlyButton);
+                            setButtonDrawableTrue(R.drawable.transmission_focus_true,transmissionButton);
+                            setButtonDrawableFalse(R.drawable.mine_focus_false,mineButton);
+                            break;
+                        case INDEX_MINE_TAB:
+                            setButtonDrawableFalse(R.drawable.file_focus_false,fileButton);
+                            setButtonDrawableFalse(R.drawable.recently_focus_false,recentlyButton);
+                            setButtonDrawableFalse(R.drawable.transmission_focus_false,transmissionButton);
+                            setButtonDrawableTrue(R.drawable.mine_focus_true,mineButton);
+                            break;
+                    }
+                }
             }
         });
 
-        pager.setOffscreenPageLimit(3);
+        pager.setOffscreenPageLimit(1);
+    }
 
-        if (savedInstanceState != null) {
-            Log.d(DEBUG_TAG, "savedInstanceState is not null");
-            fetchFileDialog = (FetchFileDialog)
-                    getSupportFragmentManager().findFragmentByTag(OPEN_FILE_DIALOG_FRAGMENT_TAG);
+    private void recycleRadioButtonIconSize(){
+        RadioGroup radioGroup = findViewById(R.id.group_button);
+        fileButton = findViewById(R.id.file_button);
+        recentlyButton = findViewById(R.id.recently_button);
+        transmissionButton = findViewById(R.id.transmission_button);
+        mineButton = findViewById(R.id.mine_button);
 
-            AppChoiceDialog appChoiceDialog = (AppChoiceDialog)
-                    getSupportFragmentManager().findFragmentByTag(CHOOSE_APP_DIALOG_FRAGMENT_TAG);
+        setButtonDrawableTrue(R.drawable.file_focus_true,fileButton);
+        setButtonDrawableFalse(R.drawable.recently_focus_false,recentlyButton);
+        setButtonDrawableFalse(R.drawable.transmission_focus_false,transmissionButton);
+        setButtonDrawableFalse(R.drawable.mine_focus_false,mineButton);
+        radioGroup.setOnCheckedChangeListener(this);
+    }
 
-            if (appChoiceDialog != null) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.detach(appChoiceDialog);
-                ft.commit();
-            }
-
-            SslConfirmDialog sslConfirmDlg = (SslConfirmDialog)
-                    getSupportFragmentManager().findFragmentByTag(SslConfirmDialog.FRAGMENT_TAG);
-
-            if (sslConfirmDlg != null) {
-                Log.d(DEBUG_TAG, "sslConfirmDlg is not null");
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.detach(sslConfirmDlg);
-                ft.commit();
-            } else {
-                Log.d(DEBUG_TAG, "sslConfirmDlg is null");
-            }
-
-            String repoID = savedInstanceState.getString("repoID");
-            String repoName = savedInstanceState.getString("repoName");
-            String path = savedInstanceState.getString("path");
-            String dirID = savedInstanceState.getString("dirID");
-            String permission = savedInstanceState.getString("permission");
-
-            if (repoID != null) {
-                navContext.setRepoID(repoID);
-                navContext.setRepoName(repoName);
-                navContext.setDir(path, dirID);
-                navContext.setDirPermission(permission);
-            }
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch (checkedId) {
+            case R.id.file_button:
+                pager.setCurrentItem(INDEX_LIBRARY_TAB);
+                break;
+            case R.id.recently_button:
+                pager.setCurrentItem(INDEX_RECENTLY_TAB);
+                break;
+            case R.id.transmission_button:
+                pager.setCurrentItem(INDEX_TRANSMISSION_TAB);
+                break;
+            case R.id.mine_button:
+                pager.setCurrentItem(INDEX_MINE_TAB);
+                break;
         }
+    }
 
-        requestServerInfo();
-        requestReadExternalStoragePermission();
+    private void setButtonDrawableFalse(int postion, RadioButton view){
+        Drawable drawable = getResources().getDrawable(postion);
+        drawable.setBounds(0,0,90,90);
+        view.setCompoundDrawables(null,drawable, null,null);
+        view.setTextColor(getResources().getColor(R.color.light_grey));
+    }
+
+    private void setButtonDrawableTrue(int postion, RadioButton view){
+        Drawable drawable = getResources().getDrawable(postion);
+        drawable.setBounds(0,0,90,90);
+        view.setCompoundDrawables(null,drawable, null,null);
+        view.setTextColor(getResources().getColor(R.color.fancy_purple));
     }
 
     public LinearLayout getContainer() {
@@ -1158,6 +1164,8 @@ public class BrowserActivity extends BaseActivity
 //        scrollPostions.put(pathJoin, state);
     }
 
+
+
     private class ScrollState {
         public int index;
         public int top;
@@ -1250,8 +1258,11 @@ public class BrowserActivity extends BaseActivity
         }
 
         private ReposFragment reposFragment = null;
-        private ActivitiesFragment activitieFragment = null;
-        private StarredFragment starredFragment = null;
+        private RecentlyFragment recentlyFragment = null;
+        private TransmissionFragment transmissionFragment = null;
+        private SettingFragment settingFragment = null;
+//        private ActivitiesFragment activitieFragment = null;
+//        private StarredFragment starredFragment = null;
         private boolean isHideActivityTab;
 
         public void hideActivityTab() {
@@ -1266,21 +1277,25 @@ public class BrowserActivity extends BaseActivity
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-
                     if (reposFragment == null) {
                         reposFragment = new ReposFragment();
                     }
                     return reposFragment;
                 case 1:
-                    if (starredFragment == null) {
-                        starredFragment = new StarredFragment();
+                    if (recentlyFragment == null) {
+                        recentlyFragment = new RecentlyFragment();
                     }
-                    return starredFragment;
-//                case 2:
-//                    if (activitieFragment == null) {
-//                        activitieFragment = new ActivitiesFragment();
-//                    }
-//                    return activitieFragment;
+                    return recentlyFragment;
+                case 2:
+                    if (transmissionFragment == null) {
+                        transmissionFragment = new TransmissionFragment();
+                    }
+                    return transmissionFragment;
+                case 3:
+                    if (settingFragment == null) {
+                        settingFragment = new SettingFragment();
+                    }
+                    return settingFragment;
                 default:
                     return new Fragment();
             }
@@ -1290,11 +1305,13 @@ public class BrowserActivity extends BaseActivity
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return getString(R.string.tabs_library).toUpperCase();
+                    return getString(R.string.port_file).toUpperCase();
                 case 1:
-                    return getString(R.string.tabs_starred).toUpperCase();
+                    return getString(R.string.port_recently).toUpperCase();
                 case 2:
-                    return getString(R.string.tabs_activity).toUpperCase();
+                    return getString(R.string.port_transmission).toUpperCase();
+                case 3:
+                    return getString(R.string.port_mine).toUpperCase();
 
                 default:
                     return null;
@@ -1307,12 +1324,7 @@ public class BrowserActivity extends BaseActivity
         }
 
         @Override
-        public int getCount() {
-            if (!isHideActivityTab)
-                return ICONS.length;
-            else
-                return 2;
-        }
+        public int getCount() {return 4;}
     }
 
     public int getCurrentPosition() {
@@ -1341,6 +1353,18 @@ public class BrowserActivity extends BaseActivity
 
     public ActivitiesFragment getActivitiesFragment() {
         return (ActivitiesFragment) getFragment(2);
+    }
+
+    public RecentlyFragment getRecentlyFragment() {
+        return (RecentlyFragment) getFragment(1);
+    }
+
+    public TransmissionFragment getTransmissionFragment() {
+        return (TransmissionFragment) getFragment(2);
+    }
+
+    public SettingFragment getSettingFragment() {
+        return (SettingFragment) getFragment(2);
     }
 
     ServiceConnection mConnection = new ServiceConnection() {
@@ -1737,23 +1761,21 @@ public class BrowserActivity extends BaseActivity
      * @param position
      */
     private void setUpButtonTitleOnSlideTabs(int position) {
-        if (navContext == null)
-            return;
-
-        if (position == INDEX_LIBRARY_TAB) {
-            if (navContext.inRepo()) {
-                if (navContext.getDirPath().equals(BrowserActivity.ACTIONBAR_PARENT_PATH)) {
-                    setUpButtonTitle(navContext.getRepoName());
-                } else {
-                    setUpButtonTitle(navContext.getDirPath().substring(
-                            navContext.getDirPath().lastIndexOf(BrowserActivity.ACTIONBAR_PARENT_PATH) + 1));
-                }
-            } else
-                setUpButtonTitle(getString(R.string.tabs_library).toUpperCase());
-        } else {
-            setUpButtonTitle(currentPosition == 1 ? getString(R.string.tabs_starred).toUpperCase() : getString(R.string.tabs_activity).toUpperCase());
+        switch (position){
+            case 0:
+                setUpButtonTitle(getString(R.string.port_file));
+//                setButtonDrawableFalse();
+                break;
+            case 1:
+                setUpButtonTitle(getString(R.string.port_recently));
+                break;
+            case 2:
+                setUpButtonTitle(getString(R.string.port_transmission));
+                break;
+            case 3:
+                setUpButtonTitle(getString(R.string.settings));
+                break;
         }
-
     }
 
     /**

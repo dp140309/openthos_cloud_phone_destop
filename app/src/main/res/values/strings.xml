@@ -590,7 +590,10 @@
   <string name="account_settings">Account Settings</string>
   <string name="general_settings">General Settings</string>
   <string name="openthos_Browse">Browse</string>
-
+  <string name="port_file">File</string>
+  <string name="port_recently">Recently</string>
+  <string name="port_transmission">Transmission</string>
+  <string name="port_mine">Mine</string>
   <string-array name="choose_openthos_server_array">
     <item>cloud.openthos.com</item>
     <item>Other Openthos Server</item>
