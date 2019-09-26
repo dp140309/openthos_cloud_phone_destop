@@ -292,18 +292,17 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         RightHolder mHolder = new RightHolder(v);
         int postion = (int) mHolder.mTextView.getTag();
         SeafItem mi = (SeafItem) v.getTag();
-        ArrayList<SeafDirent> sd = mActivity.getSeafDirent();
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             mLastDownTime = System.currentTimeMillis();
             mDownX = (int) event.getX();
             mDownY = (int) event.getY();
             mClickcount++;
-
             if (isLeftRecycle(viewType)) {
                 setSelectPosition(postion);
                 adapterCallback.onTunchListener((SeafItem) v.getTag());
             } else {
+                ArrayList<SeafDirent> sd = mActivity.getSeafDirent();
                 SeafDirent dirent = (SeafDirent) mi;
                 if (sd.size() == 0){
                     sd.add(dirent);

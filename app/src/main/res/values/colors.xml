@@ -46,6 +46,7 @@
     <color name="trans_start_button_background_color">#f2f2f2</color>
     <color name="right_text_color">#aaaaaa</color>
     <color name="menu_text_color">#5a5a5a</color>
+    <color name="menu_text_color_false">#5a5a5a4D</color>
     <color name="log_in_erro_text_icon">#ff5f5f</color>
     <color name="log_in_erro_background">#ffd8d8</color>
 

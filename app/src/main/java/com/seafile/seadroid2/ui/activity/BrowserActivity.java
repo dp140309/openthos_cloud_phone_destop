@@ -206,10 +206,9 @@ public class BrowserActivity extends BaseActivity
     private ImageButton mTransClose;
     private Button mTaskStart, mTaskStop;
     private List<View> mView;
-    private RadioButton fileButton;
-    private RadioButton recentlyButton;
-    private RadioButton transmissionButton;
-    private RadioButton mineButton;
+    private RadioButton fileButton, recentlyButton, transmissionButton, mineButton;
+    private TextView downloadText, uploadText, deleteText;
+    private ImageView downloadIcon, uploadIcon, deleteIcon;
 
     private TextView mCurrentDirectory;
     private EditText searchView;
@@ -297,6 +296,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     public ArrayList<SeafDirent> getSeafDirent(){
+        setTitleViewFocus(true);
         return mRightDataList;
     }
 
@@ -412,7 +412,6 @@ public class BrowserActivity extends BaseActivity
         mLeftViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
             @Override
             public void onTunchListener(SeafItem position) {
-                if (!landFortName.isEmpty()) landFortName.clear();
                 requestLeftClickListener(position);
             }
 
@@ -423,22 +422,35 @@ public class BrowserActivity extends BaseActivity
         });
 
         requestReadExternalStoragePermission();
+
         mBackImag = findViewById(R.id.back_view);
         mForwardImg = findViewById(R.id.forward_view);
         RelativeLayout downloadView =  findViewById(R.id.download_view);
         RelativeLayout uploadView = findViewById(R.id.upload_view);
         RelativeLayout deleteView = findViewById(R.id.delete_view);
+        downloadText =  findViewById(R.id.download_text);
+        uploadText = findViewById(R.id.upload_text);
+        deleteText = findViewById(R.id.delete_text);
+        downloadIcon =  findViewById(R.id.download_icon);
+        uploadIcon = findViewById(R.id.upload_icon);
+        deleteIcon = findViewById(R.id.delete_icon);
         RelativeLayout transferView = findViewById(R.id.transfer_list_view);
         ImageView settingView = findViewById(R.id.settings_view);
         TextView accountView = findViewById(R.id.account_manager_view);
         mTransferLayoutView =  findViewById(R.id.transfer_layout);
         mTransmissionListView = findViewById(R.id.transmission_list_view);
         ProgressBar mProgerssBar =  findViewById(R.id.memory_state);
+        View emptyIcon = findViewById(R.id.empty_icon);
         RelativeLayout mAccountButton = findViewById(R.id.account_button);
         searchView = (EditText) findViewById(R.id.search_text_view);
         mTransClose = findViewById(R.id.trans_close);
         mTaskStart = findViewById(R.id.button_all_start);
         mTaskStop = findViewById(R.id.button_all_stop);
+
+        mTransmissionListView.setEmptyView(emptyIcon);
+
+        uploadIcon.setImageResource(R.drawable.openthos_title_upload_false);
+        uploadText.setTextColor(getResources().getColor(R.color.menu_text_color_false));
 
         if(account.getEmail() != null ) accountView.setText(account.getEmail());
 
@@ -450,6 +462,7 @@ public class BrowserActivity extends BaseActivity
 
         setBackViewState(false);
         setForwardViewState(false);
+        setTitleViewFocus(false);
 
         mTransferLayoutView.setVisibility(View.GONE);
         mTransClose.setOnClickListener(this);
@@ -644,6 +657,20 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
+    private void setTitleViewFocus(boolean isFocus){
+        if (isFocus){
+            downloadIcon.setImageResource(R.drawable.openthos_title_download);
+            deleteIcon.setImageResource(R.drawable.openthos_title_delete);
+            downloadText.setTextColor(getResources().getColor(R.color.menu_text_color));
+            deleteText.setTextColor(getResources().getColor(R.color.menu_text_color));
+        }else {
+            downloadIcon.setImageResource(R.drawable.openthos_title_download_false);
+            deleteIcon.setImageResource(R.drawable.openthos_title_delete_false);
+            downloadText.setTextColor(getResources().getColor(R.color.menu_text_color_false));
+            deleteText.setTextColor(getResources().getColor(R.color.menu_text_color_false));
+        }
+    }
+
     private void LandBack(){
 
         // 清空item的选中状态
@@ -652,6 +679,7 @@ public class BrowserActivity extends BaseActivity
         isClickBack = true;
 
         setForwardViewState(true);
+        setTitleViewFocus(false);
 
         String parentPath = Utils.getParentPath(navContext.getDirPath());
         navContext.setDir(parentPath, null);
@@ -686,6 +714,8 @@ public class BrowserActivity extends BaseActivity
         int forwardSize = landFortName.size();
 
         setBackViewState(true);
+        setTitleViewFocus(false);
+
         mCurrentDirectory.append(" > " + landFortName.get(recycleCurrentPosition));
         navContext.setDir(navContext.getDirPath()+"/"+landFortName.get(recycleCurrentPosition), null);
         refreshView(true);
@@ -701,10 +731,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void DeleteData(){
-        if (mRightDataList.isEmpty()){
-            Toast.makeText(BrowserActivity.this, R.string.delete_item_unselected, Toast.LENGTH_LONG).show();
-            return;
-        }
+        if (mRightDataList.isEmpty()){ return; }
 
         String currentPath = getNavContext().getDirPath();
         String newPath = currentPath.endsWith("/") ?
@@ -733,10 +760,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void DownLoadFile(){
-        if (mRightDataList.size() == 0) {
-            Toast.makeText(BrowserActivity.this, R.string.download_item_unselected, Toast.LENGTH_LONG).show();
-            return;
-        }
+        if (mRightDataList.size() == 0) { return; }
 
         if (mRightDataList.get(0).isDir()) {
             downloadDir(getNavContext().getDirPath(), mRightDataList.get(0).name, true);
@@ -1102,6 +1126,8 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void requestLeftClickListener(SeafItem position) {
+        if (!landFortName.isEmpty()) landFortName.clear();
+
         SeafRepo repo = null;
         if (position instanceof SeafRepo) {
             repo = (SeafRepo) position;
@@ -1109,6 +1135,10 @@ public class BrowserActivity extends BaseActivity
 
         setBackViewState(false);
         setForwardViewState(false);
+        setTitleViewFocus(false);
+
+        uploadIcon.setImageResource(R.drawable.openthos_title_upload);
+        uploadText.setTextColor(getResources().getColor(R.color.menu_text_color));
 
         if (mCurrentDirectory.getText() != null) mCurrentDirectory.setText("");
         mCurrentDirectory.setText(position.getTitle());
@@ -1123,6 +1153,7 @@ public class BrowserActivity extends BaseActivity
 
     private void requestRightClickListener(SeafItem position) {
         setForwardViewState(false);
+        setTitleViewFocus(false);
 
         if (position instanceof SeafDirent) {
             isClickBack = false;

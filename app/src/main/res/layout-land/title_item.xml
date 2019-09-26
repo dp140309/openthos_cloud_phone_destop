@@ -52,6 +52,7 @@
             android:src="@drawable/openthos_title_upload" />
 
         <TextView
+            android:id="@+id/upload_text"
             style="@style/TitleTextStyle"
             android:layout_marginLeft="@dimen/openthos_view_size_8"
             android:layout_toRightOf="@+id/upload_icon"

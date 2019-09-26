@@ -148,6 +148,12 @@
                     android:divider="@color/trans_list_background_color"
                     android:dividerHeight="@dimen/openthos_view_size_28" />
 
+                <ImageView
+                    android:id="@+id/empty_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/transmission_null"/>
+
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
