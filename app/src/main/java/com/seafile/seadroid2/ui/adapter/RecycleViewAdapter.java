@@ -3,7 +3,6 @@ package com.seafile.seadroid2.ui.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,41 +36,41 @@ import java.util.List;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.RightHolder> implements View.OnTouchListener {
 
-    private Context mContext;
-    private LayoutInflater Inflater;
+    private BrowserActivity mActivity;
     private ArrayList<SeafItem> items;
     private List<DownloadTaskInfo> mDownloadTaskInfos;
-    private BrowserActivity mActivity;
     private AdapterCallback adapterCallback;
+    private LayoutInflater Inflater;
 
-    /* 点击的次数 */
-    private int mClickcount, mDownX, mDownY, mUpX, mUpY, viewType;
+    /** 点击的次数 */
+    private int mClickcount, mDownX, mDownY, mUpX, mUpY, viewType, mItemPostion = -1;
     private long mLastDownTime, mLastUpTime, mFirstTime, mLastTime;
-
-    private boolean isDoubleClick = false;
     private long MAX_LONG_PRESS_TIME = 3000;
-    private int mItemPostion = -1;
-    private int MAX_MOVE_FOR_CLICK = 50;
-
     private String mFirstName = null;
 
-    /**
-     * sort files type
-     */
-    public static final int SORT_BY_NAME = 9;
-    /**
-     * sort files type
-     */
-    public static final int SORT_BY_LAST_MODIFIED_TIME = 10;
-    /**
-     * sort files order
-     */
-    public static final int SORT_ORDER_ASCENDING = 11;
-    /**
-     * sort files order
-     */
-    public static final int SORT_ORDER_DESCENDING = 12;
+    /** get left(1) and right(2) layout */
+    private int getLayout() { return isLeftRecycle(viewType) ?
+            R.layout.recycler_left_item : R.layout.recycler_right_item; }
+    private boolean isLeftRecycle(int type) { return type == 1 ? true : false; }
 
+    public void add(SeafItem entry) {
+        items.add(entry);
+    }
+    public void notifyChanged() {
+        notifyDataSetChanged();
+    }
+    public void clear() {
+        items.clear();
+    }
+
+    /** sort files type */
+    public static final int SORT_BY_NAME = 9;
+    /** sort files type */
+    public static final int SORT_BY_LAST_MODIFIED_TIME = 10;
+    /** sort files order */
+    public static final int SORT_ORDER_ASCENDING = 11;
+    /** sort files order */
+    public static final int SORT_ORDER_DESCENDING = 12;
 
     public RecycleViewAdapter(BrowserActivity context, int type) {
         this.mActivity = context;
@@ -80,36 +79,14 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         Inflater = LayoutInflater.from(context);
     }
 
-    public void add(SeafItem entry) {
-        items.add(entry);
-    }
-
     public int getItemPostion(int number){
         mItemPostion = number;
         notifyDataSetChanged();
         return mItemPostion;
     }
 
-    public void removePersonalData() {
-        if (items.get(0).getTitle().equals("个人")) {
-            items.remove(0);
-            notifyItemRemoved(0);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void notifyChanged() {
-        notifyDataSetChanged();
-    }
-
-    public void clear() {
-        items.clear();
-    }
-
     @Override
-    public int getItemCount() {
-        return items == null ? 0 : items.size();
-    }
+    public int getItemCount() { return items.size(); }
 
     @NonNull
     @Override
@@ -123,7 +100,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull RightHolder holder, int position) {
-
         holder.mTextView.setText(items.get(position).getTitle());
         SeafItem seafile = items.get(position);
         holder.mRelativeLayout.setTag(seafile);
@@ -199,9 +175,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-    private int getThumbnailWidth() {
-        return (int) SeadroidApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width);
-    }
+    private int getThumbnailWidth() { return (int) SeadroidApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width); }
 
     private String countFilesNumber(int position){
         SeafRepo name = (SeafRepo) items.get(position);
@@ -218,7 +192,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         CheckBox mCheckBox;
 
         public RightHolder(View itemView) {
-
             super(itemView);
             if (isLeftRecycle(viewType)) {
                 mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_list_left);
@@ -253,46 +226,11 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-
-    /**
-     * view type 1 return true
-     */
-    private boolean isLeftRecycle(int type) {
-        return type == 1 ? true : false;
-    }
-
-    /**
-     * view type 1 or 2
-     * 1 is left item
-     * 2 is right item
-     */
-    private int getLayout() {
-        return isLeftRecycle(viewType) ? R.layout.recycler_left_item : R.layout.recycler_right_item;
-    }
-
-    private boolean equalLists(List<DownloadTaskInfo> newList, List<DownloadTaskInfo> oldList) {
-        if (newList == null && oldList == null) return true;
-        if ((newList == null && oldList != null)
-                || newList != null && oldList == null
-                || newList.size() != oldList.size()) return false;
-        return newList.equals(oldList);
-    }
-    public interface AdapterCallback {
-        void onRecycleRightMouseClick(int x, int y, SeafItem position);
-
-        void onTunchListener(SeafItem position);
-    }
-
-    public void setAdapterCallback(AdapterCallback adapterCallback) {
-        this.adapterCallback = (AdapterCallback) adapterCallback;
-    }
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         RightHolder mHolder = new RightHolder(v);
         int postion = (int) mHolder.mTextView.getTag();
         SeafItem mi = (SeafItem) v.getTag();
-
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             mLastDownTime = System.currentTimeMillis();
             mDownX = (int) event.getX();
@@ -306,15 +244,15 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 SeafDirent dirent = (SeafDirent) mi;
                 if (sd.size() == 0){
                     sd.add(dirent);
-                    Log.i("i--","---sd is null----"+sd.get(0).id);
                 }else {
-                    sd.clear();
-                    sd.add(dirent);
-                    Log.i("i--","---sd is ----"+sd.get(0).id);
+
+                    if (mActivity.KEYBOARD_CTRL){
+                        sd.add(dirent);
+                    }else {
+                        sd.clear();
+                        sd.add(dirent);
+                    }
                 }
-//                String currentPath = mActivity.getNavContext().getDirPath();
-//                String newPath = currentPath.endsWith("/") ?
-//                        currentPath + dirent.name : currentPath + "/" + dirent.name;
 
                 setSelectPosition(postion);
 
@@ -342,7 +280,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                     }
                     mClickcount = 0 ;
                 }
-
             }
         }
 
@@ -352,12 +289,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             mUpY = (int) event.getY();
             int mx = Math.abs(mUpX - mDownX);
             int my = Math.abs(mUpY - mDownY);
-
-//            if (mx <= MAX_MOVE_FOR_CLICK && my <= MAX_MOVE_FOR_CLICK) {
-//
-//            } else { // 移动
-//                mClickcount = 0;
-//            }
         }
 
         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
@@ -387,7 +318,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-
     /**
      * Sorts the given list by type of {@link #SORT_BY_NAME} or {@link #SORT_BY_LAST_MODIFIED_TIME},
      * and by order of {@link #SORT_ORDER_ASCENDING} or {@link #SORT_ORDER_DESCENDING}
@@ -397,9 +327,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         List<SeafCachedFile> cachedFiles = Lists.newArrayList();
         List<SeafDirent> folders = Lists.newArrayList();
         List<SeafDirent> files = Lists.newArrayList();
-
         SeafGroup group = null;
-
         for (SeafItem item : items) {
             if (item instanceof SeafGroup) {
                 group = (SeafGroup) item;
@@ -453,9 +381,25 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     public void setDownloadTaskList(List<DownloadTaskInfo> newList) {
         if (!equalLists(newList, mDownloadTaskInfos)) {
             this.mDownloadTaskInfos = newList;
-            // redraw the list
             notifyDataSetChanged();
         }
+    }
+
+    private boolean equalLists(List<DownloadTaskInfo> newList, List<DownloadTaskInfo> oldList) {
+        if (newList == null && oldList == null) return true;
+        if ((newList == null && oldList != null)
+                || newList != null && oldList == null
+                || newList.size() != oldList.size()) return false;
+        return newList.equals(oldList);
+    }
+
+    public interface AdapterCallback {
+        void onRecycleRightMouseClick(int x, int y, SeafItem position);
+        void onTunchListener(SeafItem position);
+    }
+
+    public void setAdapterCallback(AdapterCallback adapterCallback) {
+        this.adapterCallback = (AdapterCallback) adapterCallback;
     }
 
 }

@@ -176,6 +176,8 @@ public class BrowserActivity extends BaseActivity
     public static final int INDEX_TRANSMISSION_TAB = 2;
     public static final int INDEX_MINE_TAB = 3;
 
+    public static boolean KEYBOARD_CTRL = false;
+
     /**
      * right click menu for left(1) or right(2)
      */
@@ -1126,6 +1128,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void requestLeftClickListener(SeafItem position) {
+
         if (!landFortName.isEmpty()) landFortName.clear();
 
         SeafRepo repo = null;
@@ -1152,6 +1155,12 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void requestRightClickListener(SeafItem position) {
+
+        if (!Utils.isNetworkOn()){
+            showShortToast(BrowserActivity.this, R.string.network_down);
+            return;
+        }
+
         setForwardViewState(false);
         setTitleViewFocus(false);
 
@@ -1846,6 +1855,11 @@ public class BrowserActivity extends BaseActivity
     }
 
     void pickFile() {
+        if (!Utils.isNetworkOn()){
+            showShortToast(BrowserActivity.this, R.string.network_down);
+            return;
+        }
+
         if (!hasRepoWritePermission()) {
             showShortToast(this, R.string.library_read_only);
             return;
@@ -3033,12 +3047,24 @@ public class BrowserActivity extends BaseActivity
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_CTRL_LEFT){
+            KEYBOARD_CTRL = true;
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     public boolean onKeyUp(int keycode, KeyEvent e) {
         switch (keycode) {
             case KeyEvent.KEYCODE_MENU:
                 if (overFlowMenu != null) {
                     overFlowMenu.performIdentifierAction(R.id.menu_overflow, 0);
                 }
+            case KeyEvent.KEYCODE_CTRL_LEFT:
+                Log.i("----","-left--------up--09090---------------");
+                return false;
         }
 
         return super.onKeyUp(keycode, e);
@@ -3274,18 +3300,18 @@ public class BrowserActivity extends BaseActivity
                 } else {
                     Log.d(DEBUG_TAG, "failed to load dirents: " + err.getMessage());
                     err.printStackTrace();
-//                    showError(R.string.error_when_load_dirents);
+                    showShortToast(BrowserActivity.this, R.string.error_when_load_dirents);
                 }
                 return;
             }
 
-            if (dirents == null) {
-//                showError(R.string.error_when_load_dirents);
+            if (dirents != null) {
+                getDataManager().setDirsRefreshTimeStamp(myRepoID, myPath);
+                updateAdapterWithDirents(dirents, false);
+            }else {
+                showShortToast(BrowserActivity.this, R.string.error_when_load_dirents);
                 Log.i(DEBUG_TAG, "failed to load dir");
-                return;
             }
-            getDataManager().setDirsRefreshTimeStamp(myRepoID, myPath);
-            updateAdapterWithDirents(dirents, false);
         }
     }
 
@@ -3369,7 +3395,7 @@ public class BrowserActivity extends BaseActivity
                     logoutWhenTokenExpired();
                 } else {
                     Log.e(DEBUG_TAG, "failed to load repos: " + err.getMessage());
-//                    showError(R.string.error_when_load_repos);
+                    showShortToast(BrowserActivity.this, R.string.error_when_load_repos);
                     return;
                 }
             }
@@ -3378,6 +3404,7 @@ public class BrowserActivity extends BaseActivity
                 getDataManager().setReposRefreshTimeStamp();
                 updateAdapterWithRepos(rs, false);
             } else {
+                showShortToast(BrowserActivity.this, R.string.error_when_load_repos);
                 Log.i(DEBUG_TAG, "failed to load repos");
 //                showError(R.string.error_when_load_repos);
             }

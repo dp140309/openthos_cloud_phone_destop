@@ -82,7 +82,7 @@ android {
                 variant.outputs.all { output ->
                     if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
                         if (variant.name == "debug")
-                            outputFileName = "seafile-debug-" + defaultConfig.versionName + ".apk"
+                            outputFileName = "openthos-cloud-debug-" + defaultConfig.versionName + ".apk"
                     }
                 }
             }

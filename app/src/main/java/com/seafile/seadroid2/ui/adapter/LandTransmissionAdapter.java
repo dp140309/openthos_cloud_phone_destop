@@ -64,11 +64,11 @@ public class LandTransmissionAdapter extends BaseAdapter {
             ImageView mTransPause = (ImageView) view.findViewById(R.id.transmission_pause);
             ImageView mTransFile = (ImageView)  view.findViewById(R.id.transmission_file);
             TextView mTransName = (TextView) view.findViewById(R.id.transmission_name);
-            TextView mTransime = (TextView) view.findViewById(R.id.transmission_time);
+            TextView mTranstime = (TextView) view.findViewById(R.id.transmission_time);
             TextView state = (TextView) view.findViewById(R.id.transfer_land_state);
             ProgressBar mProgressBar = (ProgressBar) view.findViewById(R.id.transmission_progress);
             viewHolder = new ViewHolder(mTransIcon, mTransDelete,mTransPause, mTransFile,
-                    mTransName, mTransime, mProgressBar, state);
+                    mTransName, mTranstime, mProgressBar, state);
             view.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -171,7 +171,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
             case INIT:
                 stateStr = mActivity.getString(R.string.download_waiting);
 
-                viewHolder.mTransime.setVisibility(View.INVISIBLE);
+                viewHolder.mTranstime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
                 viewHolder.mTransPause.setActivated(false);
                 viewHolder.mTransPause.setVisibility(View.VISIBLE);
@@ -188,7 +188,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 sizeStr = String.format("%s / %s",
                         Utils.readableFileSize(transferedSize),
                         Utils.readableFileSize(totalSize));
-                viewHolder.mTransime.setVisibility(View.VISIBLE);
+                viewHolder.mTranstime.setVisibility(View.VISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.VISIBLE);
                 viewHolder.mTransPause.setActivated(false);
                 viewHolder.mTransPause.setVisibility(View.VISIBLE);
@@ -200,7 +200,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
 //                else if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.UPLOAD_TASK))
 //                    stateStr = mActivity.getString(R.string.upload_finished);
                 stateColor = Color.BLACK;
-                viewHolder.mTransime.setVisibility(View.VISIBLE);
+                viewHolder.mTranstime.setVisibility(View.VISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
                 viewHolder.mTransPause.setVisibility(View.GONE);
                 viewHolder.mTransFile.setVisibility(View.VISIBLE);
@@ -211,7 +211,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
 //                else if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.UPLOAD_TASK))
 //                    stateStr = mActivity.getString(R.string.upload_cancelled);
                 stateColor = Color.RED;
-                viewHolder.mTransime.setVisibility(View.INVISIBLE);
+                viewHolder.mTranstime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
                 viewHolder.mTransPause.setActivated(true);
                 viewHolder.mTransPause.setVisibility(View.VISIBLE);
@@ -223,13 +223,13 @@ public class LandTransmissionAdapter extends BaseAdapter {
 //                else if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.UPLOAD_TASK))
 //                    stateStr = mActivity.getString(R.string.upload_failed);
                 stateColor = Color.RED;
-                viewHolder.mTransime.setVisibility(View.INVISIBLE);
+                viewHolder.mTranstime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
                 viewHolder.mTransPause.setVisibility(View.VISIBLE);
                 viewHolder.mTransFile.setVisibility(View.GONE);
                 break;
         }
-        viewHolder.mTransime.setText(sizeStr);
+        viewHolder.mTranstime.setText(sizeStr);
         viewHolder.state.setText(stateStr);
         viewHolder.state.setTextColor(stateColor);
     }
@@ -266,11 +266,11 @@ public class LandTransmissionAdapter extends BaseAdapter {
 
     private class ViewHolder {
         private ImageView mTransIcon, mTransDelete, mTransPause, mTransFile;
-        private TextView mTransName, mTransime, state;
+        private TextView mTransName, mTranstime, state;
         private ProgressBar mProgressBar;
 
         public ViewHolder(ImageView mTransIcon, ImageView mTransDelete, ImageView mTransPause,
-                          ImageView mTransFile, TextView mTransName, TextView mTransime,
+                          ImageView mTransFile, TextView mTransName, TextView mTranstime,
                           ProgressBar mProgressBar, TextView state){
             super();
             this.mTransIcon = mTransIcon;
@@ -278,7 +278,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
             this.mTransPause = mTransPause;
             this.mTransFile = mTransFile;
             this.mTransName = mTransName;
-            this.mTransime = mTransime;
+            this.mTranstime = mTranstime;
             this.mProgressBar = mProgressBar;
             this.state = state;
         }
