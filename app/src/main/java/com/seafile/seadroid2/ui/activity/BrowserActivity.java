@@ -99,6 +99,7 @@ import com.seafile.seadroid2.ui.ClickListener.OnMenuClick;
 import com.seafile.seadroid2.ui.CopyMoveContext;
 import com.seafile.seadroid2.ui.NavContext;
 import com.seafile.seadroid2.ui.WidgetUtils;
+import com.seafile.seadroid2.ui.adapter.FileListAdapter;
 import com.seafile.seadroid2.ui.adapter.LandTransmissionAdapter;
 import com.seafile.seadroid2.ui.adapter.RecycleViewAdapter;
 import com.seafile.seadroid2.ui.adapter.SeafItemAdapter;
@@ -125,6 +126,7 @@ import com.seafile.seadroid2.ui.fragment.ReposFragment;
 import com.seafile.seadroid2.ui.fragment.SettingFragment;
 import com.seafile.seadroid2.ui.fragment.StarredFragment;
 import com.seafile.seadroid2.ui.fragment.TransmissionFragment;
+import com.seafile.seadroid2.ui.widget.DragGridView;
 import com.seafile.seadroid2.util.ConcurrentAsyncTask;
 import com.seafile.seadroid2.util.Utils;
 import com.seafile.seadroid2.util.UtilsJellyBean;
@@ -198,9 +200,10 @@ public class BrowserActivity extends BaseActivity
     private SeafileTabsAdapter adapter;
     private View mLayout;
 
-    private RecyclerView mRightMenu;
+    private DragGridView mRightMenu;
     private RecyclerView mLeftMenu;
-    private RecycleViewAdapter mRightViewAdapter;
+    //    private RecycleViewAdapter mRightViewAdapter;
+    private FileListAdapter mRightViewAdapter;
     private RecycleViewAdapter mLeftViewAdapter;
     private LinearLayout mTransferLayoutView;
     private ListView mTransmissionListView;
@@ -297,26 +300,24 @@ public class BrowserActivity extends BaseActivity
         return navContext;
     }
 
-    public ArrayList<SeafDirent> getSeafDirent(){
+    public ArrayList<SeafDirent> getSeafDirent() {
         setTitleViewFocus(true);
         return mRightDataList;
     }
 
     public void requestRightItem() {
         mRightMenu = findViewById(R.id.right_menu);
-        mRightViewAdapter = new RecycleViewAdapter(this, TYPE_RIGHT);
-        mRightMenu.setLayoutManager(new GridLayoutManager(this, 4));
+        mRightViewAdapter = new FileListAdapter(this);
+//        mRightMenu.setLayoutManager(new GridLayoutManager(this, 4));
         refreshView(true);
         mRightMenu.setAdapter(mRightViewAdapter);
 
-        for (View view : mView){
+        for (View view : mView) {
             view.setEnabled(true);
         }
 
-
-
         mRightDataList.clear();
-        mRightViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
+        mRightViewAdapter.setAdapterCallback(new FileListAdapter.AdapterCallback() {
             @Override
             public void onTunchListener( SeafItem position) {
                 requestRightClickListener(position);
@@ -402,7 +403,7 @@ public class BrowserActivity extends BaseActivity
 
     // -------------------------- land view --------------------
     protected void onCreateLandView(Bundle savedInstanceState) {
-        mLeftMenu =  findViewById(R.id.left_list);
+        mLeftMenu = findViewById(R.id.left_list);
         mCurrentDirectory = findViewById(R.id.current_directory);
         mMenuDialog = RecycleMenuDialog.getInstance(this);
         mMenuDialog.setOnMenuClick(mOnMenuClick);
@@ -427,21 +428,21 @@ public class BrowserActivity extends BaseActivity
 
         mBackImag = findViewById(R.id.back_view);
         mForwardImg = findViewById(R.id.forward_view);
-        RelativeLayout downloadView =  findViewById(R.id.download_view);
+        RelativeLayout downloadView = findViewById(R.id.download_view);
         RelativeLayout uploadView = findViewById(R.id.upload_view);
         RelativeLayout deleteView = findViewById(R.id.delete_view);
-        downloadText =  findViewById(R.id.download_text);
+        downloadText = findViewById(R.id.download_text);
         uploadText = findViewById(R.id.upload_text);
         deleteText = findViewById(R.id.delete_text);
-        downloadIcon =  findViewById(R.id.download_icon);
+        downloadIcon = findViewById(R.id.download_icon);
         uploadIcon = findViewById(R.id.upload_icon);
         deleteIcon = findViewById(R.id.delete_icon);
         RelativeLayout transferView = findViewById(R.id.transfer_list_view);
         ImageView settingView = findViewById(R.id.settings_view);
         TextView accountView = findViewById(R.id.account_manager_view);
-        mTransferLayoutView =  findViewById(R.id.transfer_layout);
+        mTransferLayoutView = findViewById(R.id.transfer_layout);
         mTransmissionListView = findViewById(R.id.transmission_list_view);
-        ProgressBar mProgerssBar =  findViewById(R.id.memory_state);
+        ProgressBar mProgerssBar = findViewById(R.id.memory_state);
         View emptyIcon = findViewById(R.id.empty_icon);
         RelativeLayout mAccountButton = findViewById(R.id.account_button);
         searchView = (EditText) findViewById(R.id.search_text_view);
@@ -454,7 +455,7 @@ public class BrowserActivity extends BaseActivity
         uploadIcon.setImageResource(R.drawable.openthos_title_upload_false);
         uploadText.setTextColor(getResources().getColor(R.color.menu_text_color_false));
 
-        if(account.getEmail() != null ) accountView.setText(account.getEmail());
+        if (account.getEmail() != null) accountView.setText(account.getEmail());
 
         mView = new ArrayList<>();
         mView.add(downloadView);
@@ -481,7 +482,7 @@ public class BrowserActivity extends BaseActivity
         searchView.addTextChangedListener(mTextWatcher);
         ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             String repoID = savedInstanceState.getString("repoID");
             String repoName = savedInstanceState.getString("repoName");
             String path = savedInstanceState.getString("path");
@@ -500,16 +501,20 @@ public class BrowserActivity extends BaseActivity
 
     private TextWatcher mTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
             String changeText = searchView.getText().toString().trim();
-            if (mRightViewAdapter == null){
+            mRightMenu.setIsBlankArea(false);
+            if (mRightViewAdapter == null) {
 
-            }else {
+            } else {
 
             }
 
@@ -547,7 +552,7 @@ public class BrowserActivity extends BaseActivity
                 showAccountView(v);
                 break;
             case R.id.button_all_start:
-                if (txService != null){
+                if (txService != null) {
                     txService.restartAllDownloadTasksByState(TaskState.FAILED);
                     txService.restartAllDownloadTasksByState(TaskState.CANCELLED);
                 }
@@ -563,8 +568,8 @@ public class BrowserActivity extends BaseActivity
         TextView logOut = productListView.findViewById(R.id.log_out_account);
         TextView aboutAccount = productListView.findViewById(R.id.about_account);
         PopupWindow popupWindow = new PopupWindow(this);
-        popupWindow.setWidth((int)getResources().getDimension(R.dimen.openthos_view_size_112));
-        popupWindow.setHeight(v.getHeight()+ v.getHeight());
+        popupWindow.setWidth((int) getResources().getDimension(R.dimen.openthos_view_size_112));
+        popupWindow.setHeight(v.getHeight() + v.getHeight());
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.setContentView(productListView);
@@ -583,7 +588,7 @@ public class BrowserActivity extends BaseActivity
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(BrowserActivity.this);
                 LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-                View mView = inflater.inflate(R.layout.about_layout_icon,null,false);
+                View mView = inflater.inflate(R.layout.about_layout_icon, null, false);
                 Button button = mView.findViewById(R.id.openthos_about_button);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -592,7 +597,8 @@ public class BrowserActivity extends BaseActivity
                             Uri uri = Uri.parse("http://openthos.org/about.html");
                             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                             startActivity(intent);
-                        }catch(ActivityNotFoundException e){}
+                        } catch (ActivityNotFoundException e) {
+                        }
                     }
                 });
                 builder.setView(mView);
@@ -605,10 +611,10 @@ public class BrowserActivity extends BaseActivity
             public boolean onHover(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_HOVER_ENTER:
-                        SwitchViewBackground(v,true);
+                        SwitchViewBackground(v, true);
                         break;
                     case MotionEvent.ACTION_HOVER_EXIT:
-                        SwitchViewBackground(v,false);
+                        SwitchViewBackground(v, false);
                         break;
                 }
                 return false;
@@ -620,10 +626,10 @@ public class BrowserActivity extends BaseActivity
             public boolean onHover(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_HOVER_ENTER:
-                      SwitchViewBackground(v,true);
+                        SwitchViewBackground(v, true);
                         break;
                     case MotionEvent.ACTION_HOVER_EXIT:
-                        SwitchViewBackground(v,false);
+                        SwitchViewBackground(v, false);
                         break;
                 }
                 return false;
@@ -631,7 +637,7 @@ public class BrowserActivity extends BaseActivity
         });
     }
 
-    private void SwitchViewBackground(View v, boolean b){
+    private void SwitchViewBackground(View v, boolean b) {
         if (b) {
             v.setBackgroundResource(R.drawable.right_view_background);
         } else {
@@ -639,8 +645,8 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void setForwardViewState(boolean b){
-        if (b){
+    private void setForwardViewState(boolean b) {
+        if (b) {
             mForwardImg.setBackgroundResource(R.drawable.openthos_title_further);
             mForwardImg.setEnabled(true);
         } else {
@@ -649,8 +655,8 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void setBackViewState(boolean b){
-        if (b){
+    private void setBackViewState(boolean b) {
+        if (b) {
             mBackImag.setBackgroundResource(R.drawable.openthos_title_back);
             mBackImag.setEnabled(true);
         } else {
@@ -659,13 +665,13 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void setTitleViewFocus(boolean isFocus){
-        if (isFocus){
+    private void setTitleViewFocus(boolean isFocus) {
+        if (isFocus) {
             downloadIcon.setImageResource(R.drawable.openthos_title_download);
             deleteIcon.setImageResource(R.drawable.openthos_title_delete);
             downloadText.setTextColor(getResources().getColor(R.color.menu_text_color));
             deleteText.setTextColor(getResources().getColor(R.color.menu_text_color));
-        }else {
+        } else {
             downloadIcon.setImageResource(R.drawable.openthos_title_download_false);
             deleteIcon.setImageResource(R.drawable.openthos_title_delete_false);
             downloadText.setTextColor(getResources().getColor(R.color.menu_text_color_false));
@@ -673,10 +679,10 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void LandBack(){
+    private void LandBack() {
 
         // 清空item的选中状态
-        if (mRightViewAdapter !=null) mRightViewAdapter.getItemPostion(-1);
+//        if (mRightViewAdapter !=null) mRightViewAdapter.getItemPostion(-1);
 
         isClickBack = true;
 
@@ -687,14 +693,14 @@ public class BrowserActivity extends BaseActivity
         navContext.setDir(parentPath, null);
         refreshView(true);
 
-        mCurrentDirectory.setText(navContext.getRepoName()+Utils.getReplacePath(navContext.getDirPath()));
+        mCurrentDirectory.setText(navContext.getRepoName() + Utils.getReplacePath(navContext.getDirPath()));
         String tName = mCurrentDirectory.getText().toString().substring(
                 mCurrentDirectory.getText().toString().lastIndexOf(" > ") + 3,
                 mCurrentDirectory.getText().toString().length()).trim();
-        recycleCurrentPosition = landFortName.indexOf(tName)+1;
+        recycleCurrentPosition = landFortName.indexOf(tName) + 1;
 
-        if (navContext.getDirPath().equals(ACTIONBAR_PARENT_PATH)){
-            navContext.setDir("/",null);
+        if (navContext.getDirPath().equals(ACTIONBAR_PARENT_PATH)) {
+            navContext.setDir("/", null);
             refreshView(true);
             mCurrentDirectory.setText("");
             mCurrentDirectory.setText(navContext.getRepoName());
@@ -705,7 +711,8 @@ public class BrowserActivity extends BaseActivity
     }
 
     private boolean isClickBack = false;
-    private void LandForward(){
+
+    private void LandForward() {
         if (landFortName.size() == 0) {
             Toast.makeText(BrowserActivity.this, "请选择您要打开的文件夹", Toast.LENGTH_LONG).show();
             return;
@@ -719,7 +726,7 @@ public class BrowserActivity extends BaseActivity
         setTitleViewFocus(false);
 
         mCurrentDirectory.append(" > " + landFortName.get(recycleCurrentPosition));
-        navContext.setDir(navContext.getDirPath()+"/"+landFortName.get(recycleCurrentPosition), null);
+        navContext.setDir(navContext.getDirPath() + "/" + landFortName.get(recycleCurrentPosition), null);
         refreshView(true);
 
         recycleCurrentPosition++;
@@ -728,30 +735,32 @@ public class BrowserActivity extends BaseActivity
 
     }
 
-    private void UpLoadFile(){
+    private void UpLoadFile() {
         pickFile();
     }
 
-    private void DeleteData(){
-        if (mRightDataList.isEmpty()){ return; }
+    private void DeleteData() {
+        if (mRightDataList.isEmpty()) {
+            return;
+        }
 
         String currentPath = getNavContext().getDirPath();
         String newPath = currentPath.endsWith("/") ?
                 currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
-        if (mRightDataList.get(0).isDir()){
+        if (mRightDataList.get(0).isDir()) {
             deleteDir(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
         } else {
             deleteFile(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
         }
 
         mRightDataList.clear();
-        mRightViewAdapter.getItemPostion(-1);
+//        mRightViewAdapter.getItemPostion(-1);
     }
 
-    private void ShowSettingPage(){
-        Intent intent = new Intent(this,OpenthosSettingsActivity.class);
-        intent.putExtra("email",account.getEmail());
-        intent.putExtra("server",account.getServer());
+    private void ShowSettingPage() {
+        Intent intent = new Intent(this, OpenthosSettingsActivity.class);
+        intent.putExtra("email", account.getEmail());
+        intent.putExtra("server", account.getServer());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -761,20 +770,22 @@ public class BrowserActivity extends BaseActivity
         return super.getActionBarToolbar();
     }
 
-    private void DownLoadFile(){
-        if (mRightDataList.size() == 0) { return; }
+    private void DownLoadFile() {
+        if (mRightDataList.size() == 0) {
+            return;
+        }
 
         if (mRightDataList.get(0).isDir()) {
             downloadDir(getNavContext().getDirPath(), mRightDataList.get(0).name, true);
             mTransferLayoutView.setVisibility(View.VISIBLE);
 
-        }else {
+        } else {
             downloadFile(getNavContext().getDirPath(), mRightDataList.get(0).name);
             mTransferLayoutView.setVisibility(View.VISIBLE);
         }
 
         List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
-        mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this,infos);
+        mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this, infos);
         mTransmissionListView.setAdapter(mTransAdapter);
         startTimer();
     }
@@ -805,7 +816,7 @@ public class BrowserActivity extends BaseActivity
                         }
 
                         List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
-                        mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this,infos);
+                        mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this, infos);
                         mTransmissionListView.setAdapter(mTransAdapter);
                         startTimer();
                     } else {
@@ -830,7 +841,8 @@ public class BrowserActivity extends BaseActivity
 
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -852,48 +864,48 @@ public class BrowserActivity extends BaseActivity
                     int currentItemPosition = pager.getCurrentItem();
                     switch (currentItemPosition) {
                         case INDEX_LIBRARY_TAB:
-                            setButtonDrawableTrue(R.drawable.file_focus_true,fileButton);
-                            setButtonDrawableFalse(R.drawable.recently_focus_false,recentlyButton);
-                            setButtonDrawableFalse(R.drawable.transmission_focus_false,transmissionButton);
-                            setButtonDrawableFalse(R.drawable.mine_focus_false,mineButton);
+                            setButtonDrawableTrue(R.drawable.file_focus_true, fileButton);
+                            setButtonDrawableFalse(R.drawable.recently_focus_false, recentlyButton);
+                            setButtonDrawableFalse(R.drawable.transmission_focus_false, transmissionButton);
+                            setButtonDrawableFalse(R.drawable.mine_focus_false, mineButton);
                             break;
                         case INDEX_RECENTLY_TAB:
-                            setButtonDrawableFalse(R.drawable.file_focus_false,fileButton);
-                            setButtonDrawableTrue(R.drawable.recently_focus_true,recentlyButton);
-                            setButtonDrawableFalse(R.drawable.transmission_focus_false,transmissionButton);
-                            setButtonDrawableFalse(R.drawable.mine_focus_false,mineButton);
+                            setButtonDrawableFalse(R.drawable.file_focus_false, fileButton);
+                            setButtonDrawableTrue(R.drawable.recently_focus_true, recentlyButton);
+                            setButtonDrawableFalse(R.drawable.transmission_focus_false, transmissionButton);
+                            setButtonDrawableFalse(R.drawable.mine_focus_false, mineButton);
                             break;
                         case INDEX_TRANSMISSION_TAB:
-                            setButtonDrawableFalse(R.drawable.file_focus_false,fileButton);
-                            setButtonDrawableFalse(R.drawable.recently_focus_false,recentlyButton);
-                            setButtonDrawableTrue(R.drawable.transmission_focus_true,transmissionButton);
-                            setButtonDrawableFalse(R.drawable.mine_focus_false,mineButton);
+                            setButtonDrawableFalse(R.drawable.file_focus_false, fileButton);
+                            setButtonDrawableFalse(R.drawable.recently_focus_false, recentlyButton);
+                            setButtonDrawableTrue(R.drawable.transmission_focus_true, transmissionButton);
+                            setButtonDrawableFalse(R.drawable.mine_focus_false, mineButton);
                             break;
                         case INDEX_MINE_TAB:
-                            setButtonDrawableFalse(R.drawable.file_focus_false,fileButton);
-                            setButtonDrawableFalse(R.drawable.recently_focus_false,recentlyButton);
-                            setButtonDrawableFalse(R.drawable.transmission_focus_false,transmissionButton);
-                            setButtonDrawableTrue(R.drawable.mine_focus_true,mineButton);
+                            setButtonDrawableFalse(R.drawable.file_focus_false, fileButton);
+                            setButtonDrawableFalse(R.drawable.recently_focus_false, recentlyButton);
+                            setButtonDrawableFalse(R.drawable.transmission_focus_false, transmissionButton);
+                            setButtonDrawableTrue(R.drawable.mine_focus_true, mineButton);
                             break;
                     }
                 }
             }
         });
 
-        pager.setOffscreenPageLimit(1);
+        pager.setOffscreenPageLimit(3);
     }
 
-    private void recycleRadioButtonIconSize(){
+    private void recycleRadioButtonIconSize() {
         RadioGroup radioGroup = findViewById(R.id.group_button);
         fileButton = findViewById(R.id.file_button);
         recentlyButton = findViewById(R.id.recently_button);
         transmissionButton = findViewById(R.id.transmission_button);
         mineButton = findViewById(R.id.mine_button);
 
-        setButtonDrawableTrue(R.drawable.file_focus_true,fileButton);
-        setButtonDrawableFalse(R.drawable.recently_focus_false,recentlyButton);
-        setButtonDrawableFalse(R.drawable.transmission_focus_false,transmissionButton);
-        setButtonDrawableFalse(R.drawable.mine_focus_false,mineButton);
+        setButtonDrawableTrue(R.drawable.file_focus_true, fileButton);
+        setButtonDrawableFalse(R.drawable.recently_focus_false, recentlyButton);
+        setButtonDrawableFalse(R.drawable.transmission_focus_false, transmissionButton);
+        setButtonDrawableFalse(R.drawable.mine_focus_false, mineButton);
         radioGroup.setOnCheckedChangeListener(this);
     }
 
@@ -915,17 +927,17 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void setButtonDrawableFalse(int postion, RadioButton view){
+    private void setButtonDrawableFalse(int postion, RadioButton view) {
         Drawable drawable = getResources().getDrawable(postion);
-        drawable.setBounds(0,0,90,90);
-        view.setCompoundDrawables(null,drawable, null,null);
+        drawable.setBounds(0, 0, 90, 90);
+        view.setCompoundDrawables(null, drawable, null, null);
         view.setTextColor(getResources().getColor(R.color.light_grey));
     }
 
-    private void setButtonDrawableTrue(int postion, RadioButton view){
+    private void setButtonDrawableTrue(int postion, RadioButton view) {
         Drawable drawable = getResources().getDrawable(postion);
-        drawable.setBounds(0,0,90,90);
-        view.setCompoundDrawables(null,drawable, null,null);
+        drawable.setBounds(0, 0, 90, 90);
+        view.setCompoundDrawables(null, drawable, null, null);
         view.setTextColor(getResources().getColor(R.color.fancy_purple));
     }
 
@@ -1156,7 +1168,7 @@ public class BrowserActivity extends BaseActivity
 
     private void requestRightClickListener(SeafItem position) {
 
-        if (!Utils.isNetworkOn()){
+        if (!Utils.isNetworkOn()) {
             showShortToast(BrowserActivity.this, R.string.network_down);
             return;
         }
@@ -1175,7 +1187,8 @@ public class BrowserActivity extends BaseActivity
                         currentPath + dirent.name : currentPath + "/" + dirent.name;
                 getNavContext().setDir(newPath, dirent.id);
                 getNavContext().setDirPermission(dirent.permission);
-                if (mCurrentDirectory.getText() != null) mCurrentDirectory.append(" > " + dirent.name);
+                if (mCurrentDirectory.getText() != null)
+                    mCurrentDirectory.append(" > " + dirent.name);
                 saveDateName(newPath);
                 saveDirentScrollPosition(repo.getID(), currentPath);
                 refreshView(true);
@@ -1186,7 +1199,8 @@ public class BrowserActivity extends BaseActivity
             }
         }
     }
-    private void saveDateName(String n){
+
+    private void saveDateName(String n) {
         String[] name = n.split("/");
         if (!landFortName.isEmpty()) landFortName.clear();
         for (String n1 : name) {
@@ -1205,7 +1219,6 @@ public class BrowserActivity extends BaseActivity
     }
 
 
-
     private class ScrollState {
         public int index;
         public int top;
@@ -1217,10 +1230,11 @@ public class BrowserActivity extends BaseActivity
     }
 
 
-    private class RecycleScrollState{
+    private class RecycleScrollState {
         private int index;
         private int top;
-        private RecycleScrollState(int i, int t){
+
+        private RecycleScrollState(int i, int t) {
             this.index = i;
             this.top = t;
         }
@@ -1255,7 +1269,8 @@ public class BrowserActivity extends BaseActivity
                 return;
             }
 
-            if (serverInfo.isProEdition()) {}
+            if (serverInfo.isProEdition()) {
+            }
 
             accountManager.setServerInfo(account, serverInfo);
         }
@@ -1301,7 +1316,7 @@ public class BrowserActivity extends BaseActivity
         private RecentlyFragment recentlyFragment = null;
         private TransmissionFragment transmissionFragment = null;
         private SettingFragment settingFragment = null;
-//        private ActivitiesFragment activitieFragment = null;
+        //        private ActivitiesFragment activitieFragment = null;
 //        private StarredFragment starredFragment = null;
         private boolean isHideActivityTab;
 
@@ -1364,7 +1379,9 @@ public class BrowserActivity extends BaseActivity
         }
 
         @Override
-        public int getCount() {return 4;}
+        public int getCount() {
+            return 4;
+        }
     }
 
     public int getCurrentPosition() {
@@ -1801,7 +1818,7 @@ public class BrowserActivity extends BaseActivity
      * @param position
      */
     private void setUpButtonTitleOnSlideTabs(int position) {
-        switch (position){
+        switch (position) {
             case 0:
                 setUpButtonTitle(getString(R.string.port_file));
 //                setButtonDrawableFalse();
@@ -1855,7 +1872,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     void pickFile() {
-        if (!Utils.isNetworkOn()){
+        if (!Utils.isNetworkOn()) {
             showShortToast(BrowserActivity.this, R.string.network_down);
             return;
         }
@@ -2211,10 +2228,10 @@ public class BrowserActivity extends BaseActivity
             txService.saveDownloadNotifProvider(provider);
         }
 
-        if (isLandPattern){
+        if (isLandPattern) {
             List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
             mRightViewAdapter.setDownloadTaskList(infos);
-        }else {
+        } else {
             SeafItemAdapter adapter = getReposFragment().getAdapter();
             List<DownloadTaskInfo> infos = txService.getDownloadTaskInfosByPath(navContext.getRepoID(), dir);
             // update downloading progress
@@ -2353,9 +2370,9 @@ public class BrowserActivity extends BaseActivity
             }
 
             // set download tasks info to adapter in order to update download progress in UI thread
-            if (isLandPattern){
+            if (isLandPattern) {
                 mRightViewAdapter.setDownloadTaskList(txService.getDownloadTaskInfosByPath(repoID, dirPath));
-            }else {
+            } else {
                 getReposFragment().getAdapter().setDownloadTaskList(txService.getDownloadTaskInfosByPath(repoID, dirPath));
             }
         }
@@ -2463,9 +2480,9 @@ public class BrowserActivity extends BaseActivity
 
             } else
                 super.onBackPressed();
-        } else if (Configuration.ORIENTATION_LANDSCAPE == this.getResources().getConfiguration().orientation){
+        } else if (Configuration.ORIENTATION_LANDSCAPE == this.getResources().getConfiguration().orientation) {
 
-        }else if (currentPosition == INDEX_ACTIVITIES_TAB) {
+        } else if (currentPosition == INDEX_ACTIVITIES_TAB) {
             if (getActivitiesFragment().isBottomSheetShown()) {
                 getActivitiesFragment().hideBottomSheet();
             } else
@@ -2678,9 +2695,9 @@ public class BrowserActivity extends BaseActivity
                 showShortToast(BrowserActivity.this, R.string.delete_successful);
                 List<SeafDirent> cachedDirents = getDataManager()
                         .getCachedDirents(repoID, getNavContext().getDirPath());
-                if (isLandPattern){
+                if (isLandPattern) {
                     refreshView(true);
-                }else {
+                } else {
                     getReposFragment().getAdapter().setItems(cachedDirents);
                     getReposFragment().getAdapter().notifyDataSetChanged();
                 }
@@ -2811,11 +2828,11 @@ public class BrowserActivity extends BaseActivity
         if (currentPosition == INDEX_LIBRARY_TAB
                 && repoID.equals(navContext.getRepoID())
                 && dir.equals(navContext.getDirPath())) {
-            if (isLandPattern){
+            if (isLandPattern) {
                 refreshView(true, true);
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
                 showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
-            }else {
+            } else {
                 getReposFragment().refreshView(true, true);
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
                 showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
@@ -3048,7 +3065,7 @@ public class BrowserActivity extends BaseActivity
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_CTRL_LEFT){
+        if (event.getKeyCode() == KeyEvent.KEYCODE_CTRL_LEFT) {
             KEYBOARD_CTRL = true;
             return false;
         }
@@ -3063,7 +3080,6 @@ public class BrowserActivity extends BaseActivity
                     overFlowMenu.performIdentifierAction(R.id.menu_overflow, 0);
                 }
             case KeyEvent.KEYCODE_CTRL_LEFT:
-                Log.i("----","-left--------up--09090---------------");
                 return false;
         }
 
@@ -3149,7 +3165,6 @@ public class BrowserActivity extends BaseActivity
             return;
 
 
-
         Map<String, List<SeafRepo>> map = Utils.groupRepos(repos);
         List<SeafRepo> personalRepos = map.get(Utils.PERSONAL_REPO);
         if (personalRepos != null) {
@@ -3214,7 +3229,8 @@ public class BrowserActivity extends BaseActivity
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected List<SeafDirent> doInBackground(String... params) {
@@ -3308,7 +3324,7 @@ public class BrowserActivity extends BaseActivity
             if (dirents != null) {
                 getDataManager().setDirsRefreshTimeStamp(myRepoID, myPath);
                 updateAdapterWithDirents(dirents, false);
-            }else {
+            } else {
                 showShortToast(BrowserActivity.this, R.string.error_when_load_dirents);
                 Log.i(DEBUG_TAG, "failed to load dir");
             }
@@ -3324,7 +3340,8 @@ public class BrowserActivity extends BaseActivity
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected List<SeafRepo> doInBackground(Void... params) {
@@ -3463,7 +3480,8 @@ public class BrowserActivity extends BaseActivity
     class RequestAccountInfoTask extends AsyncTask<Account, Void, AccountInfo> {
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
         protected AccountInfo doInBackground(Account... params) {
@@ -3489,9 +3507,7 @@ public class BrowserActivity extends BaseActivity
                     accountInfo.getUsageSize() +
                             getResources().getString(R.string.text_have_been_used));
             ((TextView) findViewById(R.id.memory_text_size)).setText(
-                    getResources().getString(R.string.text_sum_number) +
-                            accountInfo.getTotalSize());
-
+                    getResources().getString(R.string.text_sum_number) + accountInfo.getTotalSize());
             long usageSize = accountInfo.getUsage();
             long totalSize = accountInfo.getTotal();
             int first = (int) usageSize;

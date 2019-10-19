@@ -88,10 +88,24 @@
                     android:textSize="@dimen/openthos_text_size_13"
                     android:textStyle="bold" />
 
-                <android.support.v7.widget.RecyclerView
+                <com.seafile.seadroid2.ui.widget.DragGridView
                     android:id="@+id/right_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="10dp"
+                    android:numColumns="auto_fit"
+                    android:columnWidth="135dp"
+                    android:horizontalSpacing="20dp"
+                    android:verticalSpacing="20dp"
+                    android:stretchMode="columnWidth"
+                    android:nextFocusUp="@id/right_menu"
+                    android:nextFocusLeft="@id/right_menu"
+                    android:nextFocusRight="@id/right_menu"
+                    android:nextFocusDown="@id/right_menu"
+                    android:listSelector="@android:color/transparent"
+                    android:scrollbars="none"
                     android:layout_marginLeft="@dimen/openthos_view_size_35"
                     android:layout_marginTop="@dimen/openthos_view_size_25" />
             </LinearLayout>
