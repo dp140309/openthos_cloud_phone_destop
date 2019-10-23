@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -353,8 +354,6 @@ public class BrowserActivity extends BaseActivity
                 return;
             }
         }
-        setContentView(R.layout.tabs_main);
-
 
         // Get the message from the intent
         Intent intent = getIntent();
@@ -403,6 +402,7 @@ public class BrowserActivity extends BaseActivity
 
     // -------------------------- land view --------------------
     protected void onCreateLandView(Bundle savedInstanceState) {
+        setContentView(R.layout.tabs_main);
         mLeftMenu = findViewById(R.id.left_list);
         mCurrentDirectory = findViewById(R.id.current_directory);
         mMenuDialog = RecycleMenuDialog.getInstance(this);
@@ -494,6 +494,11 @@ public class BrowserActivity extends BaseActivity
                 navContext.setRepoName(repoName);
                 navContext.setDir(path, dirID);
                 navContext.setDirPermission(permission);
+                mCurrentDirectory.setText(navContext.getRepoName() + Utils.getReplacePath(navContext.getDirPath()));
+                if (!navContext.getDirPath().equals(ACTIONBAR_PARENT_PATH)){
+                    saveDateName(Utils.getReplacePath(navContext.getDirPath()));
+                    setBackViewState(true);
+                }
             }
             requestRightItem();
         }
@@ -833,6 +838,22 @@ public class BrowserActivity extends BaseActivity
 
     // -------------------------- port view --------------------//
     protected void onCreatePortView(Bundle savedInstanceState) {
+        setContentView(R.layout.tabs_main);
+        if (savedInstanceState != null) {
+            String repoID = savedInstanceState.getString("repoID");
+            String repoName = savedInstanceState.getString("repoName");
+            String path = savedInstanceState.getString("path");
+            String dirID = savedInstanceState.getString("dirID");
+            String permission = savedInstanceState.getString("permission");
+
+            if (repoID != null) {
+                navContext.setRepoID(repoID);
+                navContext.setRepoName(repoName);
+                navContext.setDir(path, dirID);
+
+            }
+        }
+
         pager = (ViewPager) findViewById(R.id.pager);
         adapter = new SeafileTabsAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -1201,8 +1222,13 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void saveDateName(String n) {
-        String[] name = n.split("/");
+        String[] name = null;
+
+        if (n.contains("/")) name = n.split("/");
+        else if(n.contains(">")) name = n.split(" > ");
+
         if (!landFortName.isEmpty()) landFortName.clear();
+
         for (String n1 : name) {
             if (n1.equals("")) continue;
             landFortName.add(n1);
@@ -3164,7 +3190,7 @@ public class BrowserActivity extends BaseActivity
         if (repos == null)
             return;
 
-
+        mLeftViewAdapter.clear();
         Map<String, List<SeafRepo>> map = Utils.groupRepos(repos);
         List<SeafRepo> personalRepos = map.get(Utils.PERSONAL_REPO);
         if (personalRepos != null) {

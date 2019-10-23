@@ -75,7 +75,7 @@
 
         <activity android:name="com.seafile.seadroid2.ui.activity.BrowserActivity"
                   android:label="@string/app_name"
-                  android:configChanges="orientation|keyboardHidden|screenSize"
+                  android:configChanges="orientation|keyboardHidden"
                   android:launchMode="singleTop">
         </activity>
 
