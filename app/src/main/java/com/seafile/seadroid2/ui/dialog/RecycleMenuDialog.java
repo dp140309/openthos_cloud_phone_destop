@@ -170,7 +170,6 @@ public class RecycleMenuDialog extends Dialog implements AdapterView.OnItemClick
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
             if (convertView == null) {
-                Log.i("menudialog", "menu dialog is runing---------------5");
                 convertView = LayoutInflater.from(getContext())
                         .inflate(R.layout.recycle_left_menu_item, parent, false);
                 holder = new ViewHolder(convertView);

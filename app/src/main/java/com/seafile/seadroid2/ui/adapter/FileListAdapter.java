@@ -1,5 +1,7 @@
 package com.seafile.seadroid2.ui.adapter;
 
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,13 +38,14 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
     private LayoutInflater mInflater;
     private BrowserActivity mActivity;
     private ArrayList<SeafItem> items;
-    private List<Integer> selectFileInfoListIndex = new ArrayList<>();
-//    private View.OnTouchListener mOntouchListener;
     private AdapterCallback adapterCallback;
+    private SparseBooleanArray mSelectedItemsIds;
+    private List<Integer> mSelectedItemsPositions = Lists.newArrayList();
+
     /**
      * 点击的次数
      */
-    private int mClickcount, mDownX, mDownY, mUpX, mUpY, viewType, mItemPostion = -1;
+    private int mClickcount, mDownX, mDownY, mUpX, mUpY;
     private long mLastDownTime, mLastUpTime, mFirstTime, mLastTime;
     private long MAX_LONG_PRESS_TIME = 3000;
     private String mFirstName = null;
@@ -51,8 +54,8 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
     public FileListAdapter(BrowserActivity activity) {
         mInflater = LayoutInflater.from(activity);
         if (items == null) items = new ArrayList<>();
+        mSelectedItemsIds = new SparseBooleanArray();
         mActivity = activity;
-//        initIconHolder();
     }
 
     /**
@@ -72,11 +75,17 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
      */
     public static final int SORT_ORDER_DESCENDING = 12;
 
-    /**
-     * get left(1) and right(2) layout
-     */
-//    private int getLayout() { return R.layout.recycler_right_item; }
-//    private boolean isLeftRecycle(int type) { return type == 1 ? true : false; }
+    public void deselectAllItems() {
+        mSelectedItemsIds.clear();
+        mSelectedItemsPositions.clear();
+        mActivity.getSeafDirent().clear();
+        notifyDataSetChanged();
+    }
+
+    private int getThumbnailWidth() {
+        return (int) SeadroidApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width);
+    }
+
     public void add(SeafItem entry) {
         items.add(entry);
     }
@@ -87,14 +96,6 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
 
     public void clear() {
         items.clear();
-    }
-
-    public List<SeafItem> getFileInfoList() {
-        return items;
-    }
-
-    public List<Integer> getSelectFileInfoList() {
-        return selectFileInfoListIndex;
     }
 
     @Override
@@ -125,9 +126,10 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
         }
         holder.mTextView.setTag(position);
         holder.mTextView.setText(items.get(position).getTitle());
-//        holder.mTextViewSize.setText(countFilesNumber(position));
         holder.mRelativeLayout.setOnTouchListener(this);
-        if (position == mItemPostion) {
+        SeafDirent dirent = (SeafDirent) items.get(position);
+
+        if (mSelectedItemsIds.get(position)) {
             holder.mCheckBox.setVisibility(View.VISIBLE);
             holder.mCheckBox.setChecked(true);
             holder.mRelativeLayout.setBackgroundResource(R.drawable.right_view_background);
@@ -137,22 +139,13 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
             holder.mRelativeLayout.setBackgroundResource(0);
         }
 
-        SeafDirent dirent = (SeafDirent) items.get(position);
         if (dirent.isDir()) {
             holder.mViewIcon.setImageResource(items.get(position).getIcon());
         } else {
             updateRightItemPicture(holder, dirent);
         }
 
-//        holder.mRelativeLayout.setOnTouchListener(mOntouchListener);
         return convertView;
-    }
-
-    private String countFilesNumber(int position) {
-        SeafRepo name = (SeafRepo) items.get(position);
-        List<SeafDirent> dirents = mActivity.getDataManager().getCachedDirents(name.id, "/");
-        if (dirents == null) return "";
-        return dirents.size() + "";
     }
 
     private void updateRightItemPicture(ViewHolder holder, SeafDirent dirent) {
@@ -194,14 +187,9 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
         }
     }
 
-    private int getThumbnailWidth() {
-        return (int) SeadroidApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width);
-    }
-
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        ViewHolder mHolder = new ViewHolder(v);
+        ViewHolder mHolder = (ViewHolder) v.getTag();
         int postion = (int) mHolder.mTextView.getTag();
         SeafItem mi = items.get(postion);
 
@@ -210,21 +198,15 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
             mDownX = (int) event.getX();
             mDownY = (int) event.getY();
             mClickcount++;
-            ArrayList<SeafDirent> sd = mActivity.getSeafDirent();
-            SeafDirent dirent = (SeafDirent) mi;
-            if (sd.size() == 0) {
-                sd.add(dirent);
-            } else {
 
-                if (mActivity.KEYBOARD_CTRL) {
-                    sd.add(dirent);
-                } else {
-                    sd.clear();
-                    sd.add(dirent);
-                }
+            if (mActivity.KEYBOARD_CTRL) {
+                toggleSelection(postion);
+            } else {
+                mActivity.setTitleViewFocus(true);
+                deselectAllItems();
+                toggleSelection(postion);
             }
 
-            setSelectPosition(postion);
             if (mClickcount == 1) {
                 mFirstTime = System.currentTimeMillis();
             }
@@ -242,11 +224,10 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
                 mLastTime = System.currentTimeMillis();
                 long time = mLastTime - mFirstTime;
                 if (time <= MAX_LONG_PRESS_TIME) {
-                    if(adapterCallback != null){
+                    if (adapterCallback != null) {
                         adapterCallback.onTunchListener(mi);
                     }
-                    mItemPostion = -1;
-                    mActivity.getSeafDirent().clear();
+                    deselectAllItems();
                     notifyDataSetChanged();
                 }
                 mClickcount = 0;
@@ -261,7 +242,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
         }
 
         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-            if(adapterCallback != null){
+            if (adapterCallback != null) {
                 adapterCallback.onRecycleRightMouseClick(
                         (int) event.getRawX(),
                         (int) event.getRawY(),
@@ -285,6 +266,26 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
         }
     }
 
+    public void toggleSelection(int position) {
+        if (mSelectedItemsIds.get(position)) {
+            mSelectedItemsIds.delete(position);
+            mSelectedItemsPositions.remove(Integer.valueOf(position));
+            mActivity.getSeafDirent().remove(items.get(position));
+        } else {
+            mSelectedItemsIds.put(position, true);
+            mSelectedItemsPositions.add(position);
+            mActivity.getSeafDirent().add((SeafDirent) items.get(position));
+        }
+
+        if (mActivity.getSeafDirent().size() == 0) {
+            mActivity.setTitleViewFocus(false);
+        } else
+            mActivity.setTitleViewFocus(true);
+
+
+        notifyDataSetChanged();
+    }
+
     public void setDownloadTaskList(List<DownloadTaskInfo> newList) {
 //        if (!equalLists(newList, mDownloadTaskInfos)) {
 //            this.mDownloadTaskInfos = newList;
@@ -294,18 +295,12 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
 
     public interface AdapterCallback {
         void onRecycleRightMouseClick(int x, int y, SeafItem position);
+
         void onTunchListener(SeafItem position);
     }
 
     public void setAdapterCallback(AdapterCallback adapterCallback) {
         this.adapterCallback = (AdapterCallback) adapterCallback;
-    }
-
-    public void setSelectPosition(int position) {
-        if (!(position < 0 || position > items.size())) {
-            mItemPostion = position;
-            notifyDataSetChanged();
-        }
     }
 
     /**
@@ -367,10 +362,4 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
         items.addAll(folders);
         items.addAll(files);
     }
-//    public void dispose() {
-//        if (mIconHolder != null) {
-//            mIconHolder.cleanup();
-//            mIconHolder = null;
-//        }
-//    }
 }

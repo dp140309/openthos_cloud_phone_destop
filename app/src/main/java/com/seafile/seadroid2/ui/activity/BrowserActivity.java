@@ -21,7 +21,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -35,7 +34,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -204,6 +202,7 @@ public class BrowserActivity extends BaseActivity
     private DragGridView mRightMenu;
     private RecyclerView mLeftMenu;
     //    private RecycleViewAdapter mRightViewAdapter;
+//    private SeafItemAdapter mRightViewAdapter;
     private FileListAdapter mRightViewAdapter;
     private RecycleViewAdapter mLeftViewAdapter;
     private LinearLayout mTransferLayoutView;
@@ -220,13 +219,12 @@ public class BrowserActivity extends BaseActivity
     private EditText searchView;
 
     private ArrayList<SeafItem> mLeftDataList = new ArrayList<>();
-    private ArrayList<SeafDirent> mRightDataList = new ArrayList<>();
+    private List<SeafDirent> mRightDataList = Lists.newArrayList();
     private ArrayList<String> landFortName = new ArrayList<>();
     private int recycleCurrentPosition;
     private ImageView mBackImag, mForwardImg;
 
 
-    //    private FrameLayout container;
     private LinearLayout container;
 
     private TabLayout mTabLayout;
@@ -301,15 +299,13 @@ public class BrowserActivity extends BaseActivity
         return navContext;
     }
 
-    public ArrayList<SeafDirent> getSeafDirent() {
-        setTitleViewFocus(true);
+    public List<SeafDirent> getSeafDirent() {
         return mRightDataList;
     }
 
     public void requestRightItem() {
         mRightMenu = findViewById(R.id.right_menu);
         mRightViewAdapter = new FileListAdapter(this);
-//        mRightMenu.setLayoutManager(new GridLayoutManager(this, 4));
         refreshView(true);
         mRightMenu.setAdapter(mRightViewAdapter);
 
@@ -320,7 +316,7 @@ public class BrowserActivity extends BaseActivity
         mRightDataList.clear();
         mRightViewAdapter.setAdapterCallback(new FileListAdapter.AdapterCallback() {
             @Override
-            public void onTunchListener( SeafItem position) {
+            public void onTunchListener(SeafItem position) {
                 requestRightClickListener(position);
             }
 
@@ -495,7 +491,7 @@ public class BrowserActivity extends BaseActivity
                 navContext.setDir(path, dirID);
                 navContext.setDirPermission(permission);
                 mCurrentDirectory.setText(navContext.getRepoName() + Utils.getReplacePath(navContext.getDirPath()));
-                if (!navContext.getDirPath().equals(ACTIONBAR_PARENT_PATH)){
+                if (!navContext.getDirPath().equals(ACTIONBAR_PARENT_PATH)) {
                     saveDateName(Utils.getReplacePath(navContext.getDirPath()));
                     setBackViewState(true);
                 }
@@ -670,7 +666,7 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void setTitleViewFocus(boolean isFocus) {
+    public void setTitleViewFocus(boolean isFocus) {
         if (isFocus) {
             downloadIcon.setImageResource(R.drawable.openthos_title_download);
             deleteIcon.setImageResource(R.drawable.openthos_title_delete);
@@ -693,6 +689,7 @@ public class BrowserActivity extends BaseActivity
 
         setForwardViewState(true);
         setTitleViewFocus(false);
+        mRightViewAdapter.deselectAllItems();
 
         String parentPath = Utils.getParentPath(navContext.getDirPath());
         navContext.setDir(parentPath, null);
@@ -710,7 +707,6 @@ public class BrowserActivity extends BaseActivity
             mCurrentDirectory.setText("");
             mCurrentDirectory.setText(navContext.getRepoName());
             recycleCurrentPosition = 0;
-            mRightDataList.clear();
             setBackViewState(false);
         }
     }
@@ -729,6 +725,7 @@ public class BrowserActivity extends BaseActivity
 
         setBackViewState(true);
         setTitleViewFocus(false);
+        mRightViewAdapter.deselectAllItems();
 
         mCurrentDirectory.append(" > " + landFortName.get(recycleCurrentPosition));
         navContext.setDir(navContext.getDirPath() + "/" + landFortName.get(recycleCurrentPosition), null);
@@ -780,15 +777,15 @@ public class BrowserActivity extends BaseActivity
             return;
         }
 
-        if (mRightDataList.get(0).isDir()) {
-            downloadDir(getNavContext().getDirPath(), mRightDataList.get(0).name, true);
-            mTransferLayoutView.setVisibility(View.VISIBLE);
-
-        } else {
-            downloadFile(getNavContext().getDirPath(), mRightDataList.get(0).name);
-            mTransferLayoutView.setVisibility(View.VISIBLE);
+        for (int i = 0; i < mRightDataList.size(); i++) {
+            if (mRightDataList.get(i).isDir()) {
+                downloadDir(getNavContext().getDirPath(), mRightDataList.get(i).name, true);
+                mTransferLayoutView.setVisibility(View.VISIBLE);
+            } else {
+                downloadFile(getNavContext().getDirPath(), mRightDataList.get(i).name);
+                mTransferLayoutView.setVisibility(View.VISIBLE);
+            }
         }
-
         List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
         mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this, infos);
         mTransmissionListView.setAdapter(mTransAdapter);
@@ -1225,7 +1222,7 @@ public class BrowserActivity extends BaseActivity
         String[] name = null;
 
         if (n.contains("/")) name = n.split("/");
-        else if(n.contains(">")) name = n.split(" > ");
+        else if (n.contains(">")) name = n.split(" > ");
 
         if (!landFortName.isEmpty()) landFortName.clear();
 
@@ -3106,6 +3103,7 @@ public class BrowserActivity extends BaseActivity
                     overFlowMenu.performIdentifierAction(R.id.menu_overflow, 0);
                 }
             case KeyEvent.KEYCODE_CTRL_LEFT:
+                KEYBOARD_CTRL = false;
                 return false;
         }
 

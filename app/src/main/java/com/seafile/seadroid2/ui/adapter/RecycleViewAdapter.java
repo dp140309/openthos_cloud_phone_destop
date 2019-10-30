@@ -240,7 +240,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 setSelectPosition(postion);
                 adapterCallback.onTunchListener((SeafItem) v.getTag());
             } else {
-                ArrayList<SeafDirent> sd = mActivity.getSeafDirent();
+                List<SeafDirent> sd = mActivity.getSeafDirent();
                 SeafDirent dirent = (SeafDirent) mi;
                 if (sd.size() == 0){
                     sd.add(dirent);
