@@ -2612,7 +2612,7 @@ public class BrowserActivity extends BaseActivity
             public void onTaskSuccess() {
                 showShortToast(BrowserActivity.this, R.string.rename_successful);
                 if (isLandPattern) {
-                    navToReposView(true,true);
+                    navToReposView(true, true);
                 } else {
                     ReposFragment reposFragment = getReposFragment();
                     if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
@@ -2726,7 +2726,8 @@ public class BrowserActivity extends BaseActivity
                         .getCachedDirents(repoID, getNavContext().getDirPath());
                 if (isLandPattern) {
                     refreshView(true);
-
+                    mRightViewAdapter.deselectAllItems();
+                    setTitleViewFocus(false);
                 } else {
                     getReposFragment().getAdapter().setItems(cachedDirents);
                     getReposFragment().getAdapter().notifyDataSetChanged();
@@ -3253,7 +3254,7 @@ public class BrowserActivity extends BaseActivity
         if (!Utils.isNetworkOn() || !forceRefresh) {
             List<SeafDirent> dirents = dataManager.getCachedDirents(
                     nav.getRepoID(), nav.getDirPath());
-            if (dirents != null) {
+            if (dirents != null && dirents.size() != 0) {
                 updateAdapterWithDirents(dirents, restorePosition);
                 return;
             }
@@ -3480,6 +3481,7 @@ public class BrowserActivity extends BaseActivity
 
     private void updateAdapterWithDirents(final List<SeafDirent> dirents, boolean restoreScrollPosition) {
         mRightViewAdapter.clear();
+
         if (dirents.size() > 0) {
             for (SeafDirent dirent : dirents) {
                 mRightViewAdapter.add(dirent);
@@ -3492,6 +3494,8 @@ public class BrowserActivity extends BaseActivity
             mRightViewAdapter.sortFiles(SettingsManager.instance().getSortFilesTypePref(),
                     SettingsManager.instance().getSortFilesOrderPref());
             mRightViewAdapter.notifyChanged();
+        } else {
+            mRightMenu.setEmptyView(((ImageView) findViewById(R.id.right_list_emptry)));
         }
     }
 

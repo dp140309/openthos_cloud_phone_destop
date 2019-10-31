@@ -99,6 +99,11 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
     }
 
     @Override
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    @Override
     public int getCount() {
         return items.size();
     }
@@ -114,20 +119,22 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView( int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         View view = convertView;
+        SeafItem seafItem = items.get(position);
+        SeafDirent dirent = (SeafDirent) items.get(position);
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.recycler_right_item, parent, false);
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
+            view = mInflater.inflate(R.layout.recycler_right_item, parent, false);
+            holder = new ViewHolder(view);
+            holder.mTextView.setTag(position);
+            view.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.mTextView.setTag(position);
-        holder.mTextView.setText(items.get(position).getTitle());
+
+        holder.mTextView.setText(seafItem.getTitle());
         holder.mRelativeLayout.setOnTouchListener(this);
-        SeafDirent dirent = (SeafDirent) items.get(position);
 
         if (mSelectedItemsIds.get(position)) {
             holder.mCheckBox.setVisibility(View.VISIBLE);
@@ -140,12 +147,12 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
         }
 
         if (dirent.isDir()) {
-            holder.mViewIcon.setImageResource(items.get(position).getIcon());
+            holder.mViewIcon.setImageResource(seafItem.getIcon());
         } else {
             updateRightItemPicture(holder, dirent);
         }
 
-        return convertView;
+        return view;
     }
 
     private void updateRightItemPicture(ViewHolder holder, SeafDirent dirent) {
