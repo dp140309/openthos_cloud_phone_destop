@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/openthos_view_size_20"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/openthos_view_size_34"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ac_icon"
+            android:layout_width="@dimen/openthos_view_size_8"
+            android:layout_height="@dimen/openthos_view_size_8"
+            android:layout_centerVertical="true"
+            android:src="@drawable/setting_dot" />
+
+        <EditText
+            android:id="@+id/account_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:focusableInTouchMode="false"
+            android:background="@null"
+            android:textSize="@dimen/openthos_text_size_14"
+            android:layout_marginLeft="@dimen/openthos_view_size_12"
+            android:layout_toRightOf="@+id/ac_icon"
+            android:text="@string/setting_network_url"/>
+
+        <Button
+            android:id="@+id/account_modify"
+            android:layout_width="@dimen/openthos_view_size_86"
+            android:layout_height="@dimen/openthos_view_size_18"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/openthos_view_size_20"
+            android:background="@color/trans_start_button_background_color"
+            android:text="@string/setting_modify"
+            android:textColor="@color/trans_start_button_text_color" />
+
+        <Button
+            android:id="@+id/account_confirm"
+            android:layout_width="@dimen/openthos_view_size_86"
+            android:layout_height="@dimen/openthos_view_size_18"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/openthos_view_size_20"
+            android:background="@color/trans_start_button_background_color"
+            android:text="@string/confirm"
+            android:visibility="gone"
+            android:textColor="@color/trans_start_button_text_color" />
+    </RelativeLayout>
+</LinearLayout>

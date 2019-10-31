@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/openthos_view_size_20"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setting_service_name"
+        android:textStyle="bold"
+        android:textSize="@dimen/openthos_text_size_14"/>
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/openthos_view_size_34"
+        android:background="@drawable/setting_background"
+        android:layout_marginTop="@dimen/openthos_view_size_14">
+
+        <EditText
+            android:id="@+id/general_service_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="http://dev.openthos.org"
+            android:layout_marginLeft="@dimen/openthos_view_size_18"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:background="@null"/>
+
+        <ImageView
+            android:id="@+id/general_service_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/openthos_view_size_20"
+            android:src="@drawable/setting_spinner_background"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setting_storage_patch"
+        android:textStyle="bold"
+        android:textSize="@dimen/openthos_text_size_14"
+        android:layout_marginTop="@dimen/openthos_view_size_20"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/openthos_view_size_34"
+        android:layout_marginTop="@dimen/openthos_view_size_14">
+
+        <EditText
+            android:id="@+id/general_path_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:paddingLeft="@dimen/openthos_view_size_18"
+            android:paddingRight="@dimen/openthos_view_size_18"
+            android:layout_toLeftOf="@+id/general_path_button"
+            android:background="@drawable/setting_background"
+            android:hint="http://dev.openthos.org"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/general_path_button"
+            android:layout_width="@dimen/openthos_view_size_86"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/openthos_Browse"
+            android:layout_marginLeft="@dimen/openthos_view_size_8"
+            android:textColor="@color/trans_start_button_text_color"
+            android:background="@color/trans_start_button_background_color" />
+    </RelativeLayout>
+
+</LinearLayout>

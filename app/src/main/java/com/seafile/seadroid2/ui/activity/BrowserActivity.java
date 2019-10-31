@@ -747,14 +747,15 @@ public class BrowserActivity extends BaseActivity
         }
 
         String currentPath = getNavContext().getDirPath();
-        String newPath = currentPath.endsWith("/") ?
-                currentPath + mRightDataList.get(0).name : currentPath + "/" + mRightDataList.get(0).name;
-        if (mRightDataList.get(0).isDir()) {
-            deleteDir(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
-        } else {
-            deleteFile(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
+        for (int i = 0; i < mRightDataList.size(); i++) {
+            String newPath = currentPath.endsWith("/") ?
+                    currentPath + mRightDataList.get(i).name : currentPath + "/" + mRightDataList.get(i).name;
+            if (mRightDataList.get(i).isDir()) {
+                deleteDir(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
+            } else {
+                deleteFile(getNavContext().getRepoID(), getNavContext().getRepoName(), newPath);
+            }
         }
-
         mRightDataList.clear();
 //        mRightViewAdapter.getItemPostion(-1);
     }
@@ -2610,11 +2611,13 @@ public class BrowserActivity extends BaseActivity
             @Override
             public void onTaskSuccess() {
                 showShortToast(BrowserActivity.this, R.string.rename_successful);
-//                ReposFragment reposFragment = getReposFragment();
-//                if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
-                if (currentPosition == INDEX_LIBRARY_TAB) {
-
-                    refreshView(true, true);
+                if (isLandPattern) {
+                    navToReposView(true,true);
+                } else {
+                    ReposFragment reposFragment = getReposFragment();
+                    if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
+                        reposFragment.refreshView(true, true);
+                    }
                 }
             }
         });
@@ -2628,11 +2631,14 @@ public class BrowserActivity extends BaseActivity
             @Override
             public void onTaskSuccess() {
                 showShortToast(BrowserActivity.this, R.string.delete_successful);
-//                ReposFragment reposFragment = getReposFragment();
-//                if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
-//                    reposFragment.
-                refreshView(true, true);
-//                }
+                if (isLandPattern) {
+                    refreshView(true);
+                } else {
+                    ReposFragment reposFragment = getReposFragment();
+                    if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
+                        reposFragment.refreshView(true, true);
+                    }
+                }
             }
         });
         dialog.show(getSupportFragmentManager(), TAG_DELETE_REPO_DIALOG_FRAGMENT);
@@ -2720,6 +2726,8 @@ public class BrowserActivity extends BaseActivity
                         .getCachedDirents(repoID, getNavContext().getDirPath());
                 if (isLandPattern) {
                     refreshView(true);
+                    mRightViewAdapter.deselectAllItems();
+                    setTitleViewFocus(false);
                 } else {
                     getReposFragment().getAdapter().setItems(cachedDirents);
                     getReposFragment().getAdapter().notifyDataSetChanged();
@@ -3163,24 +3171,37 @@ public class BrowserActivity extends BaseActivity
         supportInvalidateOptionsMenu();
     }
 
+    /**
+     * calculate if repo refresh time is expired, the expiration is 10 mins
+     */
+    private boolean isReposRefreshTimeOut() {
+        if (getDataManager().isReposRefreshTimeout()) {
+            return true;
+        }
+
+        return false;
+
+    }
+
     public void navToReposView(boolean forceRefresh, boolean restorePosition) {
 
-        if (!Utils.isNetworkOn() || !forceRefresh) {
+        forceRefresh = forceRefresh || isReposRefreshTimeOut();
 
+        if (!Utils.isNetworkOn() || !forceRefresh) {
             List<SeafRepo> repos = getDataManager().getReposFromCache();
             if (repos != null) {
                 updateAdapterWithRepos(repos, restorePosition);
                 return;
             }
         }
-
         ConcurrentAsyncTask.execute(new LoadTask(getDataManager()));
     }
 
     private void updateAdapterWithRepos(List<SeafRepo> repos, boolean restoreScrollPosition) {
+        mLeftViewAdapter.clear();
         if (repos.size() > 0) {
             addReposToAdapter(repos);
-//            mLeftViewAdapter.removePersonalData();
+            mLeftViewAdapter.notifyChanged();
         }
     }
 
@@ -3188,7 +3209,6 @@ public class BrowserActivity extends BaseActivity
         if (repos == null)
             return;
 
-        mLeftViewAdapter.clear();
         Map<String, List<SeafRepo>> map = Utils.groupRepos(repos);
         List<SeafRepo> personalRepos = map.get(Utils.PERSONAL_REPO);
         if (personalRepos != null) {
