@@ -2726,12 +2726,18 @@ public class BrowserActivity extends BaseActivity
                         .getCachedDirents(repoID, getNavContext().getDirPath());
                 if (isLandPattern) {
                     refreshView(true);
-                    mRightViewAdapter.deselectAllItems();
-                    setTitleViewFocus(false);
+
                 } else {
                     getReposFragment().getAdapter().setItems(cachedDirents);
                     getReposFragment().getAdapter().notifyDataSetChanged();
                 }
+            }
+
+            @Override
+            public void onTaskCancelled() {
+                mRightViewAdapter.deselectAllItems();
+                setTitleViewFocus(false);
+                super.onTaskCancelled();
             }
         });
         dialog.show(getSupportFragmentManager(), TAG_DELETE_FILE_DIALOG_FRAGMENT);
