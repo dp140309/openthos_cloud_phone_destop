@@ -541,7 +541,7 @@ public class BrowserActivity extends BaseActivity
                 DeleteData();
                 break;
             case R.id.transfer_list_view:
-                mTransferLayoutView.setVisibility(View.VISIBLE);
+                openTransferList();
                 break;
             case R.id.settings_view:
                 ShowSettingPage();
@@ -760,6 +760,26 @@ public class BrowserActivity extends BaseActivity
 //        mRightViewAdapter.getItemPostion(-1);
     }
 
+    private boolean transferListIsOpen = true;
+    private void openTransferList(){
+        if (transferListIsOpen) {
+            transferListIsOpen = false;
+            List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
+            mTransferLayoutView.setVisibility(View.VISIBLE);
+            if (!infos.isEmpty()) {
+                mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this, infos);
+                mTransAdapter.notifyDataSetChanged();
+                mTransmissionListView.setAdapter(mTransAdapter);
+
+                startTimer();
+            }
+        }else {
+            transferListIsOpen= true;
+            mTransferLayoutView.setVisibility(View.GONE);
+        }
+
+    }
+
     private void ShowSettingPage() {
         Intent intent = new Intent(this, OpenthosSettingsActivity.class);
         intent.putExtra("email", account.getEmail());
@@ -777,19 +797,22 @@ public class BrowserActivity extends BaseActivity
         if (mRightDataList.size() == 0) {
             return;
         }
-
-        for (int i = 0; i < mRightDataList.size(); i++) {
-            if (mRightDataList.get(i).isDir()) {
-                downloadDir(getNavContext().getDirPath(), mRightDataList.get(i).name, true);
-                mTransferLayoutView.setVisibility(View.VISIBLE);
-            } else {
-                downloadFile(getNavContext().getDirPath(), mRightDataList.get(i).name);
-                mTransferLayoutView.setVisibility(View.VISIBLE);
-            }
-        }
         List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
         mTransAdapter = new LandTransmissionAdapter(BrowserActivity.this, infos);
-        mTransmissionListView.setAdapter(mTransAdapter);
+        for (int i = 0; i < mRightDataList.size(); i++) {
+            if (mRightDataList.get(i).isDir()) {
+                mTransferLayoutView.setVisibility(View.VISIBLE);
+                downloadDir(getNavContext().getDirPath(), mRightDataList.get(i).name, true);
+                mTransAdapter.notifyDataSetChanged();
+                mTransmissionListView.setAdapter(mTransAdapter);
+            } else {
+                mTransferLayoutView.setVisibility(View.VISIBLE);
+                downloadFile(getNavContext().getDirPath(), mRightDataList.get(i).name);
+                mTransAdapter.notifyDataSetChanged();
+                mTransmissionListView.setAdapter(mTransAdapter);
+            }
+        }
+
         startTimer();
     }
 
@@ -3493,7 +3516,7 @@ public class BrowserActivity extends BaseActivity
 
             mRightViewAdapter.sortFiles(SettingsManager.instance().getSortFilesTypePref(),
                     SettingsManager.instance().getSortFilesOrderPref());
-            mRightViewAdapter.notifyChanged();
+            mRightViewAdapter.notifyDataSetChanged();
         } else {
             mRightMenu.setEmptyView(((ImageView) findViewById(R.id.right_list_emptry)));
         }

@@ -118,6 +118,7 @@ public abstract class TransferManager {
 
         if (!transferringList.isEmpty()) {
             transferringList.remove(toCancel);
+            if (transferringList.size() == 1) doNext();
         }
     }
 

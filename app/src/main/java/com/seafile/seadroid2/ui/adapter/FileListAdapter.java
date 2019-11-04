@@ -121,18 +121,19 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
     @Override
     public View getView( int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        View view = convertView;
         SeafItem seafItem = items.get(position);
         SeafDirent dirent = (SeafDirent) items.get(position);
         if (convertView == null) {
-            view = mInflater.inflate(R.layout.recycler_right_item, parent, false);
-            holder = new ViewHolder(view);
-            holder.mTextView.setTag(position);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
+            convertView = mInflater.inflate(R.layout.recycler_right_item, parent, false);
+            RelativeLayout relativeLayout = (RelativeLayout) convertView.findViewById(R.id.item_list_right);
+            TextView textView = (TextView) convertView.findViewById(R.id.right_text_item);
+            ImageView viewIcon = (ImageView) convertView.findViewById(R.id.recycler_image_item);
+            CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.right_view_checkbox);
+            holder = new ViewHolder(relativeLayout,textView, viewIcon, checkBox);
+            convertView.setTag(holder);
         }
-
+        holder = (ViewHolder) convertView.getTag();
+        holder.mTextView.setTag(position);
         holder.mTextView.setText(seafItem.getTitle());
         holder.mRelativeLayout.setOnTouchListener(this);
 
@@ -152,7 +153,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
             updateRightItemPicture(holder, dirent);
         }
 
-        return view;
+        return convertView;
     }
 
     private void updateRightItemPicture(ViewHolder holder, SeafDirent dirent) {
@@ -265,11 +266,15 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
         ImageView mViewIcon;
         CheckBox mCheckBox;
 
-        public ViewHolder(View itemView) {
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_list_right);
-            mTextView = (TextView) itemView.findViewById(R.id.right_text_item);
-            mViewIcon = (ImageView) itemView.findViewById(R.id.recycler_image_item);
-            mCheckBox = (CheckBox) itemView.findViewById(R.id.right_view_checkbox);
+        public ViewHolder(RelativeLayout relativeLayout,
+                          TextView textView,
+                          ImageView viewIcon,
+                          CheckBox checkBox) {
+            super();
+            this.mRelativeLayout = relativeLayout;
+            this.mTextView = textView;
+            this.mViewIcon = viewIcon;
+            this.mCheckBox = checkBox;
         }
     }
 
