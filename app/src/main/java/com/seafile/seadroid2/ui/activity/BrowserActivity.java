@@ -34,8 +34,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -100,7 +98,7 @@ import com.seafile.seadroid2.ui.NavContext;
 import com.seafile.seadroid2.ui.WidgetUtils;
 import com.seafile.seadroid2.ui.adapter.FileListAdapter;
 import com.seafile.seadroid2.ui.adapter.LandTransmissionAdapter;
-import com.seafile.seadroid2.ui.adapter.RecycleViewAdapter;
+import com.seafile.seadroid2.ui.adapter.LeftFileAdapter;
 import com.seafile.seadroid2.ui.adapter.SeafItemAdapter;
 import com.seafile.seadroid2.ui.dialog.AppChoiceDialog;
 import com.seafile.seadroid2.ui.dialog.AppChoiceDialog.CustomAction;
@@ -200,11 +198,9 @@ public class BrowserActivity extends BaseActivity
     private View mLayout;
 
     private DragGridView mRightMenu;
-    private RecyclerView mLeftMenu;
-    //    private RecycleViewAdapter mRightViewAdapter;
-//    private SeafItemAdapter mRightViewAdapter;
+    private ListView mLeftMenu;
     private FileListAdapter mRightViewAdapter;
-    private RecycleViewAdapter mLeftViewAdapter;
+    private LeftFileAdapter mLeftViewAdapter;
     private LinearLayout mTransferLayoutView;
     private ListView mTransmissionListView;
     private LandTransmissionAdapter mTransAdapter;
@@ -403,12 +399,12 @@ public class BrowserActivity extends BaseActivity
         mCurrentDirectory = findViewById(R.id.current_directory);
         mMenuDialog = RecycleMenuDialog.getInstance(this);
         mMenuDialog.setOnMenuClick(mOnMenuClick);
-        mLeftViewAdapter = new RecycleViewAdapter(this, TYPE_LEFT);
+        mLeftViewAdapter = new LeftFileAdapter(this);
         refreshView(true);
         requestServerInfo();
-        mLeftMenu.setLayoutManager(new LinearLayoutManager(this));
+//        mLeftMenu.setLayoutManager(new LinearLayoutManager(this));
         mLeftMenu.setAdapter(mLeftViewAdapter);
-        mLeftViewAdapter.setAdapterCallback(new RecycleViewAdapter.AdapterCallback() {
+        mLeftViewAdapter.setAdapterCallback(new LeftFileAdapter.AdapterCallback() {
             @Override
             public void onTunchListener(SeafItem position) {
                 requestLeftClickListener(position);
@@ -761,7 +757,8 @@ public class BrowserActivity extends BaseActivity
     }
 
     private boolean transferListIsOpen = true;
-    private void openTransferList(){
+
+    private void openTransferList() {
         if (transferListIsOpen) {
             transferListIsOpen = false;
             List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
@@ -773,8 +770,8 @@ public class BrowserActivity extends BaseActivity
 
                 startTimer();
             }
-        }else {
-            transferListIsOpen= true;
+        } else {
+            transferListIsOpen = true;
             mTransferLayoutView.setVisibility(View.GONE);
         }
 
@@ -1938,6 +1935,8 @@ public class BrowserActivity extends BaseActivity
             Intent intent = Intent.createChooser(target, getString(R.string.choose_file));
             startActivityForResult(intent, BrowserActivity.PICK_FILE_REQUEST);
         }
+
+        ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
     }
 
     @Override

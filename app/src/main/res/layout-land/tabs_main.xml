@@ -3,6 +3,7 @@
     android:id="@+id/bottom_sheet_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fancy_menu_background_color"
     android:orientation="horizontal">
 
     <RelativeLayout
@@ -14,12 +15,15 @@
             android:id="@+id/search_view"
             layout="@layout/search_view" />
 
-        <android.support.v7.widget.RecyclerView
+        <ListView
             android:id="@+id/left_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/search_view"
             android:layout_above="@+id/memory_state"
+            android:divider="@color/fancy_menu_background_color"
+            android:background="@color/fancy_menu_background_color"
+            android:scrollbars="none"
             android:layout_marginTop="@dimen/openthos_view_size_40" />
 
         <ProgressBar
@@ -92,13 +96,10 @@
                     android:id="@+id/right_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="10dp"
                     android:numColumns="auto_fit"
-                    android:columnWidth="135dp"
-                    android:horizontalSpacing="20dp"
-                    android:verticalSpacing="20dp"
+                    android:columnWidth="@dimen/openthos_view_size_130"
+                    android:horizontalSpacing="@dimen/openthos_view_size_18"
+                    android:verticalSpacing="@dimen/openthos_view_size_18"
                     android:stretchMode="columnWidth"
                     android:nextFocusUp="@id/right_menu"
                     android:nextFocusLeft="@id/right_menu"
@@ -110,10 +111,12 @@
                     android:layout_marginTop="@dimen/openthos_view_size_25" />
                 <ImageView
                     android:id="@+id/right_list_emptry"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/transmission_null"
-                    android:visibility="gone"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/openthos_view_size_50"
+                    android:src="@drawable/openthos_empty"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -121,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
-                android:background="@color/trans_list_background_color"
+                android:background="@color/transfer_list_background_color"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -165,13 +168,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/openthos_view_size_28"
-                    android:divider="@color/trans_list_background_color"
+                    android:divider="@color/transfer_list_background_color"
                     android:dividerHeight="@dimen/openthos_view_size_28" />
 
                 <ImageView
                     android:id="@+id/empty_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/openthos_view_size_50"
+                    android:layout_gravity="center"
                     android:src="@drawable/transmission_null"/>
 
             </LinearLayout>

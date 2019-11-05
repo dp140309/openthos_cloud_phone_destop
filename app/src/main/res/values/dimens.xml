@@ -220,6 +220,7 @@
     <dimen name="openthos_view_size_38">38dp</dimen>
     <dimen name="openthos_view_size_35">35dp</dimen>
     <dimen name="openthos_view_size_40">40dp</dimen>
+    <dimen name="openthos_view_size_50">50dp</dimen>
     <dimen name="openthos_view_size_60">60dp</dimen>
     <dimen name="openthos_view_size_70">70dp</dimen>
     <dimen name="openthos_view_size_86">86dp</dimen>

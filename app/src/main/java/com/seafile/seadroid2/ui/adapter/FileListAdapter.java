@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FileListAdapter extends BaseAdapter implements View.OnTouchListener {
+public class FileListAdapter extends BaseAdapter implements View.OnTouchListener, View.OnHoverListener {
     private LayoutInflater mInflater;
     private BrowserActivity mActivity;
     private ArrayList<SeafItem> items;
@@ -128,22 +128,18 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
             RelativeLayout relativeLayout = (RelativeLayout) convertView.findViewById(R.id.item_list_right);
             TextView textView = (TextView) convertView.findViewById(R.id.right_text_item);
             ImageView viewIcon = (ImageView) convertView.findViewById(R.id.recycler_image_item);
-            CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.right_view_checkbox);
-            holder = new ViewHolder(relativeLayout,textView, viewIcon, checkBox);
+            holder = new ViewHolder(relativeLayout,textView, viewIcon);
             convertView.setTag(holder);
         }
         holder = (ViewHolder) convertView.getTag();
         holder.mTextView.setTag(position);
         holder.mTextView.setText(seafItem.getTitle());
         holder.mRelativeLayout.setOnTouchListener(this);
+        holder.mRelativeLayout.setOnHoverListener(this);
 
         if (mSelectedItemsIds.get(position)) {
-            holder.mCheckBox.setVisibility(View.VISIBLE);
-            holder.mCheckBox.setChecked(true);
             holder.mRelativeLayout.setBackgroundResource(R.drawable.right_view_background);
         } else {
-            holder.mCheckBox.setVisibility(View.GONE);
-            holder.mCheckBox.setChecked(false);
             holder.mRelativeLayout.setBackgroundResource(0);
         }
 
@@ -260,21 +256,41 @@ public class FileListAdapter extends BaseAdapter implements View.OnTouchListener
         return false;
     }
 
+    @Override
+    public boolean onHover(View v, MotionEvent event) {
+        ViewHolder viewHolder = (ViewHolder) v.getTag();
+        int postion = (int) viewHolder.mTextView.getTag();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_ENTER:
+                viewHolder.mRelativeLayout.setBackgroundResource(R.drawable.right_view_background);
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                changeItemState(postion, viewHolder);
+                break;
+        }
+        return false;
+    }
+
+    private void changeItemState(int postion, ViewHolder viewHolder){
+        if (mSelectedItemsIds.get(postion)) {
+            viewHolder.mRelativeLayout.setBackgroundResource(R.drawable.right_view_background);
+        } else {
+            viewHolder.mRelativeLayout.setBackgroundResource(0);
+        }
+    }
+
     public class ViewHolder {
         RelativeLayout mRelativeLayout;
         TextView mTextView;
         ImageView mViewIcon;
-        CheckBox mCheckBox;
 
         public ViewHolder(RelativeLayout relativeLayout,
                           TextView textView,
-                          ImageView viewIcon,
-                          CheckBox checkBox) {
+                          ImageView viewIcon) {
             super();
             this.mRelativeLayout = relativeLayout;
             this.mTextView = textView;
             this.mViewIcon = viewIcon;
-            this.mCheckBox = checkBox;
         }
     }
 

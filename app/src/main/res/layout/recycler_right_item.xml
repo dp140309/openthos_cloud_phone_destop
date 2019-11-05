@@ -24,12 +24,4 @@
         android:textColor="@color/right_text_color"
         android:textSize="@dimen/openthos_text_size_14" />
 
-    <CheckBox
-        android:id="@+id/right_view_checkbox"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"/>
-
 </RelativeLayout>

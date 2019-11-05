@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/trans_list_background_color">
+    android:background="@color/transfer_list_background_color" >
 
     <ImageView
         android:id="@+id/transmission_icon"
@@ -32,10 +32,10 @@
                 android:id="@+id/transmission_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:maxEms="5"
-                android:ellipsize="end"
                 android:layout_alignParentLeft="true"
+                android:ellipsize="end"
+                android:maxEms="5"
+                android:maxLines="1"
                 android:textSize="@dimen/openthos_text_size_12" />
 
             <TextView
@@ -53,9 +53,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/openthos_view_size_12"
             android:layout_centerVertical="true"
-            android:visibility="gone"
             android:layout_marginBottom="@dimen/openthos_view_size_2"
-            android:layout_marginTop="@dimen/openthos_view_size_6"/>
+            android:layout_marginTop="@dimen/openthos_view_size_6"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/transfer_land_state"
@@ -79,8 +79,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/transmission_pause"
         android:layout_marginLeft="@dimen/openthos_view_size_22"
+        android:layout_toRightOf="@+id/transmission_pause"
         android:src="@drawable/trans_delete_icon" />
 
     <ImageView
@@ -88,10 +88,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:src="@drawable/trans_file_icon"
-        android:visibility="gone"
         android:layout_marginLeft="@dimen/openthos_view_size_22"
-        android:layout_toRightOf="@+id/transmission_delete"/>
+        android:layout_toRightOf="@+id/transmission_delete"
+        android:src="@drawable/trans_file_icon"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

@@ -90,6 +90,7 @@
     <dimen name="item_modification_desc">300dp</dimen>
 
     <!-- add new dimen -->
+    <dimen name="openthos_view_size_50">98dp</dimen>
     <dimen name="openthos_icon_size">180dp</dimen>
     <dimen name="title_search_width_size">320dp</dimen>
 
