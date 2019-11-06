@@ -2891,11 +2891,12 @@ public class BrowserActivity extends BaseActivity
                 && repoID.equals(navContext.getRepoID())
                 && dir.equals(navContext.getDirPath())) {
             if (isLandPattern) {
-                refreshView(true, true);
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
                 showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
+                refreshView(true, true);
+                mLeftViewAdapter.notifyDataSetChanged();
                 ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
-                mLeftViewAdapter.notifyChanged();
+                Utils.threadSleep(1000);
             } else {
                 getReposFragment().refreshView(true, true);
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
@@ -3234,8 +3235,9 @@ public class BrowserActivity extends BaseActivity
         mLeftViewAdapter.clear();
         if (repos.size() > 0) {
             addReposToAdapter(repos);
-            mLeftViewAdapter.notifyChanged();
         }
+
+        mLeftViewAdapter.notifyDataSetChanged();
     }
 
     private void addReposToAdapter(List<SeafRepo> repos) {

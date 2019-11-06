@@ -920,4 +920,12 @@ public class Utils {
         return intent;
     }
 
+    public static void threadSleep(long seconds){
+        try {
+            Thread.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
