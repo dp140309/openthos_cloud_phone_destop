@@ -1935,8 +1935,6 @@ public class BrowserActivity extends BaseActivity
             Intent intent = Intent.createChooser(target, getString(R.string.choose_file));
             startActivityForResult(intent, BrowserActivity.PICK_FILE_REQUEST);
         }
-
-        ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
     }
 
     @Override
@@ -2527,7 +2525,7 @@ public class BrowserActivity extends BaseActivity
             } else
                 super.onBackPressed();
         } else if (Configuration.ORIENTATION_LANDSCAPE == this.getResources().getConfiguration().orientation) {
-
+            super.onBackPressed();
         } else if (currentPosition == INDEX_ACTIVITIES_TAB) {
             if (getActivitiesFragment().isBottomSheetShown()) {
                 getActivitiesFragment().hideBottomSheet();
@@ -2892,6 +2890,7 @@ public class BrowserActivity extends BaseActivity
                 refreshView(true, true);
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
                 showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
+                ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
             } else {
                 getReposFragment().refreshView(true, true);
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);

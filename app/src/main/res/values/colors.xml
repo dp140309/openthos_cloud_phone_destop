@@ -48,6 +48,6 @@
     <color name="menu_text_color_false">#5a5a5a4D</color>
     <color name="log_in_erro_text_icon">#ff5f5f</color>
     <color name="log_in_erro_background">#ffd8d8</color>
-    <color name="transfer_list_background_color">#f5f5f5</color>
+    <color name="transfer_list_background_color">#fafafa</color>
 
 </resources>
