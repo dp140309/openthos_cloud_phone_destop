@@ -2745,6 +2745,8 @@ public class BrowserActivity extends BaseActivity
                 List<SeafDirent> cachedDirents = getDataManager()
                         .getCachedDirents(repoID, getNavContext().getDirPath());
                 if (isLandPattern) {
+                    ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
+                    mLeftViewAdapter.notifyChanged();
                     refreshView(true);
                     mRightViewAdapter.deselectAllItems();
                     setTitleViewFocus(false);
@@ -2756,6 +2758,8 @@ public class BrowserActivity extends BaseActivity
 
             @Override
             public void onTaskCancelled() {
+                ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
+                mLeftViewAdapter.notifyChanged();
                 mRightViewAdapter.deselectAllItems();
                 setTitleViewFocus(false);
                 super.onTaskCancelled();
@@ -2891,6 +2895,7 @@ public class BrowserActivity extends BaseActivity
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
                 showShortToast(this, verb + " " + Utils.fileNameFromPath(info.localFilePath));
                 ConcurrentAsyncTask.execute(new RequestAccountInfoTask(), account);
+                mLeftViewAdapter.notifyChanged();
             } else {
                 getReposFragment().refreshView(true, true);
                 String verb = getString(info.isUpdate ? R.string.updated : R.string.uploaded);
