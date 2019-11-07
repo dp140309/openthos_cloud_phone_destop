@@ -32,7 +32,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
     private List<Integer> mSelectedItemsPositions = Lists.newArrayList();
     private BrowserActivity mActivity;
 
-    public LandTransmissionAdapter(BrowserActivity activity, List<? extends TransferTaskInfo> transferTaskInfos){
+    public LandTransmissionAdapter(BrowserActivity activity, List<? extends TransferTaskInfo> transferTaskInfos) {
         this.mActivity = activity;
         this.mTransferTaskInfos = transferTaskInfos;
 
@@ -55,30 +55,29 @@ public class LandTransmissionAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        final ViewHolder viewHolder;
-        if (view == null){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.transmission_item_list, null);
-            ImageView mTransIcon =  (ImageView) view.findViewById(R.id.transmission_icon);
-            ImageView mTransDelete =(ImageView)  view.findViewById(R.id.transmission_delete);
-            ImageView mTransPause = (ImageView) view.findViewById(R.id.transmission_pause);
-            ImageView mTransFile = (ImageView)  view.findViewById(R.id.transmission_file);
-            TextView mTransName = (TextView) view.findViewById(R.id.transmission_name);
-            TextView mTranstime = (TextView) view.findViewById(R.id.transmission_time);
-            TextView state = (TextView) view.findViewById(R.id.transfer_land_state);
-            ProgressBar mProgressBar = (ProgressBar) view.findViewById(R.id.transmission_progress);
-            viewHolder = new ViewHolder(mTransIcon, mTransDelete,mTransPause, mTransFile,
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.transmission_item_list, null);
+            ImageView mTransIcon = (ImageView) convertView.findViewById(R.id.transmission_icon);
+            ImageView mTransDelete = (ImageView) convertView.findViewById(R.id.transmission_delete);
+            ImageView mTransPause = (ImageView) convertView.findViewById(R.id.transmission_pause);
+            ImageView mTransFile = (ImageView) convertView.findViewById(R.id.transmission_file);
+            TextView mTransName = (TextView) convertView.findViewById(R.id.transmission_name);
+            TextView mTranstime = (TextView) convertView.findViewById(R.id.transmission_time);
+            TextView state = (TextView) convertView.findViewById(R.id.transfer_land_state);
+            ProgressBar mProgressBar = (ProgressBar) convertView.findViewById(R.id.transmission_progress);
+            viewHolder = new ViewHolder(mTransIcon, mTransDelete, mTransPause, mTransFile,
                     mTransName, mTranstime, mProgressBar, state);
-            view.setTag(viewHolder);
-        }else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            convertView.setTag(viewHolder);
         }
+
+        viewHolder = (ViewHolder) convertView.getTag();
 
         final DownloadTaskInfo taskInfo = (DownloadTaskInfo) mTransferTaskInfos.get(position);
         viewHolder.mTransIcon.setImageResource(Utils.getFileIcon(taskInfo.pathInRepo));
         viewHolder.mTransName.setText(Utils.fileNameFromPath(taskInfo.pathInRepo));
 
-        updateTaskView(taskInfo,viewHolder);
+        updateTaskView(taskInfo, viewHolder);
 
         viewHolder.mTransDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +97,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 File parentFlie = new File(mActivity.getExternalCacheDir() + mActivity.getNavContext().getDirPath());
-                Intent intent = Utils.selectDifferentVersionIntent(mActivity,parentFlie);
+                Intent intent = Utils.selectDifferentVersionIntent(mActivity, parentFlie);
                 mActivity.startActivity(intent);
             }
         });
@@ -110,26 +109,26 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 List<Integer> ids = Lists.newArrayList();
                 TransferTaskInfo tti = getItem(position);
                 ids.add(tti.taskID);
-                if (v.isActivated()){
+                if (v.isActivated()) {
                     v.setActivated(false);
                     transferPlay(ids);
-                }else {
+                } else {
                     v.setActivated(true);
                     transferPause(ids);
                 }
             }
         });
 
-        return view;
+        return convertView;
     }
 
-    private void transferPause(List<Integer> ids){
+    private void transferPause(List<Integer> ids) {
         if (mActivity.getTransferService() != null) {
             mActivity.getTransferService().cancellDownloadTasksByIds(ids);
         }
     }
 
-    private void transferPlay(List<Integer> ids){
+    private void transferPlay(List<Integer> ids) {
         if (mActivity.getTransferService() != null) {
             mActivity.getTransferService().restartDownloadTasksByIds(ids);
         }
@@ -196,7 +195,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 break;
             case FINISHED:
 //                if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.DOWNLOAD_TASK))
-                    stateStr = mActivity.getString(R.string.download_finished);
+                stateStr = mActivity.getString(R.string.download_finished);
 //                else if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.UPLOAD_TASK))
 //                    stateStr = mActivity.getString(R.string.upload_finished);
                 stateColor = Color.BLACK;
@@ -207,7 +206,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 break;
             case CANCELLED:
 //                if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.DOWNLOAD_TASK))
-                    stateStr = mActivity.getString(R.string.download_cancelled);
+                stateStr = mActivity.getString(R.string.download_cancelled);
 //                else if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.UPLOAD_TASK))
 //                    stateStr = mActivity.getString(R.string.upload_cancelled);
                 stateColor = Color.RED;
@@ -219,13 +218,14 @@ public class LandTransmissionAdapter extends BaseAdapter {
                 break;
             case FAILED:
 //                if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.DOWNLOAD_TASK))
-                    stateStr = mActivity.getString(R.string.download_failed);
+                stateStr = mActivity.getString(R.string.download_failed);
 //                else if (mTransferTaskType.equals(TransferTaskAdapter.TaskType.UPLOAD_TASK))
 //                    stateStr = mActivity.getString(R.string.upload_failed);
                 stateColor = Color.RED;
                 viewHolder.mTranstime.setVisibility(View.INVISIBLE);
                 viewHolder.mProgressBar.setVisibility(View.GONE);
                 viewHolder.mTransPause.setVisibility(View.VISIBLE);
+                viewHolder.mTransPause.setActivated(true);
                 viewHolder.mTransFile.setVisibility(View.GONE);
                 break;
         }
@@ -271,7 +271,7 @@ public class LandTransmissionAdapter extends BaseAdapter {
 
         public ViewHolder(ImageView mTransIcon, ImageView mTransDelete, ImageView mTransPause,
                           ImageView mTransFile, TextView mTransName, TextView mTranstime,
-                          ProgressBar mProgressBar, TextView state){
+                          ProgressBar mProgressBar, TextView state) {
             super();
             this.mTransIcon = mTransIcon;
             this.mTransDelete = mTransDelete;
