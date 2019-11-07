@@ -591,7 +591,7 @@ public class BrowserActivity extends BaseActivity
                     @Override
                     public void onClick(View v) {
                         try {
-                            Uri uri = Uri.parse("http://openthos.org/about.html");
+                            Uri uri = Uri.parse("http://openthos.com/about.html");
                             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                             startActivity(intent);
                         } catch (ActivityNotFoundException e) {

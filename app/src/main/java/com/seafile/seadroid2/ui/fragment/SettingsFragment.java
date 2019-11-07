@@ -431,7 +431,7 @@ public class SettingsFragment extends CustomPreferenceFragment {
                             intent = packageManager.getLaunchIntentForPackage("org.mozilla.fennec_openthos");
 //                        intent.setClassName("org.mozilla.fennec_openthos","org.mozilla.fennec_openthos.MainActivity");
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent.setData(Uri.parse("http://openthos.org/about.html"));
+                            intent.setData(Uri.parse("http://openthos.com/about.html"));
 //                        intent.setAction(intent.ACTION_VIEW);
                             startActivity(intent);
                         }catch(ActivityNotFoundException e){}
