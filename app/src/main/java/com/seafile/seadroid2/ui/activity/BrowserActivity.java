@@ -816,6 +816,10 @@ public class BrowserActivity extends BaseActivity
     private OnMenuClick mOnMenuClick = new OnMenuClick() {
         @Override
         public void menuClick(View view, Dialog dialog, SeafItem position, String menu, int type) {
+            if (!Utils.isNetworkOn()) {
+                showLongToast(BrowserActivity.this, getResources().getString(R.string.network_down));
+                return;
+            }
             switch (type) {
                 case 1:
                     SeafRepo repo = (SeafRepo) position;
@@ -2632,7 +2636,7 @@ public class BrowserActivity extends BaseActivity
             public void onTaskSuccess() {
                 showShortToast(BrowserActivity.this, R.string.rename_successful);
                 if (isLandPattern) {
-                    navToReposView(true, true);
+                    ConcurrentAsyncTask.execute(new LoadTask(getDataManager()));
                 } else {
                     ReposFragment reposFragment = getReposFragment();
                     if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
@@ -3458,11 +3462,12 @@ public class BrowserActivity extends BaseActivity
                 // this occurs if user navigation to another activity
                 return;
 
-            if (getNavContext().inRepo()) {
-                // this occurs if user already navigate into a repo
-                return;
+            if (!isLandPattern) {
+                if (getNavContext().inRepo()) {
+                    // this occurs if user already navigate into a repo
+                    return;
+                }
             }
-
             // Prompt the user to accept the ssl certificate
             if (err == SeafException.sslException) {
                 SslConfirmDialog dialog = new SslConfirmDialog(dataManager.getAccount(),
