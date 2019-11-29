@@ -212,6 +212,7 @@
     <dimen name="openthos_view_size_18">18dp</dimen>
     <dimen name="openthos_view_size_20">20dp</dimen>
     <dimen name="openthos_view_size_22">22dp</dimen>
+    <dimen name="openthos_view_size_24">24dp</dimen>
     <dimen name="openthos_view_size_25">25dp</dimen>
     <dimen name="openthos_view_size_26">26dp</dimen>
     <dimen name="openthos_view_size_28">28dp</dimen>
@@ -220,9 +221,12 @@
     <dimen name="openthos_view_size_38">38dp</dimen>
     <dimen name="openthos_view_size_35">35dp</dimen>
     <dimen name="openthos_view_size_40">40dp</dimen>
+    <dimen name="openthos_view_size_47">47dp</dimen>
     <dimen name="openthos_view_size_50">50dp</dimen>
     <dimen name="openthos_view_size_60">60dp</dimen>
     <dimen name="openthos_view_size_70">70dp</dimen>
+    <dimen name="openthos_view_size_75">75dp</dimen>
+    <dimen name="openthos_view_size_84">84dp</dimen>
     <dimen name="openthos_view_size_86">86dp</dimen>
     <dimen name="openthos_view_size_100">100dp</dimen>
     <dimen name="openthos_view_size_112">112dp</dimen>
@@ -232,6 +236,7 @@
 
     <!-- add new text size to openthos cloud -->
     <dimen name="openthos_text_size_14">14sp</dimen>
+    <dimen name="openthos_text_size_16">16sp</dimen>
     <dimen name="openthos_text_size_12">12sp</dimen>
     <dimen name="openthos_text_size_13">13sp</dimen>
 </resources>
